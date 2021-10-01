@@ -327,6 +327,7 @@ namespace GTA_SA_Effect_Editor
                     effects.Add(new Effect(name, startLine, i, textures));
                     lbEffects.Items.Add($"{count}. {name}");
                     count++;
+                    textures.Clear();
                 }
             }
             lblCount.Text = $"Всего эффектов: {effects.Count}";
