@@ -27,31 +27,13 @@ namespace GTA_SA_Effect_Editor
         #endregion
 
         #region Variables
-        string effectsPath = "";
+        string effectsPath = "", lastDirectory = "";
         List<string> effectsFXP = new List<string>();
         List<Effect> effects = new List<Effect>();
         List<Effect> foundEffects = new List<Effect>();
         #endregion
 
-        public frmMain()
-        {
-            ForbidMultipleLaunches();
-            InitializeComponent();
-
-            Animator.Start();
-
-            try
-            {
-                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\GTA SA Effect Editor"))
-                {
-                    effectsPath = key.GetValue("path").ToString();
-                    UpdateList();
-                }
-                egtbPath.Text = effectsPath;
-                ReadEffectsFXP(effectsFXP);
-            }
-            catch (Exception) { }
-        }
+        #region Controls
 
         #region TextBoxes
         private void TbFind_Click(object sender, EventArgs e)
@@ -66,17 +48,14 @@ namespace GTA_SA_Effect_Editor
         private void EgtbPath_TextChanged(object sender, EventArgs e)
         {
             if (File.Exists(effectsPath))
-            {
-                effectsPath = egtbPath.Text;
                 UpdateList();
-            }
             else
             {
                 effectsPath = "";
                 effects.Clear();
                 lbEffects.Items.Clear();
                 lblCount.Text = "";
-                ResetFindField();
+                ResetSearchBlock();
             }
         }
         #endregion
@@ -84,17 +63,18 @@ namespace GTA_SA_Effect_Editor
         #region Buttons
         private void BtnBrowse_Click(object sender, EventArgs e)
         {
+            if (lastDirectory == "")
+                lastDirectory = @"C:\";
             OpenFileDialog ofd = new OpenFileDialog
             {
                 Multiselect = false,
                 Title = "Укажите путь к effects.fxp",
-                InitialDirectory = @"C:\"
+                InitialDirectory = lastDirectory
             };
             ofd.Filter = "effects.fxp|effects.fxp";
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 egtbPath.Text = ofd.FileName;
-                effectsPath = egtbPath.Text;
                 UpdateList();
             }
         }
@@ -127,26 +107,29 @@ namespace GTA_SA_Effect_Editor
             }
             else
             {
+                lblDescription.Text = "";
                 lbEffects.Items.Clear();
                 foreach (var effect in effects)
                 {
                     lbEffects.Items.Add(effect.Name);
                 }
 
-                ResetFindField();
+                ResetSearchBlock();
                 UpdateList();
             }
         }
 
         private void BtnDelete_Click(object sender, EventArgs e)
         {
+            Enabled = false;
+
             int startLine = effects[lbEffects.SelectedIndex].StartLine;
             int endLine = effects[lbEffects.SelectedIndex].EndLine;
 
-            string line = "";
             FileStream fs = new FileStream(effectsPath, FileMode.Create);
             using (StreamWriter sw = new StreamWriter(fs, Encoding.GetEncoding(1251)))
             {
+                string line = "";
                 for (int i = 0; i < effectsFXP.Count; i++)
                 {
                     if (i == startLine)
@@ -159,17 +142,22 @@ namespace GTA_SA_Effect_Editor
                 }
             }
 
-            effectsFXP.Clear();
             UpdateList();
+            Enabled = true;
+            new frmMessage().ShowDialog();
         }
 
         private void BtnImport_Click(object sender, EventArgs e)
         {
+            Enabled = false;
+
+            if (lastDirectory == "")
+                lastDirectory = @"C:\";
             OpenFileDialog ofd = new OpenFileDialog
             {
                 Multiselect = false,
                 Title = "Укажите путь к effects.fxp",
-                InitialDirectory = @"C:\"
+                InitialDirectory = lastDirectory
             };
             ofd.Filter = "effects.fxp|effects.fxp";
             if (ofd.ShowDialog() == DialogResult.OK)
@@ -180,7 +168,7 @@ namespace GTA_SA_Effect_Editor
             int selectedIndex = lbEffects.SelectedIndex;
 
             List<string> otherEffectsFXP = new List<string>();
-            ReadEffectsFXP(otherEffectsFXP);
+            ReadEffectsFXP(ref otherEffectsFXP);
 
             int startLine = 0, endLine = 0;
             bool isFound = false;
@@ -207,10 +195,10 @@ namespace GTA_SA_Effect_Editor
             }
 
             isFound = false;
-            string line = "";
             FileStream fs = new FileStream(effectsPath, FileMode.Create);
             using (StreamWriter sw = new StreamWriter(fs, Encoding.GetEncoding(1251)))
             {
+                string line = "";
                 for (int i = 0; i < otherEffectsFXP.Count; i++)
                 {
                     if (!isFound)
@@ -239,6 +227,10 @@ namespace GTA_SA_Effect_Editor
                     }
                 }
             }
+
+            Enabled = true;
+            effectsPath = egtbPath.Text;
+            new frmMessage().ShowDialog();
         }
         #endregion
 
@@ -264,6 +256,27 @@ namespace GTA_SA_Effect_Editor
             }
         }
 
+        #endregion
+
+        public frmMain()
+        {
+            ForbidMultipleLaunches();
+            InitializeComponent();
+
+            Animator.Start();
+
+            try
+            {
+                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\GTA SA Effect Editor"))
+                {
+                    egtbPath.Text = key.GetValue("path").ToString();
+                    UpdateList();
+                }
+            }
+            catch (Exception) { }
+        }
+
+
         /// <summary>Protection against restarting the application with the subsequent activation of an existing window</summary>
         private void ForbidMultipleLaunches()
         {
@@ -283,18 +296,20 @@ namespace GTA_SA_Effect_Editor
                 Environment.Exit(0);
             }
         }
-        /// <summary>Update path and re-read effects.fxp</summary>
+        /// <summary>Re-read effects.fxp and update list and effects count</summary>
         private void UpdateList()
         {
-            ReadEffectsFXP(effectsFXP);
+            effectsPath = egtbPath.Text;
+            ReadEffectsFXP(ref effectsFXP);
             Registry.CurrentUser.CreateSubKey(@"Software\GTA SA Effect Editor").SetValue("path", effectsPath);
 
             string name = "";
-            int startLine = 0;
-            List<string> textures = new List<string>();
+            int startLine = 0, count = 1;
+
             effects.Clear();
             lbEffects.Items.Clear();
-            int count = 1;
+            List<string> textures = new List<string>();
+
             for (int i = 0; i < effectsFXP.Count; i++)
             {
                 if (effectsFXP[i].Contains("FX_SYSTEM_DATA"))
@@ -312,20 +327,17 @@ namespace GTA_SA_Effect_Editor
                     effects.Add(new Effect(name, startLine, i, textures));
                     lbEffects.Items.Add($"{count}. {name}");
                     count++;
-                    textures.Clear();
                 }
             }
             lblCount.Text = $"Всего эффектов: {effects.Count}";
         }
-
-        private void ResetFindField()
+        private void ResetSearchBlock()
         {
             tbFind.Text = "Название текстуры";
             tbFind.ForeColor = SystemColors.ControlDark;
             btnFind.Text = "Поиск";
         }
-
-        private void ReadEffectsFXP(List<string> effects_fxp)
+        private void ReadEffectsFXP(ref List<string> effects_fxp)
         {
             effects_fxp.Clear();
             using (StreamReader sr = new StreamReader(effectsPath))

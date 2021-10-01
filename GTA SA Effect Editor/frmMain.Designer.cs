@@ -30,6 +30,7 @@ namespace GTA_SA_Effect_Editor
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.egoldsFormStyle1 = new yt_DesignUI.Components.EgoldsFormStyle(this.components);
             this.egtbPath = new yt_DesignUI.EgoldsGoogleTextBox();
             this.btnBrowse = new yt_DesignUI.yt_Button();
@@ -279,6 +280,7 @@ namespace GTA_SA_Effect_Editor
             this.Controls.Add(this.gbEffects);
             this.Controls.Add(this.btnBrowse);
             this.Controls.Add(this.egtbPath);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "frmMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Редактор эффектов GTA SA";
