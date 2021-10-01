@@ -276,11 +276,14 @@ namespace GTA_SA_Effect_Editor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(586, 378);
+            this.ClientSize = new System.Drawing.Size(570, 378);
             this.Controls.Add(this.gbEffects);
             this.Controls.Add(this.btnBrowse);
             this.Controls.Add(this.egtbPath);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(586, 416);
+            this.MinimumSize = new System.Drawing.Size(586, 416);
             this.Name = "frmMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Редактор эффектов GTA SA";
