@@ -163,74 +163,75 @@ namespace GTA_SA_Effect_Editor
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 effectsPath = ofd.FileName;
-            }
 
-            int selectedIndex = lbEffects.SelectedIndex;
+                int selectedIndex = lbEffects.SelectedIndex;
 
-            List<string> otherEffectsFXP = new List<string>();
-            ReadEffectsFXP(ref otherEffectsFXP);
+                List<string> otherEffectsFXP = new List<string>();
+                ReadEffectsFXP(ref otherEffectsFXP);
 
-            int startLine = 0, endLine = 0;
-            bool isFound = false;
-            for (int i = 0; i < otherEffectsFXP.Count; i++)
-            {
-                if (otherEffectsFXP[i].Contains("FX_SYSTEM_DATA"))
-                    startLine = i;
-                if (otherEffectsFXP[i].Contains("FILENAME"))
-                {
-                    int startIndex = otherEffectsFXP[i].LastIndexOf('/') + 1;
-                    int endIndex = otherEffectsFXP[i].IndexOf('.');
-                    string name = otherEffectsFXP[i].Substring(startIndex, endIndex - startIndex);
-                    if (name == effects[selectedIndex].Name)
-                        isFound = true;
-                }
-                if (otherEffectsFXP[i].Contains("TXDNAME: NOTXDSET"))
-                {
-                    if (isFound)
-                    {
-                        endLine = i;
-                        break;
-                    }
-                }
-            }
-
-            isFound = false;
-            FileStream fs = new FileStream(effectsPath, FileMode.Create);
-            using (StreamWriter sw = new StreamWriter(fs, Encoding.GetEncoding(1251)))
-            {
-                string line = "";
+                int startLine = 0, endLine = 0;
+                bool isFound = false;
                 for (int i = 0; i < otherEffectsFXP.Count; i++)
                 {
-                    if (!isFound)
+                    if (otherEffectsFXP[i].Contains("FX_SYSTEM_DATA"))
+                        startLine = i;
+                    if (otherEffectsFXP[i].Contains("FILENAME"))
                     {
-                        if (i == startLine - 1)
-                        {
-                            line = otherEffectsFXP[i];
-                            sw.WriteLine(line);
+                        int startIndex = otherEffectsFXP[i].LastIndexOf('/') + 1;
+                        int endIndex = otherEffectsFXP[i].IndexOf('.');
+                        string name = otherEffectsFXP[i].Substring(startIndex, endIndex - startIndex);
+                        if (name == effects[selectedIndex].Name)
                             isFound = true;
+                    }
+                    if (otherEffectsFXP[i].Contains("TXDNAME: NOTXDSET"))
+                    {
+                        if (isFound)
+                        {
+                            endLine = i;
+                            break;
+                        }
+                    }
+                }
+
+                isFound = false;
+                FileStream fs = new FileStream(effectsPath, FileMode.Create);
+                using (StreamWriter sw = new StreamWriter(fs, Encoding.GetEncoding(1251)))
+                {
+                    string line = "";
+                    for (int i = 0; i < otherEffectsFXP.Count; i++)
+                    {
+                        if (!isFound)
+                        {
+                            if (i == startLine - 1)
+                            {
+                                line = otherEffectsFXP[i];
+                                sw.WriteLine(line);
+                                isFound = true;
+                            }
+                            else
+                            {
+                                line = otherEffectsFXP[i];
+                                sw.WriteLine(line);
+                            }
                         }
                         else
                         {
-                            line = otherEffectsFXP[i];
-                            sw.WriteLine(line);
+                            for (int j = effects[selectedIndex].StartLine; j < effects[selectedIndex].EndLine + 1; j++)
+                            {
+                                line = effectsFXP[j];
+                                sw.WriteLine(line);
+                            }
+                            i = endLine;
+                            isFound = false;
                         }
-                    }
-                    else
-                    {
-                        for (int j = effects[selectedIndex].StartLine; j < effects[selectedIndex].EndLine + 1; j++)
-                        {
-                            line = effectsFXP[j];
-                            sw.WriteLine(line);
-                        }
-                        i = endLine;
-                        isFound = false;
                     }
                 }
+
+                effectsPath = egtbPath.Text;
+                new frmMessage().ShowDialog();
             }
 
             Enabled = true;
-            effectsPath = egtbPath.Text;
-            new frmMessage().ShowDialog();
         }
         #endregion
 
