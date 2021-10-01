@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31129.286
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GTA SA Effect Editor", "GTA SA Effect Editor\GTA SA Effect Editor.csproj", "{5FA43094-892B-4A8A-80A9-6A6691B06B78}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5FA43094-892B-4A8A-80A9-6A6691B06B78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FA43094-892B-4A8A-80A9-6A6691B06B78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5FA43094-892B-4A8A-80A9-6A6691B06B78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5FA43094-892B-4A8A-80A9-6A6691B06B78}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {33742C4D-294A-417A-A3C3-2D03CC12B29F}
+	EndGlobalSection
+EndGlobal
