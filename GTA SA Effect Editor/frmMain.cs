@@ -74,6 +74,7 @@ namespace GTA_SA_Effect_Editor
             ofd.Filter = "effects.fxp|effects.fxp";
             if (ofd.ShowDialog() == DialogResult.OK)
             {
+                lastDirectory = ofd.FileName;
                 egtbPath.Text = ofd.FileName;
                 UpdateList();
             }
@@ -142,6 +143,7 @@ namespace GTA_SA_Effect_Editor
                 }
             }
 
+            lblDescription.Text = "";
             UpdateList();
             Enabled = true;
             new frmMessage().ShowDialog();
@@ -162,6 +164,7 @@ namespace GTA_SA_Effect_Editor
             ofd.Filter = "effects.fxp|effects.fxp";
             if (ofd.ShowDialog() == DialogResult.OK)
             {
+                lastDirectory = ofd.FileName;
                 effectsPath = ofd.FileName;
 
                 int selectedIndex = lbEffects.SelectedIndex;
@@ -171,10 +174,10 @@ namespace GTA_SA_Effect_Editor
 
                 int startLine = 0, endLine = 0;
                 bool isFound = false;
-                for (int i = 0; i < otherEffectsFXP.Count; i++)
+                for (int i = otherEffectsFXP.Count - 1; i >= 0; i--)
                 {
-                    if (otherEffectsFXP[i].Contains("FX_SYSTEM_DATA"))
-                        startLine = i;
+                    if (otherEffectsFXP[i].Contains("TXDNAME: NOTXDSET"))
+                        endLine = i;
                     if (otherEffectsFXP[i].Contains("FILENAME"))
                     {
                         int startIndex = otherEffectsFXP[i].LastIndexOf('/') + 1;
@@ -183,11 +186,11 @@ namespace GTA_SA_Effect_Editor
                         if (name == effects[selectedIndex].Name)
                             isFound = true;
                     }
-                    if (otherEffectsFXP[i].Contains("TXDNAME: NOTXDSET"))
+                    if (otherEffectsFXP[i].Contains("FX_SYSTEM_DATA"))
                     {
                         if (isFound)
                         {
-                            endLine = i;
+                            startLine = i;
                             break;
                         }
                     }
@@ -277,7 +280,6 @@ namespace GTA_SA_Effect_Editor
             catch (Exception) { }
         }
 
-
         /// <summary>Protection against restarting the application with the subsequent activation of an existing window</summary>
         private void ForbidMultipleLaunches()
         {
@@ -326,7 +328,7 @@ namespace GTA_SA_Effect_Editor
                 if (effectsFXP[i].Contains("TXDNAME: NOTXDSET"))
                 {
                     effects.Add(new Effect(name, startLine, i, textures));
-                    lbEffects.Items.Add($"{count}. {name}");
+                    lbEffects.Items.Add(name);
                     count++;
                     textures.Clear();
                 }
