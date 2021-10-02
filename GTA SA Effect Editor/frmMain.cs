@@ -59,7 +59,7 @@ namespace GTA_SA_Effect_Editor
                     effectsPath = "";
                     effects.Clear();
                     lbEffects.Items.Clear();
-                    lblCount.Text = "";
+                    labelCount.Text = "";
                     ResetSearchBlock();
                 }
             }
@@ -74,10 +74,10 @@ namespace GTA_SA_Effect_Editor
             OpenFileDialog ofd = new OpenFileDialog
             {
                 Multiselect = false,
-                Title = "Укажите путь к эффектам",
-                InitialDirectory = lastDirectory
+                Title = "Укажите путь к файлу эффектов",
+                InitialDirectory = lastDirectory,
+                Filter = "Текстовый файл (*.txt, *.fxp, *.fxs)|*.TXT;*.FXP;*.FXS"
             };
-            ofd.Filter = "Текстовый файл(*.TXT;*.FXP;*.FXS)|*.TXT;*.FXP;*.FXS";
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 lastDirectory = ofd.FileName;
@@ -94,6 +94,8 @@ namespace GTA_SA_Effect_Editor
             {
                 if (tbFind.Text != "Название текстуры" && tbFind.Text != "" && lbEffects.Items.Count > 0)
                 {
+                    pnlTextures.Visible = false;
+                    HideEditBlock();
                     lbEffects.Items.Clear();
                     foundEffects.Clear();
 
@@ -110,20 +112,22 @@ namespace GTA_SA_Effect_Editor
                         }
                     }
 
-                    lblCount.Text = $"Всего эффектов: {foundEffects.Count}";
+                    labelCount.Text = $"Всего эффектов: {foundEffects.Count}";
                     btnFind.Text = "Сброс";
                 }
             }
             else
             {
+                pnlTextures.Visible = false;
+                HideEditBlock();
                 ResetSearchBlock();
-                lblDescription.Text = "";
+                lbEffects.Items.Clear();
                 lbEffects.Items.Clear();
                 foreach (var effect in effects)
                 {
                     lbEffects.Items.Add(effect.Name);
                 }
-                lblCount.Text = $"Всего эффектов: {effects.Count}";
+                labelCount.Text = $"Всего эффектов: {effects.Count}";
             }
         }
 
@@ -131,11 +135,13 @@ namespace GTA_SA_Effect_Editor
         {
             Enabled = false;
 
-            lblDescription.Text = "";
+            pnlTextures.Visible = false;
+            HideEditBlock();
 
             int index = lbEffects.SelectedIndex;
             lbEffects.Items.RemoveAt(index);
-            effects.RemoveAt(index);
+            Effect effect = DefineEffect(index);
+            DeleteEffect(effect.ID);
             if (index == lbEffects.Items.Count)
             {
                 if (index != 0)
@@ -144,16 +150,16 @@ namespace GTA_SA_Effect_Editor
             else
                 lbEffects.SelectedIndex = index;
 
-            lblCount.Text = $"Всего эффектов: {effects.Count}";
+            labelCount.Text = $"Всего эффектов: {effects.Count}";
 
             FileStream fs = new FileStream(effectsPath, FileMode.Create);
             using (StreamWriter sw = new StreamWriter(fs, Encoding.GetEncoding(1251)))
             {
                 sw.WriteLine("FX_PROJECT_DATA:");
                 sw.WriteLine();
-                foreach (var effect in effects)
+                foreach (var efct in effects)
                 {
-                    foreach (var line in effect.Lines)
+                    foreach (var line in efct.Lines)
                     {
                         sw.WriteLine(line);
                     }
@@ -174,10 +180,10 @@ namespace GTA_SA_Effect_Editor
             OpenFileDialog ofd = new OpenFileDialog
             {
                 Multiselect = false,
-                Title = "Укажите путь к эффектам",
-                InitialDirectory = lastDirectory
+                Title = "Укажите путь к файлу эффектов",
+                InitialDirectory = lastDirectory,
+                Filter = "Текстовый файл (*.txt, *.fxp, *.fxs)|*.TXT;*.FXP;*.FXS"
             };
-            ofd.Filter = "Текстовый файл(*.TXT;*.FXP;*.FXS)|*.TXT;*.FXP;*.FXS";
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 lastDirectory = ofd.FileName;
@@ -187,6 +193,8 @@ namespace GTA_SA_Effect_Editor
 
                 // Поиск эффекта в другом файле
                 int startLine = 0, endLine = 0, selectedIndex = lbEffects.SelectedIndex;
+                Effect effect = DefineEffect(selectedIndex);
+
                 bool isFound = false;
                 for (int i = otherEffectsFile.Count - 1; i >= 0; i--)
                 {
@@ -197,7 +205,7 @@ namespace GTA_SA_Effect_Editor
                         int startIndex = otherEffectsFile[i].LastIndexOf('/') + 1;
                         int endIndex = otherEffectsFile[i].IndexOf('.');
                         string name = otherEffectsFile[i].Substring(startIndex, endIndex - startIndex);
-                        if (name == effects[selectedIndex].Name)
+                        if (name == effect.Name)
                             isFound = true;
                     }
                     if (otherEffectsFile[i].Contains("FX_SYSTEM_DATA"))
@@ -229,7 +237,7 @@ namespace GTA_SA_Effect_Editor
                             }
                             else
                             {
-                                foreach (var line in effects[selectedIndex].Lines)
+                                foreach (var line in effect.Lines)
                                 {
                                     sw.WriteLine(line);
                                 }
@@ -250,7 +258,7 @@ namespace GTA_SA_Effect_Editor
                         {
                             if (otherEffectsFile[i].Contains("FX_PROJECT_DATA_END"))
                             {
-                                foreach (var line in effects[selectedIndex].Lines)
+                                foreach (var line in effect.Lines)
                                 {
                                     sw.WriteLine(line);
                                 }
@@ -267,7 +275,7 @@ namespace GTA_SA_Effect_Editor
                         if (!isFound)
                         {
                             sw.WriteLine();
-                            foreach (var line in effects[selectedIndex].Lines)
+                            foreach (var line in effect.Lines)
                             {
                                 sw.WriteLine(line);
                             }
@@ -278,37 +286,106 @@ namespace GTA_SA_Effect_Editor
 
             Enabled = true;
         }
+
+        private void BtnExport_Click(object sender, EventArgs e)
+        {
+            Enabled = false;
+
+            if (lastDirectory == "")
+                lastDirectory = @"C:\";
+            SaveFileDialog sfd = new SaveFileDialog
+            {
+                Title = "Экспорт эффекта",
+                InitialDirectory = lastDirectory,
+                Filter = "Эффект (*.fxs)|*.fxs|Контейнер эффектов (*.fxp)|*.fxp|Текстовый файл (*.txt)|*.txt",
+                AddExtension = true,
+                FileName = "Новый эффект"
+            };
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                lastDirectory = sfd.FileName;
+                FileStream fs = new FileStream(sfd.FileName, FileMode.Create);
+                using (StreamWriter sw = new StreamWriter(fs, Encoding.GetEncoding(1251)))
+                {
+                    Effect effect = DefineEffect(lbEffects.SelectedIndex);
+                    foreach (var line in effect.Lines)
+                    {
+                        sw.WriteLine(line);
+                    }
+                }
+            }
+
+            Enabled = true;
+        }
+
+        private void BtnEdit_Click(object sender, EventArgs e)
+        {
+            if (tbEdit.Text != "")
+            {
+                Effect effect = DefineEffect(lbEffects.SelectedIndex);
+                lbTextures.Items[lbTextures.SelectedIndex] = $"{labelTexture.Text} {tbEdit.Text}";
+
+                int textureIndex = 0, selectedIndex = lbTextures.SelectedIndex;
+                for (int j = 0; j < effect.Lines.Count; j++)
+                {
+                    if (effect.Textures[textureIndex] == effect.Lines[j])
+                    {
+                        effect.Lines[j] = lbTextures.Items[textureIndex].ToString();
+                        textureIndex++;
+                        if (textureIndex == effect.Textures.Count)
+                            break;
+                    }
+                }
+                effect.Textures[selectedIndex] = $"{labelTexture.Text} {tbEdit.Text}";
+
+                WriteEffectsFile(effectsPath);
+            }
+        }
         #endregion
 
+        #region ListBoxes
         private void LbEffects_SelectedIndexChanged(object sender, EventArgs e)
         {
-            lblDescription.Text = "";
+            lbTextures.Items.Clear();
             if (lbEffects.SelectedIndex == -1)
             {
-                btnDelete.Visible = false;
-                btnImport.Visible = false;
+                pnlTextures.Visible = false;
             }
             else
             {
-                btnDelete.Visible = true;
-                btnImport.Visible = true;
+                lbTextures.Items.Clear();
+                pnlTextures.Visible = true;
 
                 if (btnFind.Text == "Поиск")
                 {
                     foreach (var texture in effects[lbEffects.SelectedIndex].Textures)
                     {
-                        lblDescription.Text += texture + '\n';
+                        lbTextures.Items.Add(texture);
                     }
                 }
                 else
                 {
                     foreach (var texture in foundEffects[lbEffects.SelectedIndex].Textures)
                     {
-                        lblDescription.Text += texture + '\n';
+                        lbTextures.Items.Add(texture);
                     }
                 }
             }
         }
+
+        private void LbTextures_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (lbTextures.SelectedIndex != -1)
+            {
+                labelTexture.Text = lbTextures.Items[lbTextures.SelectedIndex].ToString().Split(' ')[0];
+                tbEdit.Text = lbTextures.SelectedItem.ToString().Split(' ')[1];
+
+                labelTexture.Visible = true;
+                tbEdit.Visible = true;
+                btnEdit.Visible = true;
+            }
+        }
+        #endregion
 
         #endregion
 
@@ -379,7 +456,7 @@ namespace GTA_SA_Effect_Editor
                     textures.Clear();
                 }
             }
-            lblCount.Text = $"Всего эффектов: {effects.Count}";
+            labelCount.Text = $"Всего эффектов: {effects.Count}";
         }
         private void UpdatePath()
         {
@@ -392,6 +469,12 @@ namespace GTA_SA_Effect_Editor
             tbFind.ForeColor = SystemColors.ControlDark;
             btnFind.Text = "Поиск";
         }
+        private void HideEditBlock()
+        {
+            labelTexture.Visible = false;
+            tbEdit.Visible = false;
+            btnEdit.Visible = false;
+        }
         private List<string> ReadEffectsFile(string path)
         {
             List<string> effects_fxp = new List<string>();
@@ -403,6 +486,38 @@ namespace GTA_SA_Effect_Editor
                 }
             }
             return effects_fxp;
+        }
+        private void WriteEffectsFile(string path)
+        {
+            FileStream fs = new FileStream(path, FileMode.Create);
+            using (StreamWriter sw = new StreamWriter(fs, Encoding.GetEncoding(1251)))
+            {
+                sw.WriteLine("FX_PROJECT_DATA:");
+                sw.WriteLine();
+                foreach (var effect in effects)
+                {
+                    foreach (var line in effect.Lines)
+                    {
+                        sw.WriteLine(line);
+                    }
+                    sw.WriteLine();
+                }
+                sw.WriteLine("FX_PROJECT_DATA_END:");
+            }
+        }
+        private void DeleteEffect(int id)
+        {
+            foundEffects.Remove(effects.First(x => x.ID == id));
+            effects.Remove(effects.First(x => x.ID == id));
+        }
+        private Effect DefineEffect(int selectedIndex)
+        {
+            Effect effect = new Effect();
+            if (btnFind.Text == "Поиск")
+                effect = effects[selectedIndex];
+            else
+                effect = foundEffects[selectedIndex];
+            return effect;
         }
     }
 }

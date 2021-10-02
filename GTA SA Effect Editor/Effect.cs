@@ -10,6 +10,12 @@ namespace GTA_SA_Effect_Editor
         public List<string> Lines { get; set; } = new List<string>();
         public string Name { get => _name; }
         public List<string> Textures { get => _textures; }
+        public int ID { get; }
+
+        public Effect()
+        {
+
+        }
 
         public Effect(string name, int startLine, int endLine, List<string> textures, List<string> effectsFXP)
         {
@@ -24,6 +30,11 @@ namespace GTA_SA_Effect_Editor
             {
                 Lines.Add(effectsFXP[i]);
             }
+
+            ID = s_id;
+            s_id++;
         }
+
+        private static int s_id = 0;
     }
 }
