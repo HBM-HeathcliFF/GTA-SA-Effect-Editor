@@ -44,8 +44,8 @@ namespace yt_DesignUI
                 {
                     AnimationList[index].UpdateFrame();
                 });
-
                 Thread.Sleep((int)Interval);
+
             }
         }
 

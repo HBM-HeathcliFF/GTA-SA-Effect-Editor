@@ -28,7 +28,7 @@ namespace GTA_SA_Effect_Editor
 
         #region Variables
         string effectsPath = "", lastDirectory = "";
-        List<string> effectsFXP = new List<string>();
+        List<string> effectsFile = new List<string>();
         List<Effect> effects = new List<Effect>();
         List<Effect> foundEffects = new List<Effect>();
         #endregion
@@ -47,15 +47,21 @@ namespace GTA_SA_Effect_Editor
 
         private void EgtbPath_TextChanged(object sender, EventArgs e)
         {
-            if (File.Exists(effectsPath))
-                UpdateList();
-            else
+            if (effectsPath.EndsWith(".txt") || effectsPath.EndsWith(".fxp") || effectsPath.EndsWith(".fxs"))
             {
-                effectsPath = "";
-                effects.Clear();
-                lbEffects.Items.Clear();
-                lblCount.Text = "";
-                ResetSearchBlock();
+                if (File.Exists(effectsPath))
+                {
+                    UpdatePath();
+                    UpdateEffectList();
+                }
+                else
+                {
+                    effectsPath = "";
+                    effects.Clear();
+                    lbEffects.Items.Clear();
+                    lblCount.Text = "";
+                    ResetSearchBlock();
+                }
             }
         }
         #endregion
@@ -68,15 +74,17 @@ namespace GTA_SA_Effect_Editor
             OpenFileDialog ofd = new OpenFileDialog
             {
                 Multiselect = false,
-                Title = "Укажите путь к effects.fxp",
+                Title = "Укажите путь к эффектам",
                 InitialDirectory = lastDirectory
             };
-            ofd.Filter = "effects.fxp|effects.fxp";
+            ofd.Filter = "Текстовый файл(*.TXT;*.FXP;*.FXS)|*.TXT;*.FXP;*.FXS";
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 lastDirectory = ofd.FileName;
                 egtbPath.Text = ofd.FileName;
-                UpdateList();
+
+                UpdatePath();
+                UpdateEffectList();
             }
         }
 
@@ -108,15 +116,14 @@ namespace GTA_SA_Effect_Editor
             }
             else
             {
+                ResetSearchBlock();
                 lblDescription.Text = "";
                 lbEffects.Items.Clear();
                 foreach (var effect in effects)
                 {
                     lbEffects.Items.Add(effect.Name);
                 }
-
-                ResetSearchBlock();
-                UpdateList();
+                lblCount.Text = $"Всего эффектов: {effects.Count}";
             }
         }
 
@@ -124,29 +131,38 @@ namespace GTA_SA_Effect_Editor
         {
             Enabled = false;
 
-            int startLine = effects[lbEffects.SelectedIndex].StartLine;
-            int endLine = effects[lbEffects.SelectedIndex].EndLine;
+            lblDescription.Text = "";
+
+            int index = lbEffects.SelectedIndex;
+            lbEffects.Items.RemoveAt(index);
+            effects.RemoveAt(index);
+            if (index == lbEffects.Items.Count)
+            {
+                if (index != 0)
+                    lbEffects.SelectedIndex = index - 1;
+            }
+            else
+                lbEffects.SelectedIndex = index;
+
+            lblCount.Text = $"Всего эффектов: {effects.Count}";
 
             FileStream fs = new FileStream(effectsPath, FileMode.Create);
             using (StreamWriter sw = new StreamWriter(fs, Encoding.GetEncoding(1251)))
             {
-                string line = "";
-                for (int i = 0; i < effectsFXP.Count; i++)
+                sw.WriteLine("FX_PROJECT_DATA:");
+                sw.WriteLine();
+                foreach (var effect in effects)
                 {
-                    if (i == startLine)
-                        i = endLine + 1;
-                    else
+                    foreach (var line in effect.Lines)
                     {
-                        line = effectsFXP[i];
                         sw.WriteLine(line);
                     }
+                    sw.WriteLine();
                 }
+                sw.WriteLine("FX_PROJECT_DATA_END:");
             }
 
-            lblDescription.Text = "";
-            UpdateList();
             Enabled = true;
-            new frmMessage().ShowDialog();
         }
 
         private void BtnImport_Click(object sender, EventArgs e)
@@ -158,35 +174,33 @@ namespace GTA_SA_Effect_Editor
             OpenFileDialog ofd = new OpenFileDialog
             {
                 Multiselect = false,
-                Title = "Укажите путь к effects.fxp",
+                Title = "Укажите путь к эффектам",
                 InitialDirectory = lastDirectory
             };
-            ofd.Filter = "effects.fxp|effects.fxp";
+            ofd.Filter = "Текстовый файл(*.TXT;*.FXP;*.FXS)|*.TXT;*.FXP;*.FXS";
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 lastDirectory = ofd.FileName;
-                effectsPath = ofd.FileName;
+                string otherEffectsPath = ofd.FileName;
 
-                int selectedIndex = lbEffects.SelectedIndex;
+                List<string> otherEffectsFile = ReadEffectsFile(otherEffectsPath);
 
-                List<string> otherEffectsFXP = new List<string>();
-                ReadEffectsFXP(ref otherEffectsFXP);
-
-                int startLine = 0, endLine = 0;
+                // Поиск эффекта в другом файле
+                int startLine = 0, endLine = 0, selectedIndex = lbEffects.SelectedIndex;
                 bool isFound = false;
-                for (int i = otherEffectsFXP.Count - 1; i >= 0; i--)
+                for (int i = otherEffectsFile.Count - 1; i >= 0; i--)
                 {
-                    if (otherEffectsFXP[i].Contains("TXDNAME: NOTXDSET"))
+                    if (otherEffectsFile[i].Contains("TXDNAME: NOTXDSET"))
                         endLine = i;
-                    if (otherEffectsFXP[i].Contains("FILENAME"))
+                    if (otherEffectsFile[i].Contains("FILENAME"))
                     {
-                        int startIndex = otherEffectsFXP[i].LastIndexOf('/') + 1;
-                        int endIndex = otherEffectsFXP[i].IndexOf('.');
-                        string name = otherEffectsFXP[i].Substring(startIndex, endIndex - startIndex);
+                        int startIndex = otherEffectsFile[i].LastIndexOf('/') + 1;
+                        int endIndex = otherEffectsFile[i].IndexOf('.');
+                        string name = otherEffectsFile[i].Substring(startIndex, endIndex - startIndex);
                         if (name == effects[selectedIndex].Name)
                             isFound = true;
                     }
-                    if (otherEffectsFXP[i].Contains("FX_SYSTEM_DATA"))
+                    if (otherEffectsFile[i].Contains("FX_SYSTEM_DATA"))
                     {
                         if (isFound)
                         {
@@ -196,42 +210,70 @@ namespace GTA_SA_Effect_Editor
                     }
                 }
 
-                isFound = false;
-                FileStream fs = new FileStream(effectsPath, FileMode.Create);
-                using (StreamWriter sw = new StreamWriter(fs, Encoding.GetEncoding(1251)))
+                // Если он есть, то заменяем его
+                if (isFound)
                 {
-                    string line = "";
-                    for (int i = 0; i < otherEffectsFXP.Count; i++)
+                    isFound = false;
+                    FileStream fs = new FileStream(otherEffectsPath, FileMode.Create);
+                    using (StreamWriter sw = new StreamWriter(fs, Encoding.GetEncoding(1251)))
                     {
-                        if (!isFound)
+                        if (startLine == 0)
+                            isFound = true;
+                        for (int i = 0; i < otherEffectsFile.Count; i++)
                         {
-                            if (i == startLine - 1)
+                            if (!isFound)
                             {
-                                line = otherEffectsFXP[i];
-                                sw.WriteLine(line);
-                                isFound = true;
+                                sw.WriteLine(otherEffectsFile[i]);
+                                if (i == startLine - 1)
+                                    isFound = true;
                             }
                             else
                             {
-                                line = otherEffectsFXP[i];
-                                sw.WriteLine(line);
+                                foreach (var line in effects[selectedIndex].Lines)
+                                {
+                                    sw.WriteLine(line);
+                                }
+                                i = endLine;
+                                isFound = false;
                             }
-                        }
-                        else
-                        {
-                            for (int j = effects[selectedIndex].StartLine; j < effects[selectedIndex].EndLine + 1; j++)
-                            {
-                                line = effectsFXP[j];
-                                sw.WriteLine(line);
-                            }
-                            i = endLine;
-                            isFound = false;
                         }
                     }
                 }
 
-                effectsPath = egtbPath.Text;
-                new frmMessage().ShowDialog();
+                // Если нет, то вставляем эффект в конец файла перед FX_PROJECT_DATA_END:
+                else
+                {
+                    FileStream fs = new FileStream(otherEffectsPath, FileMode.Create);
+                    using (StreamWriter sw = new StreamWriter(fs, Encoding.GetEncoding(1251)))
+                    {
+                        for (int i = 0; i < otherEffectsFile.Count; i++)
+                        {
+                            if (otherEffectsFile[i].Contains("FX_PROJECT_DATA_END"))
+                            {
+                                foreach (var line in effects[selectedIndex].Lines)
+                                {
+                                    sw.WriteLine(line);
+                                }
+                                sw.WriteLine();
+                                sw.WriteLine("FX_PROJECT_DATA_END:");
+                                isFound = true;
+                                break;
+                            }
+                            else
+                                sw.WriteLine(otherEffectsFile[i]);
+                        }
+
+                        // Если нет FX_PROJECT_DATA_END:, то вписываем эффект в конец файла
+                        if (!isFound)
+                        {
+                            sw.WriteLine();
+                            foreach (var line in effects[selectedIndex].Lines)
+                            {
+                                sw.WriteLine(line);
+                            }
+                        }
+                    }
+                }
             }
 
             Enabled = true;
@@ -240,22 +282,30 @@ namespace GTA_SA_Effect_Editor
 
         private void LbEffects_SelectedIndexChanged(object sender, EventArgs e)
         {
-            btnDelete.Visible = true;
-            btnImport.Visible = true;
-
             lblDescription.Text = "";
-            if (btnFind.Text == "Поиск")
+            if (lbEffects.SelectedIndex == -1)
             {
-                foreach (var texture in effects[lbEffects.SelectedIndex].Textures)
-                {
-                    lblDescription.Text += texture + '\n';
-                }
+                btnDelete.Visible = false;
+                btnImport.Visible = false;
             }
             else
             {
-                foreach (var texture in foundEffects[lbEffects.SelectedIndex].Textures)
+                btnDelete.Visible = true;
+                btnImport.Visible = true;
+
+                if (btnFind.Text == "Поиск")
                 {
-                    lblDescription.Text += texture + '\n';
+                    foreach (var texture in effects[lbEffects.SelectedIndex].Textures)
+                    {
+                        lblDescription.Text += texture + '\n';
+                    }
+                }
+                else
+                {
+                    foreach (var texture in foundEffects[lbEffects.SelectedIndex].Textures)
+                    {
+                        lblDescription.Text += texture + '\n';
+                    }
                 }
             }
         }
@@ -274,13 +324,13 @@ namespace GTA_SA_Effect_Editor
                 using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\GTA SA Effect Editor"))
                 {
                     egtbPath.Text = key.GetValue("path").ToString();
-                    UpdateList();
+                    effectsPath = egtbPath.Text;
+                    UpdateEffectList();
                 }
             }
             catch (Exception) { }
         }
 
-        /// <summary>Protection against restarting the application with the subsequent activation of an existing window</summary>
         private void ForbidMultipleLaunches()
         {
             Process this_process = Process.GetCurrentProcess();
@@ -299,35 +349,31 @@ namespace GTA_SA_Effect_Editor
                 Environment.Exit(0);
             }
         }
-        /// <summary>Re-read effects.fxp and update list and effects count</summary>
-        private void UpdateList()
+        private void UpdateEffectList()
         {
-            effectsPath = egtbPath.Text;
-            ReadEffectsFXP(ref effectsFXP);
-            Registry.CurrentUser.CreateSubKey(@"Software\GTA SA Effect Editor").SetValue("path", effectsPath);
-
-            string name = "";
-            int startLine = 0, count = 1;
+            effectsFile = ReadEffectsFile(effectsPath);
 
             effects.Clear();
             lbEffects.Items.Clear();
             List<string> textures = new List<string>();
 
-            for (int i = 0; i < effectsFXP.Count; i++)
+            string name = "";
+            int startLine = 0, count = 1;
+            for (int i = 0; i < effectsFile.Count; i++)
             {
-                if (effectsFXP[i].Contains("FX_SYSTEM_DATA"))
+                if (effectsFile[i].Contains("FX_SYSTEM_DATA"))
                     startLine = i;
-                if (effectsFXP[i].Contains("FILENAME"))
+                if (effectsFile[i].Contains("FILENAME"))
                 {
-                    int startIndex = effectsFXP[i].LastIndexOf('/') + 1;
-                    int endIndex = effectsFXP[i].IndexOf('.');
-                    name = effectsFXP[i].Substring(startIndex, endIndex - startIndex);
+                    int startIndex = effectsFile[i].LastIndexOf('/') + 1;
+                    int endIndex = effectsFile[i].IndexOf('.');
+                    name = effectsFile[i].Substring(startIndex, endIndex - startIndex);
                 }
-                if (effectsFXP[i].StartsWith("TEXTURE"))
-                    textures.Add(effectsFXP[i]);
-                if (effectsFXP[i].Contains("TXDNAME: NOTXDSET"))
+                if (effectsFile[i].StartsWith("TEXTURE"))
+                    textures.Add(effectsFile[i]);
+                if (effectsFile[i].Contains("TXDNAME: NOTXDSET"))
                 {
-                    effects.Add(new Effect(name, startLine, i, textures));
+                    effects.Add(new Effect(name, startLine, i, textures, effectsFile));
                     lbEffects.Items.Add(name);
                     count++;
                     textures.Clear();
@@ -335,22 +381,28 @@ namespace GTA_SA_Effect_Editor
             }
             lblCount.Text = $"Всего эффектов: {effects.Count}";
         }
+        private void UpdatePath()
+        {
+            effectsPath = egtbPath.Text;
+            Registry.CurrentUser.CreateSubKey(@"Software\GTA SA Effect Editor").SetValue("path", effectsPath);
+        }
         private void ResetSearchBlock()
         {
             tbFind.Text = "Название текстуры";
             tbFind.ForeColor = SystemColors.ControlDark;
             btnFind.Text = "Поиск";
         }
-        private void ReadEffectsFXP(ref List<string> effects_fxp)
+        private List<string> ReadEffectsFile(string path)
         {
-            effects_fxp.Clear();
-            using (StreamReader sr = new StreamReader(effectsPath))
+            List<string> effects_fxp = new List<string>();
+            using (StreamReader sr = new StreamReader(path))
             {
                 while (!sr.EndOfStream)
                 {
                     effects_fxp.Add(sr.ReadLine());
                 }
             }
+            return effects_fxp;
         }
     }
 }

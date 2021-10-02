@@ -82,7 +82,7 @@ namespace GTA_SA_Effect_Editor
             this.egtbPath.Size = new System.Drawing.Size(459, 40);
             this.egtbPath.TabIndex = 0;
             this.egtbPath.TextInput = "";
-            this.egtbPath.TextPreview = "Путь к effects.fxp";
+            this.egtbPath.TextPreview = "Путь к эффектам";
             this.egtbPath.UseSystemPasswordChar = false;
             this.egtbPath.TextChanged += new System.EventHandler(this.EgtbPath_TextChanged);
             // 
