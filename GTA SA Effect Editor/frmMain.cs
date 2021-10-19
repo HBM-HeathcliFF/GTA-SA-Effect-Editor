@@ -421,24 +421,6 @@ namespace GTA_SA_Effect_Editor
             }
             return effects_fxp;
         }
-        private void WriteEffectsFile(string path)
-        {
-            FileStream fs = new FileStream(path, FileMode.Create);
-            using (StreamWriter sw = new StreamWriter(fs, Encoding.GetEncoding(1251)))
-            {
-                sw.WriteLine("FX_PROJECT_DATA:");
-                sw.WriteLine();
-                foreach (var effect in effects)
-                {
-                    foreach (var line in effect.Lines)
-                    {
-                        sw.WriteLine(line);
-                    }
-                    sw.WriteLine();
-                }
-                sw.WriteLine("FX_PROJECT_DATA_END:");
-            }
-        }
         private void DeleteEffect(int id)
         {
             foundEffects.Remove(effects.First(x => x.ID == id));
