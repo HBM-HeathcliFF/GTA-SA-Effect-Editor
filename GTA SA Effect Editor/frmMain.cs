@@ -474,6 +474,7 @@ namespace GTA_SA_Effect_Editor
             labelTexture.Visible = false;
             tbEdit.Visible = false;
             btnEdit.Visible = false;
+            //h
         }
         private List<string> ReadEffectsFile(string path)
         {
