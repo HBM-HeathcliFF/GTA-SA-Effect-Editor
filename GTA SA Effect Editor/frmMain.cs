@@ -94,8 +94,7 @@ namespace GTA_SA_Effect_Editor
             {
                 if (tbFind.Text != "Название текстуры" && tbFind.Text != "" && lbEffects.Items.Count > 0)
                 {
-                    pnlTextures.Visible = false;
-                    HideEditBlock();
+                    pnlButtons.Visible = false;
                     lbEffects.Items.Clear();
                     foundEffects.Clear();
 
@@ -118,8 +117,7 @@ namespace GTA_SA_Effect_Editor
             }
             else
             {
-                pnlTextures.Visible = false;
-                HideEditBlock();
+                pnlButtons.Visible = false;
                 ResetSearchBlock();
                 lbEffects.Items.Clear();
                 lbEffects.Items.Clear();
@@ -135,8 +133,7 @@ namespace GTA_SA_Effect_Editor
         {
             Enabled = false;
 
-            pnlTextures.Visible = false;
-            HideEditBlock();
+            pnlButtons.Visible = false;
 
             int index = lbEffects.SelectedIndex;
             lbEffects.Items.RemoveAt(index);
@@ -317,72 +314,15 @@ namespace GTA_SA_Effect_Editor
 
             Enabled = true;
         }
-
-        private void BtnEdit_Click(object sender, EventArgs e)
-        {
-            if (tbEdit.Text != "")
-            {
-                Effect effect = DefineEffect(lbEffects.SelectedIndex);
-                lbTextures.Items[lbTextures.SelectedIndex] = $"{labelTexture.Text} {tbEdit.Text}";
-
-                int textureIndex = 0, selectedIndex = lbTextures.SelectedIndex;
-                for (int j = 0; j < effect.Lines.Count; j++)
-                {
-                    if (effect.Textures[textureIndex] == effect.Lines[j])
-                    {
-                        effect.Lines[j] = lbTextures.Items[textureIndex].ToString();
-                        textureIndex++;
-                        if (textureIndex == effect.Textures.Count)
-                            break;
-                    }
-                }
-                effect.Textures[selectedIndex] = $"{labelTexture.Text} {tbEdit.Text}";
-
-                WriteEffectsFile(effectsPath);
-            }
-        }
         #endregion
 
         #region ListBoxes
         private void LbEffects_SelectedIndexChanged(object sender, EventArgs e)
         {
-            lbTextures.Items.Clear();
-            if (lbEffects.SelectedIndex == -1)
+            if (lbEffects.SelectedIndex != -1)
             {
-                pnlTextures.Visible = false;
-            }
-            else
-            {
-                lbTextures.Items.Clear();
-                pnlTextures.Visible = true;
-
-                if (btnFind.Text == "Поиск")
-                {
-                    foreach (var texture in effects[lbEffects.SelectedIndex].Textures)
-                    {
-                        lbTextures.Items.Add(texture);
-                    }
-                }
-                else
-                {
-                    foreach (var texture in foundEffects[lbEffects.SelectedIndex].Textures)
-                    {
-                        lbTextures.Items.Add(texture);
-                    }
-                }
-            }
-        }
-
-        private void LbTextures_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (lbTextures.SelectedIndex != -1)
-            {
-                labelTexture.Text = lbTextures.Items[lbTextures.SelectedIndex].ToString().Split(' ')[0];
-                tbEdit.Text = lbTextures.SelectedItem.ToString().Split(' ')[1];
-
-                labelTexture.Visible = true;
-                tbEdit.Visible = true;
-                btnEdit.Visible = true;
+                pnlButtons.Visible = true;
+                //
             }
         }
         #endregion
@@ -468,13 +408,6 @@ namespace GTA_SA_Effect_Editor
             tbFind.Text = "Название текстуры";
             tbFind.ForeColor = SystemColors.ControlDark;
             btnFind.Text = "Поиск";
-        }
-        private void HideEditBlock()
-        {
-            labelTexture.Visible = false;
-            tbEdit.Visible = false;
-            btnEdit.Visible = false;
-            //h
         }
         private List<string> ReadEffectsFile(string path)
         {

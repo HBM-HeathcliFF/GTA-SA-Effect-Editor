@@ -35,21 +35,17 @@ namespace GTA_SA_Effect_Editor
             this.egtbPath = new yt_DesignUI.EgoldsGoogleTextBox();
             this.btnBrowse = new yt_DesignUI.yt_Button();
             this.gbEffects = new System.Windows.Forms.GroupBox();
+            this.pnlButtons = new System.Windows.Forms.Panel();
+            this.btnImport = new yt_DesignUI.yt_Button();
+            this.btnExport = new yt_DesignUI.yt_Button();
+            this.btnDelete = new yt_DesignUI.yt_Button();
             this.labelCount = new System.Windows.Forms.Label();
             this.tbFind = new System.Windows.Forms.TextBox();
             this.btnFind = new yt_DesignUI.yt_Button();
-            this.btnImport = new yt_DesignUI.yt_Button();
-            this.btnDelete = new yt_DesignUI.yt_Button();
             this.label1 = new System.Windows.Forms.Label();
             this.lbEffects = new System.Windows.Forms.ListBox();
-            this.btnExport = new yt_DesignUI.yt_Button();
-            this.lbTextures = new System.Windows.Forms.ListBox();
-            this.labelTexture = new System.Windows.Forms.Label();
-            this.tbEdit = new System.Windows.Forms.TextBox();
-            this.btnEdit = new yt_DesignUI.yt_Button();
-            this.pnlTextures = new System.Windows.Forms.Panel();
             this.gbEffects.SuspendLayout();
-            this.pnlTextures.SuspendLayout();
+            this.pnlButtons.SuspendLayout();
             this.SuspendLayout();
             // 
             // egoldsFormStyle1
@@ -118,7 +114,7 @@ namespace GTA_SA_Effect_Editor
             // 
             // gbEffects
             // 
-            this.gbEffects.Controls.Add(this.pnlTextures);
+            this.gbEffects.Controls.Add(this.pnlButtons);
             this.gbEffects.Controls.Add(this.labelCount);
             this.gbEffects.Controls.Add(this.tbFind);
             this.gbEffects.Controls.Add(this.btnFind);
@@ -132,6 +128,95 @@ namespace GTA_SA_Effect_Editor
             this.gbEffects.TabIndex = 2;
             this.gbEffects.TabStop = false;
             this.gbEffects.Text = "Эффекты";
+            // 
+            // pnlButtons
+            // 
+            this.pnlButtons.Controls.Add(this.btnImport);
+            this.pnlButtons.Controls.Add(this.btnExport);
+            this.pnlButtons.Controls.Add(this.btnDelete);
+            this.pnlButtons.Location = new System.Drawing.Point(204, 269);
+            this.pnlButtons.Name = "pnlButtons";
+            this.pnlButtons.Size = new System.Drawing.Size(368, 41);
+            this.pnlButtons.TabIndex = 12;
+            this.pnlButtons.Visible = false;
+            // 
+            // btnImport
+            // 
+            this.btnImport.BackColor = System.Drawing.Color.DarkCyan;
+            this.btnImport.BackColorAdditional = System.Drawing.Color.Gray;
+            this.btnImport.BackColorGradientEnabled = false;
+            this.btnImport.BackColorGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
+            this.btnImport.BorderColor = System.Drawing.Color.Teal;
+            this.btnImport.BorderColorEnabled = false;
+            this.btnImport.BorderColorOnHover = System.Drawing.Color.Teal;
+            this.btnImport.BorderColorOnHoverEnabled = false;
+            this.btnImport.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnImport.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnImport.ForeColor = System.Drawing.Color.White;
+            this.btnImport.Location = new System.Drawing.Point(84, 3);
+            this.btnImport.Name = "btnImport";
+            this.btnImport.RippleColor = System.Drawing.Color.Black;
+            this.btnImport.RoundingEnable = true;
+            this.btnImport.Size = new System.Drawing.Size(155, 34);
+            this.btnImport.TabIndex = 4;
+            this.btnImport.Text = "Импортировать в ...";
+            this.btnImport.TextHover = null;
+            this.btnImport.UseDownPressEffectOnClick = false;
+            this.btnImport.UseRippleEffect = true;
+            this.btnImport.UseZoomEffectOnHover = false;
+            this.btnImport.Click += new System.EventHandler(this.BtnImport_Click);
+            // 
+            // btnExport
+            // 
+            this.btnExport.BackColor = System.Drawing.Color.DarkCyan;
+            this.btnExport.BackColorAdditional = System.Drawing.Color.Gray;
+            this.btnExport.BackColorGradientEnabled = false;
+            this.btnExport.BackColorGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
+            this.btnExport.BorderColor = System.Drawing.Color.Teal;
+            this.btnExport.BorderColorEnabled = false;
+            this.btnExport.BorderColorOnHover = System.Drawing.Color.Teal;
+            this.btnExport.BorderColorOnHoverEnabled = false;
+            this.btnExport.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnExport.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnExport.ForeColor = System.Drawing.Color.White;
+            this.btnExport.Location = new System.Drawing.Point(245, 3);
+            this.btnExport.Name = "btnExport";
+            this.btnExport.RippleColor = System.Drawing.Color.Black;
+            this.btnExport.RoundingEnable = true;
+            this.btnExport.Size = new System.Drawing.Size(123, 34);
+            this.btnExport.TabIndex = 6;
+            this.btnExport.Text = "Экспортировать";
+            this.btnExport.TextHover = null;
+            this.btnExport.UseDownPressEffectOnClick = false;
+            this.btnExport.UseRippleEffect = true;
+            this.btnExport.UseZoomEffectOnHover = false;
+            this.btnExport.Click += new System.EventHandler(this.BtnExport_Click);
+            // 
+            // btnDelete
+            // 
+            this.btnDelete.BackColor = System.Drawing.Color.DarkCyan;
+            this.btnDelete.BackColorAdditional = System.Drawing.Color.Gray;
+            this.btnDelete.BackColorGradientEnabled = false;
+            this.btnDelete.BackColorGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
+            this.btnDelete.BorderColor = System.Drawing.Color.Teal;
+            this.btnDelete.BorderColorEnabled = false;
+            this.btnDelete.BorderColorOnHover = System.Drawing.Color.Teal;
+            this.btnDelete.BorderColorOnHoverEnabled = false;
+            this.btnDelete.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnDelete.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnDelete.ForeColor = System.Drawing.Color.White;
+            this.btnDelete.Location = new System.Drawing.Point(0, 3);
+            this.btnDelete.Name = "btnDelete";
+            this.btnDelete.RippleColor = System.Drawing.Color.Black;
+            this.btnDelete.RoundingEnable = true;
+            this.btnDelete.Size = new System.Drawing.Size(78, 34);
+            this.btnDelete.TabIndex = 2;
+            this.btnDelete.Text = "Удалить";
+            this.btnDelete.TextHover = null;
+            this.btnDelete.UseDownPressEffectOnClick = false;
+            this.btnDelete.UseRippleEffect = true;
+            this.btnDelete.UseZoomEffectOnHover = false;
+            this.btnDelete.Click += new System.EventHandler(this.BtnDelete_Click);
             // 
             // labelCount
             // 
@@ -181,58 +266,6 @@ namespace GTA_SA_Effect_Editor
             this.btnFind.UseZoomEffectOnHover = false;
             this.btnFind.Click += new System.EventHandler(this.BtnFind_Click);
             // 
-            // btnImport
-            // 
-            this.btnImport.BackColor = System.Drawing.Color.DarkCyan;
-            this.btnImport.BackColorAdditional = System.Drawing.Color.Gray;
-            this.btnImport.BackColorGradientEnabled = false;
-            this.btnImport.BackColorGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
-            this.btnImport.BorderColor = System.Drawing.Color.Teal;
-            this.btnImport.BorderColorEnabled = false;
-            this.btnImport.BorderColorOnHover = System.Drawing.Color.Teal;
-            this.btnImport.BorderColorOnHoverEnabled = false;
-            this.btnImport.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnImport.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btnImport.ForeColor = System.Drawing.Color.White;
-            this.btnImport.Location = new System.Drawing.Point(84, 250);
-            this.btnImport.Name = "btnImport";
-            this.btnImport.RippleColor = System.Drawing.Color.Black;
-            this.btnImport.RoundingEnable = true;
-            this.btnImport.Size = new System.Drawing.Size(155, 34);
-            this.btnImport.TabIndex = 4;
-            this.btnImport.Text = "Импортировать в ...";
-            this.btnImport.TextHover = null;
-            this.btnImport.UseDownPressEffectOnClick = false;
-            this.btnImport.UseRippleEffect = true;
-            this.btnImport.UseZoomEffectOnHover = false;
-            this.btnImport.Click += new System.EventHandler(this.BtnImport_Click);
-            // 
-            // btnDelete
-            // 
-            this.btnDelete.BackColor = System.Drawing.Color.DarkCyan;
-            this.btnDelete.BackColorAdditional = System.Drawing.Color.Gray;
-            this.btnDelete.BackColorGradientEnabled = false;
-            this.btnDelete.BackColorGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
-            this.btnDelete.BorderColor = System.Drawing.Color.Teal;
-            this.btnDelete.BorderColorEnabled = false;
-            this.btnDelete.BorderColorOnHover = System.Drawing.Color.Teal;
-            this.btnDelete.BorderColorOnHoverEnabled = false;
-            this.btnDelete.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnDelete.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btnDelete.ForeColor = System.Drawing.Color.White;
-            this.btnDelete.Location = new System.Drawing.Point(0, 250);
-            this.btnDelete.Name = "btnDelete";
-            this.btnDelete.RippleColor = System.Drawing.Color.Black;
-            this.btnDelete.RoundingEnable = true;
-            this.btnDelete.Size = new System.Drawing.Size(78, 34);
-            this.btnDelete.TabIndex = 2;
-            this.btnDelete.Text = "Удалить";
-            this.btnDelete.TextHover = null;
-            this.btnDelete.UseDownPressEffectOnClick = false;
-            this.btnDelete.UseRippleEffect = true;
-            this.btnDelete.UseZoomEffectOnHover = false;
-            this.btnDelete.Click += new System.EventHandler(this.BtnDelete_Click);
-            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -253,107 +286,6 @@ namespace GTA_SA_Effect_Editor
             this.lbEffects.TabIndex = 0;
             this.lbEffects.SelectedIndexChanged += new System.EventHandler(this.LbEffects_SelectedIndexChanged);
             // 
-            // btnExport
-            // 
-            this.btnExport.BackColor = System.Drawing.Color.DarkCyan;
-            this.btnExport.BackColorAdditional = System.Drawing.Color.Gray;
-            this.btnExport.BackColorGradientEnabled = false;
-            this.btnExport.BackColorGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
-            this.btnExport.BorderColor = System.Drawing.Color.Teal;
-            this.btnExport.BorderColorEnabled = false;
-            this.btnExport.BorderColorOnHover = System.Drawing.Color.Teal;
-            this.btnExport.BorderColorOnHoverEnabled = false;
-            this.btnExport.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnExport.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btnExport.ForeColor = System.Drawing.Color.White;
-            this.btnExport.Location = new System.Drawing.Point(245, 250);
-            this.btnExport.Name = "btnExport";
-            this.btnExport.RippleColor = System.Drawing.Color.Black;
-            this.btnExport.RoundingEnable = true;
-            this.btnExport.Size = new System.Drawing.Size(123, 34);
-            this.btnExport.TabIndex = 6;
-            this.btnExport.Text = "Экспортировать";
-            this.btnExport.TextHover = null;
-            this.btnExport.UseDownPressEffectOnClick = false;
-            this.btnExport.UseRippleEffect = true;
-            this.btnExport.UseZoomEffectOnHover = false;
-            this.btnExport.Click += new System.EventHandler(this.BtnExport_Click);
-            // 
-            // lbTextures
-            // 
-            this.lbTextures.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.lbTextures.FormattingEnabled = true;
-            this.lbTextures.ItemHeight = 15;
-            this.lbTextures.Location = new System.Drawing.Point(0, 0);
-            this.lbTextures.Name = "lbTextures";
-            this.lbTextures.Size = new System.Drawing.Size(152, 244);
-            this.lbTextures.TabIndex = 7;
-            this.lbTextures.SelectedIndexChanged += new System.EventHandler(this.LbTextures_SelectedIndexChanged);
-            // 
-            // labelTexture
-            // 
-            this.labelTexture.AutoSize = true;
-            this.labelTexture.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.labelTexture.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.labelTexture.Location = new System.Drawing.Point(154, -3);
-            this.labelTexture.Name = "labelTexture";
-            this.labelTexture.Size = new System.Drawing.Size(0, 16);
-            this.labelTexture.TabIndex = 8;
-            this.labelTexture.Visible = false;
-            // 
-            // tbEdit
-            // 
-            this.tbEdit.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbEdit.Font = new System.Drawing.Font("Arial Narrow", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tbEdit.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.tbEdit.Location = new System.Drawing.Point(158, 16);
-            this.tbEdit.Name = "tbEdit";
-            this.tbEdit.Size = new System.Drawing.Size(127, 22);
-            this.tbEdit.TabIndex = 9;
-            this.tbEdit.Visible = false;
-            // 
-            // btnEdit
-            // 
-            this.btnEdit.BackColor = System.Drawing.Color.DarkCyan;
-            this.btnEdit.BackColorAdditional = System.Drawing.Color.Gray;
-            this.btnEdit.BackColorGradientEnabled = false;
-            this.btnEdit.BackColorGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
-            this.btnEdit.BorderColor = System.Drawing.Color.Teal;
-            this.btnEdit.BorderColorEnabled = false;
-            this.btnEdit.BorderColorOnHover = System.Drawing.Color.Teal;
-            this.btnEdit.BorderColorOnHoverEnabled = false;
-            this.btnEdit.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnEdit.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btnEdit.ForeColor = System.Drawing.Color.White;
-            this.btnEdit.Location = new System.Drawing.Point(289, 16);
-            this.btnEdit.Name = "btnEdit";
-            this.btnEdit.RippleColor = System.Drawing.Color.Black;
-            this.btnEdit.RoundingEnable = false;
-            this.btnEdit.Size = new System.Drawing.Size(78, 22);
-            this.btnEdit.TabIndex = 10;
-            this.btnEdit.Text = "Изменить";
-            this.btnEdit.TextHover = null;
-            this.btnEdit.UseDownPressEffectOnClick = false;
-            this.btnEdit.UseRippleEffect = true;
-            this.btnEdit.UseZoomEffectOnHover = false;
-            this.btnEdit.Visible = false;
-            this.btnEdit.Click += new System.EventHandler(this.BtnEdit_Click);
-            // 
-            // pnlTextures
-            // 
-            this.pnlTextures.Controls.Add(this.lbTextures);
-            this.pnlTextures.Controls.Add(this.labelTexture);
-            this.pnlTextures.Controls.Add(this.btnExport);
-            this.pnlTextures.Controls.Add(this.btnEdit);
-            this.pnlTextures.Controls.Add(this.tbEdit);
-            this.pnlTextures.Controls.Add(this.btnImport);
-            this.pnlTextures.Controls.Add(this.btnDelete);
-            this.pnlTextures.Location = new System.Drawing.Point(204, 19);
-            this.pnlTextures.Name = "pnlTextures";
-            this.pnlTextures.Size = new System.Drawing.Size(368, 294);
-            this.pnlTextures.TabIndex = 11;
-            this.pnlTextures.Visible = false;
-            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -371,8 +303,7 @@ namespace GTA_SA_Effect_Editor
             this.Text = "Редактор эффектов GTA SA";
             this.gbEffects.ResumeLayout(false);
             this.gbEffects.PerformLayout();
-            this.pnlTextures.ResumeLayout(false);
-            this.pnlTextures.PerformLayout();
+            this.pnlButtons.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -391,11 +322,7 @@ namespace GTA_SA_Effect_Editor
         private yt_DesignUI.yt_Button btnFind;
         private System.Windows.Forms.Label labelCount;
         private yt_DesignUI.yt_Button btnExport;
-        private System.Windows.Forms.ListBox lbTextures;
-        private yt_DesignUI.yt_Button btnEdit;
-        private System.Windows.Forms.TextBox tbEdit;
-        private System.Windows.Forms.Label labelTexture;
-        private System.Windows.Forms.Panel pnlTextures;
+        private System.Windows.Forms.Panel pnlButtons;
     }
 }
 
