@@ -35,16 +35,17 @@ namespace GTA_SA_Effect_Editor
             this.egtbPath = new yt_DesignUI.EgoldsGoogleTextBox();
             this.btnBrowse = new yt_DesignUI.yt_Button();
             this.gbEffects = new System.Windows.Forms.GroupBox();
+            this.btnShowCode = new yt_DesignUI.yt_Button();
+            this.treeView = new System.Windows.Forms.TreeView();
             this.pnlButtons = new System.Windows.Forms.Panel();
-            this.btnImport = new yt_DesignUI.yt_Button();
-            this.btnExport = new yt_DesignUI.yt_Button();
-            this.btnDelete = new yt_DesignUI.yt_Button();
             this.labelCount = new System.Windows.Forms.Label();
             this.tbFind = new System.Windows.Forms.TextBox();
             this.btnFind = new yt_DesignUI.yt_Button();
             this.label1 = new System.Windows.Forms.Label();
             this.lbEffects = new System.Windows.Forms.ListBox();
-            this.treeView1 = new System.Windows.Forms.TreeView();
+            this.btnExport = new System.Windows.Forms.Button();
+            this.btnImport = new System.Windows.Forms.Button();
+            this.btnDelete = new System.Windows.Forms.Button();
             this.gbEffects.SuspendLayout();
             this.pnlButtons.SuspendLayout();
             this.SuspendLayout();
@@ -115,7 +116,8 @@ namespace GTA_SA_Effect_Editor
             // 
             // gbEffects
             // 
-            this.gbEffects.Controls.Add(this.treeView1);
+            this.gbEffects.Controls.Add(this.btnShowCode);
+            this.gbEffects.Controls.Add(this.treeView);
             this.gbEffects.Controls.Add(this.pnlButtons);
             this.gbEffects.Controls.Add(this.labelCount);
             this.gbEffects.Controls.Add(this.tbFind);
@@ -126,106 +128,63 @@ namespace GTA_SA_Effect_Editor
             this.gbEffects.ForeColor = System.Drawing.SystemColors.MenuHighlight;
             this.gbEffects.Location = new System.Drawing.Point(10, 54);
             this.gbEffects.Name = "gbEffects";
-            this.gbEffects.Size = new System.Drawing.Size(577, 316);
+            this.gbEffects.Size = new System.Drawing.Size(577, 441);
             this.gbEffects.TabIndex = 2;
             this.gbEffects.TabStop = false;
             this.gbEffects.Text = "Эффекты";
             // 
+            // btnShowCode
+            // 
+            this.btnShowCode.BackColor = System.Drawing.Color.DarkCyan;
+            this.btnShowCode.BackColorAdditional = System.Drawing.Color.Gray;
+            this.btnShowCode.BackColorGradientEnabled = false;
+            this.btnShowCode.BackColorGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
+            this.btnShowCode.BorderColor = System.Drawing.Color.Teal;
+            this.btnShowCode.BorderColorEnabled = false;
+            this.btnShowCode.BorderColorOnHover = System.Drawing.Color.Teal;
+            this.btnShowCode.BorderColorOnHoverEnabled = false;
+            this.btnShowCode.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnShowCode.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnShowCode.ForeColor = System.Drawing.Color.White;
+            this.btnShowCode.Location = new System.Drawing.Point(334, 392);
+            this.btnShowCode.Name = "btnShowCode";
+            this.btnShowCode.RippleColor = System.Drawing.Color.Black;
+            this.btnShowCode.RoundingEnable = true;
+            this.btnShowCode.Size = new System.Drawing.Size(105, 36);
+            this.btnShowCode.TabIndex = 14;
+            this.btnShowCode.Text = "Показать код";
+            this.btnShowCode.TextHover = null;
+            this.btnShowCode.UseDownPressEffectOnClick = false;
+            this.btnShowCode.UseRippleEffect = true;
+            this.btnShowCode.UseZoomEffectOnHover = false;
+            this.btnShowCode.Visible = false;
+            this.btnShowCode.Click += new System.EventHandler(this.BtnShowCode_Click);
+            // 
+            // treeView
+            // 
+            this.treeView.Location = new System.Drawing.Point(202, 19);
+            this.treeView.Name = "treeView";
+            this.treeView.Size = new System.Drawing.Size(368, 360);
+            this.treeView.TabIndex = 13;
+            this.treeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TreeView_AfterSelect);
+            // 
             // pnlButtons
             // 
-            this.pnlButtons.Controls.Add(this.btnImport);
             this.pnlButtons.Controls.Add(this.btnExport);
             this.pnlButtons.Controls.Add(this.btnDelete);
-            this.pnlButtons.Location = new System.Drawing.Point(204, 269);
+            this.pnlButtons.Controls.Add(this.btnImport);
+            this.pnlButtons.Location = new System.Drawing.Point(3, 406);
             this.pnlButtons.Name = "pnlButtons";
-            this.pnlButtons.Size = new System.Drawing.Size(365, 41);
+            this.pnlButtons.Size = new System.Drawing.Size(198, 30);
             this.pnlButtons.TabIndex = 12;
             this.pnlButtons.Visible = false;
-            // 
-            // btnImport
-            // 
-            this.btnImport.BackColor = System.Drawing.Color.DarkCyan;
-            this.btnImport.BackColorAdditional = System.Drawing.Color.Gray;
-            this.btnImport.BackColorGradientEnabled = false;
-            this.btnImport.BackColorGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
-            this.btnImport.BorderColor = System.Drawing.Color.Teal;
-            this.btnImport.BorderColorEnabled = false;
-            this.btnImport.BorderColorOnHover = System.Drawing.Color.Teal;
-            this.btnImport.BorderColorOnHoverEnabled = false;
-            this.btnImport.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnImport.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btnImport.ForeColor = System.Drawing.Color.White;
-            this.btnImport.Location = new System.Drawing.Point(81, 3);
-            this.btnImport.Name = "btnImport";
-            this.btnImport.RippleColor = System.Drawing.Color.Black;
-            this.btnImport.RoundingEnable = true;
-            this.btnImport.Size = new System.Drawing.Size(155, 34);
-            this.btnImport.TabIndex = 4;
-            this.btnImport.Text = "Импортировать в ...";
-            this.btnImport.TextHover = null;
-            this.btnImport.UseDownPressEffectOnClick = false;
-            this.btnImport.UseRippleEffect = true;
-            this.btnImport.UseZoomEffectOnHover = false;
-            this.btnImport.Click += new System.EventHandler(this.BtnImport_Click);
-            // 
-            // btnExport
-            // 
-            this.btnExport.BackColor = System.Drawing.Color.DarkCyan;
-            this.btnExport.BackColorAdditional = System.Drawing.Color.Gray;
-            this.btnExport.BackColorGradientEnabled = false;
-            this.btnExport.BackColorGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
-            this.btnExport.BorderColor = System.Drawing.Color.Teal;
-            this.btnExport.BorderColorEnabled = false;
-            this.btnExport.BorderColorOnHover = System.Drawing.Color.Teal;
-            this.btnExport.BorderColorOnHoverEnabled = false;
-            this.btnExport.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnExport.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btnExport.ForeColor = System.Drawing.Color.White;
-            this.btnExport.Location = new System.Drawing.Point(242, 3);
-            this.btnExport.Name = "btnExport";
-            this.btnExport.RippleColor = System.Drawing.Color.Black;
-            this.btnExport.RoundingEnable = true;
-            this.btnExport.Size = new System.Drawing.Size(123, 34);
-            this.btnExport.TabIndex = 6;
-            this.btnExport.Text = "Экспортировать";
-            this.btnExport.TextHover = null;
-            this.btnExport.UseDownPressEffectOnClick = false;
-            this.btnExport.UseRippleEffect = true;
-            this.btnExport.UseZoomEffectOnHover = false;
-            this.btnExport.Click += new System.EventHandler(this.BtnExport_Click);
-            // 
-            // btnDelete
-            // 
-            this.btnDelete.BackColor = System.Drawing.Color.DarkCyan;
-            this.btnDelete.BackColorAdditional = System.Drawing.Color.Gray;
-            this.btnDelete.BackColorGradientEnabled = false;
-            this.btnDelete.BackColorGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
-            this.btnDelete.BorderColor = System.Drawing.Color.Teal;
-            this.btnDelete.BorderColorEnabled = false;
-            this.btnDelete.BorderColorOnHover = System.Drawing.Color.Teal;
-            this.btnDelete.BorderColorOnHoverEnabled = false;
-            this.btnDelete.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnDelete.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btnDelete.ForeColor = System.Drawing.Color.White;
-            this.btnDelete.Location = new System.Drawing.Point(0, 3);
-            this.btnDelete.Name = "btnDelete";
-            this.btnDelete.RippleColor = System.Drawing.Color.Black;
-            this.btnDelete.RoundingEnable = true;
-            this.btnDelete.Size = new System.Drawing.Size(75, 34);
-            this.btnDelete.TabIndex = 2;
-            this.btnDelete.Text = "Удалить";
-            this.btnDelete.TextHover = null;
-            this.btnDelete.UseDownPressEffectOnClick = false;
-            this.btnDelete.UseRippleEffect = true;
-            this.btnDelete.UseZoomEffectOnHover = false;
-            this.btnDelete.Click += new System.EventHandler(this.BtnDelete_Click);
             // 
             // labelCount
             // 
             this.labelCount.AutoSize = true;
             this.labelCount.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.labelCount.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.labelCount.Location = new System.Drawing.Point(3, 292);
+            this.labelCount.Location = new System.Drawing.Point(4, 385);
             this.labelCount.Name = "labelCount";
             this.labelCount.Size = new System.Drawing.Size(0, 16);
             this.labelCount.TabIndex = 6;
@@ -284,29 +243,61 @@ namespace GTA_SA_Effect_Editor
             this.lbEffects.ItemHeight = 15;
             this.lbEffects.Location = new System.Drawing.Point(6, 45);
             this.lbEffects.Name = "lbEffects";
-            this.lbEffects.Size = new System.Drawing.Size(191, 244);
+            this.lbEffects.Size = new System.Drawing.Size(191, 334);
             this.lbEffects.TabIndex = 0;
             this.lbEffects.SelectedIndexChanged += new System.EventHandler(this.LbEffects_SelectedIndexChanged);
             // 
-            // treeView1
+            // btnExport
             // 
-            this.treeView1.Location = new System.Drawing.Point(202, 19);
-            this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(368, 245);
-            this.treeView1.TabIndex = 13;
+            this.btnExport.BackColor = System.Drawing.Color.DarkCyan;
+            this.btnExport.BackgroundImage = global::GTA_SA_Effect_Editor.Properties.Resources.export;
+            this.btnExport.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnExport.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnExport.Location = new System.Drawing.Point(133, 4);
+            this.btnExport.Name = "btnExport";
+            this.btnExport.Size = new System.Drawing.Size(61, 23);
+            this.btnExport.TabIndex = 17;
+            this.btnExport.UseVisualStyleBackColor = false;
+            this.btnExport.Click += new System.EventHandler(this.BtnExport_Click);
+            // 
+            // btnImport
+            // 
+            this.btnImport.BackColor = System.Drawing.Color.DarkCyan;
+            this.btnImport.BackgroundImage = global::GTA_SA_Effect_Editor.Properties.Resources.import;
+            this.btnImport.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnImport.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnImport.Location = new System.Drawing.Point(68, 4);
+            this.btnImport.Name = "btnImport";
+            this.btnImport.Size = new System.Drawing.Size(61, 23);
+            this.btnImport.TabIndex = 16;
+            this.btnImport.UseVisualStyleBackColor = false;
+            this.btnImport.Click += new System.EventHandler(this.BtnImport_Click);
+            // 
+            // btnDelete
+            // 
+            this.btnDelete.BackColor = System.Drawing.Color.DarkCyan;
+            this.btnDelete.BackgroundImage = global::GTA_SA_Effect_Editor.Properties.Resources.delete;
+            this.btnDelete.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnDelete.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnDelete.Location = new System.Drawing.Point(3, 4);
+            this.btnDelete.Name = "btnDelete";
+            this.btnDelete.Size = new System.Drawing.Size(61, 23);
+            this.btnDelete.TabIndex = 15;
+            this.btnDelete.UseVisualStyleBackColor = false;
+            this.btnDelete.Click += new System.EventHandler(this.BtnDelete_Click);
             // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(581, 379);
+            this.ClientSize = new System.Drawing.Size(581, 505);
             this.Controls.Add(this.gbEffects);
             this.Controls.Add(this.btnBrowse);
             this.Controls.Add(this.egtbPath);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(597, 417);
-            this.MinimumSize = new System.Drawing.Size(597, 417);
+            this.MaximumSize = new System.Drawing.Size(597, 543);
+            this.MinimumSize = new System.Drawing.Size(597, 543);
             this.Name = "frmMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Редактор эффектов GTA SA";
@@ -325,14 +316,15 @@ namespace GTA_SA_Effect_Editor
         private System.Windows.Forms.GroupBox gbEffects;
         private System.Windows.Forms.ListBox lbEffects;
         private System.Windows.Forms.Label label1;
-        private yt_DesignUI.yt_Button btnImport;
-        private yt_DesignUI.yt_Button btnDelete;
         private System.Windows.Forms.TextBox tbFind;
         private yt_DesignUI.yt_Button btnFind;
         private System.Windows.Forms.Label labelCount;
-        private yt_DesignUI.yt_Button btnExport;
         private System.Windows.Forms.Panel pnlButtons;
-        private System.Windows.Forms.TreeView treeView1;
+        private System.Windows.Forms.TreeView treeView;
+        private yt_DesignUI.yt_Button btnShowCode;
+        private System.Windows.Forms.Button btnExport;
+        private System.Windows.Forms.Button btnImport;
+        private System.Windows.Forms.Button btnDelete;
     }
 }
 

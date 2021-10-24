@@ -98,7 +98,7 @@ namespace GTA_SA_Effect_Editor
                     lbEffects.Items.Clear();
                     foundEffects.Clear();
 
-                    bool isFind = false;
+                    bool isFound = false;
                     foreach (var effect in effects)
                     {
                         foreach (var prim in effect.Prims)
@@ -109,14 +109,14 @@ namespace GTA_SA_Effect_Editor
                                 {
                                     foundEffects.Add(effect);
                                     lbEffects.Items.Add(effect.Name);
-                                    isFind = true;
+                                    isFound = true;
                                     break;
                                 }
                             }
-                            if (isFind)
+                            if (isFound)
                                 break;
                         }
-                        isFind = false;
+                        isFound = false;
                     }
 
                     labelCount.Text = $"Всего эффектов: {foundEffects.Count}";
@@ -157,27 +157,7 @@ namespace GTA_SA_Effect_Editor
 
             labelCount.Text = $"Всего эффектов: {effects.Count}";
 
-            FileStream fs = new FileStream(effectsPath, FileMode.Create);
-            using (StreamWriter sw = new StreamWriter(fs, Encoding.GetEncoding(1251)))
-            {
-                if (effects.Count > 0)
-                {
-                    sw.WriteLine("FX_PROJECT_DATA:");
-                    sw.WriteLine();
-                }
-                
-                foreach (var efct in effects)
-                {
-                    foreach (var line in efct.GetLines())
-                    {
-                        sw.WriteLine(line);
-                    }
-                    sw.WriteLine();
-                }
-
-                if (effects.Count > 0)
-                    sw.WriteLine("FX_PROJECT_DATA_END:");
-            }
+            WriteEffectsFile();
 
             Enabled = true;
         }
@@ -328,6 +308,45 @@ namespace GTA_SA_Effect_Editor
 
             Enabled = true;
         }
+
+        private void BtnShowCode_Click(object sender, EventArgs e)
+        {
+            bool isFound = false;
+            Program.Code.Clear();
+            Effect effect = DefineEffect(lbEffects.SelectedIndex);
+            for (int i = 0; i < treeView.Nodes.Count; i++)
+            {
+                if (treeView.Nodes[i] == treeView.SelectedNode)
+                {
+                    OpenCodeEditor(effect.Prims[i].GetLines());
+                    if (Program.IsEdited)
+                        effect.Prims[i] = RewritePrim(effect.Prims[i]);
+                    break;
+                }
+                for (int j = 0; j < treeView.Nodes[i].Nodes.Count; j++)
+                {
+                    if (treeView.Nodes[i].Nodes[j] == treeView.SelectedNode)
+                    {
+                        OpenCodeEditor(effect.Prims[i].Infos[j].Lines);
+                        isFound = true;
+                        if (Program.IsEdited)
+                        {
+                            effect.Prims[i].Infos[j].Lines.Clear();
+                            foreach (var line in Program.Code)
+                            {
+                                effect.Prims[i].Infos[j].Lines.Add(line);
+                            }
+                        }
+                        break;
+                    }
+                }
+                if (isFound)
+                    break;
+            }
+
+            if (Program.IsEdited)
+                WriteEffectsFile();
+        }
         #endregion
 
         #region ListBoxes
@@ -336,11 +355,27 @@ namespace GTA_SA_Effect_Editor
             if (lbEffects.SelectedIndex != -1)
             {
                 pnlButtons.Visible = true;
-                
+                btnShowCode.Visible = false;
+                treeView.Nodes.Clear();
 
+                Effect effect = DefineEffect(lbEffects.SelectedIndex);
+                for (int i = 0; i < effect.Prims.Count; i++)
+                {
+                    treeView.Nodes.Add($"PRIM{i + 1}");
+                    for (int j = 0; j < effect.Prims[i].Infos.Count; j++)
+                    {
+                        string info = effect.Prims[i].Infos[j].Lines[0];
+                        treeView.Nodes[i].Nodes.Add(info.Substring(0, info.Length - 1));
+                    }
+                }
             }
         }
         #endregion
+
+        private void TreeView_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            btnShowCode.Visible = true;
+        }
 
         #endregion
 
@@ -500,6 +535,39 @@ namespace GTA_SA_Effect_Editor
             }
             return effects_fxp;
         }
+        private void WriteEffectsFile()
+        {
+            FileStream fs = new FileStream(effectsPath, FileMode.Create);
+            using (StreamWriter sw = new StreamWriter(fs, Encoding.GetEncoding(1251)))
+            {
+                if (effectsFile[0].Contains("FX_PROJECT_DATA"))
+                {
+                    sw.WriteLine("FX_PROJECT_DATA:");
+                    sw.WriteLine();
+                }
+
+                foreach (var efct in effects)
+                {
+                    foreach (var line in efct.GetLines())
+                    {
+                        sw.WriteLine(line);
+                    }
+                    sw.WriteLine();
+                }
+
+                if (effectsFile[0].Contains("FX_PROJECT_DATA"))
+                    sw.WriteLine("FX_PROJECT_DATA_END:");
+            }
+        }
+        private void OpenCodeEditor(List<string> lines)
+        {
+            foreach (var line in lines)
+            {
+                Program.Code.Add(line);
+            }
+
+            new frmShowCode().ShowDialog();
+        }
         private void DeleteEffect(int id)
         {
             foundEffects.Remove(effects.First(x => x.ID == id));
@@ -513,6 +581,63 @@ namespace GTA_SA_Effect_Editor
             else
                 effect = foundEffects[selectedIndex];
             return effect;
+        }
+        private Prim RewritePrim(Prim prim)
+        {
+            List<string> ssPrims = new List<string>();
+            List<string> esPrims = new List<string>();
+            List<Info> infos = new List<Info>();
+            List<string> lines = new List<string>();
+            List<string> textures = new List<string>();
+
+            int startInfo = -1;
+
+            for (int i = 0; i < Program.Code.Count; i++)
+            {
+                if (Program.Code[i].Contains("NUM_INFOS"))
+                {
+                    for (int j = 0; j <= i; j++)
+                    {
+                        ssPrims.Add(Program.Code[j]);
+                        if (Program.Code[j].StartsWith("TEXTURE"))
+                            textures.Add(Program.Code[j]);
+                    }
+                }
+
+                if (Program.Code[i].Contains("FX_INFO_"))
+                    startInfo = i;
+
+                if (startInfo != -1)
+                {
+                    if (Program.Code[i + 2].Contains("FX_INFO_") || Program.Code[i + 2].Contains("LODSTART"))
+                    {
+                        for (int j = startInfo; j <= i; j++)
+                        {
+                            lines.Add(Program.Code[j]);
+                        }
+                        infos.Add(new Info(lines));
+
+                        lines.Clear();
+
+                        startInfo = -1;
+                    }
+                }
+
+                if (Program.Code[i].Contains("LODEND"))
+                {
+                    esPrims.Add(Program.Code[i - 1]);
+                    esPrims.Add(Program.Code[i]);
+
+                    prim = new Prim(ssPrims, esPrims, infos, textures);
+
+                    ssPrims.Clear();
+                    infos.Clear();
+                    esPrims.Clear();
+                    textures.Clear();
+                }
+            }
+
+            return prim;
         }
     }
 }
