@@ -7,7 +7,7 @@
     <ProjectGuid>{5FA43094-892B-4A8A-80A9-6A6691B06B78}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>GTA_SA_Effect_Editor</RootNamespace>
-    <AssemblyName>Редактор эффектов GTA SA</AssemblyName>
+    <AssemblyName>GTA SA Effect editor</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
