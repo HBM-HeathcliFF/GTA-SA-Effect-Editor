@@ -38,7 +38,7 @@ namespace GTA_SA_Effect_Editor
         #region TextBoxes
         private void TbFind_Click(object sender, EventArgs e)
         {
-            if (tbFind.Text == "Название текстуры")
+            if (tbFind.Text == "Texture name")
             {
                 tbFind.Text = "";
                 tbFind.ForeColor = SystemColors.WindowText;
@@ -90,9 +90,9 @@ namespace GTA_SA_Effect_Editor
 
         private void BtnFind_Click(object sender, EventArgs e)
         {
-            if (btnFind.Text == "Поиск")
+            if (btnFind.Text == "Search")
             {
-                if (tbFind.Text != "Название текстуры" && tbFind.Text != "" && lbEffects.Items.Count > 0)
+                if (tbFind.Text != "Texture name" && tbFind.Text != "" && lbEffects.Items.Count > 0)
                 {
                     pnlButtons.Visible = false;
                     lbEffects.Items.Clear();
@@ -119,8 +119,8 @@ namespace GTA_SA_Effect_Editor
                         isFound = false;
                     }
 
-                    labelCount.Text = $"Всего эффектов: {foundEffects.Count}";
-                    btnFind.Text = "Сброс";
+                    labelCount.Text = $"Effects count: {foundEffects.Count}";
+                    btnFind.Text = "Reset";
                 }
             }
             else
@@ -133,7 +133,7 @@ namespace GTA_SA_Effect_Editor
                 {
                     lbEffects.Items.Add(effect.Name);
                 }
-                labelCount.Text = $"Всего эффектов: {effects.Count}";
+                labelCount.Text = $"Effects count: {effects.Count}";
             }
         }
 
@@ -155,7 +155,7 @@ namespace GTA_SA_Effect_Editor
             else
                 lbEffects.SelectedIndex = index;
 
-            labelCount.Text = $"Всего эффектов: {effects.Count}";
+            labelCount.Text = $"Effects count: {effects.Count}";
 
             WriteEffectsFile();
 
@@ -510,7 +510,7 @@ namespace GTA_SA_Effect_Editor
                     esEffects.Clear();
                 }
             }
-            labelCount.Text = $"Всего эффектов: {effects.Count}";
+            labelCount.Text = $"Effects count: {effects.Count}";
         }
         private void UpdatePath()
         {
@@ -519,9 +519,9 @@ namespace GTA_SA_Effect_Editor
         }
         private void ResetSearchBlock()
         {
-            tbFind.Text = "Название текстуры";
+            tbFind.Text = "Texture name";
             tbFind.ForeColor = SystemColors.ControlDark;
-            btnFind.Text = "Поиск";
+            btnFind.Text = "Search";
         }
         private List<string> ReadEffectsFile(string path)
         {
@@ -576,7 +576,7 @@ namespace GTA_SA_Effect_Editor
         private Effect DefineEffect(int selectedIndex)
         {
             Effect effect = new Effect();
-            if (btnFind.Text == "Поиск")
+            if (btnFind.Text == "Search")
                 effect = effects[selectedIndex];
             else
                 effect = foundEffects[selectedIndex];

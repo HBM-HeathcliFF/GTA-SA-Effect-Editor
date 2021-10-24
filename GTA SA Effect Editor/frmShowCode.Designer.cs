@@ -55,7 +55,7 @@ namespace GTA_SA_Effect_Editor
             this.btnApply.RoundingEnable = false;
             this.btnApply.Size = new System.Drawing.Size(83, 22);
             this.btnApply.TabIndex = 4;
-            this.btnApply.Text = "Применить";
+            this.btnApply.Text = "Apply";
             this.btnApply.TextHover = null;
             this.btnApply.UseDownPressEffectOnClick = false;
             this.btnApply.UseRippleEffect = true;
@@ -82,7 +82,7 @@ namespace GTA_SA_Effect_Editor
             this.btnCancel.RoundingEnable = false;
             this.btnCancel.Size = new System.Drawing.Size(83, 22);
             this.btnCancel.TabIndex = 5;
-            this.btnCancel.Text = "Отмена";
+            this.btnCancel.Text = "Cancel";
             this.btnCancel.TextHover = null;
             this.btnCancel.UseDownPressEffectOnClick = false;
             this.btnCancel.UseRippleEffect = true;
@@ -114,7 +114,7 @@ namespace GTA_SA_Effect_Editor
             this.MinimumSize = new System.Drawing.Size(432, 324);
             this.Name = "frmShowCode";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Редактор кода";
+            this.Text = "Code editor";
             this.ResumeLayout(false);
             this.PerformLayout();
 

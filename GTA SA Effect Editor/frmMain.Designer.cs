@@ -38,14 +38,14 @@ namespace GTA_SA_Effect_Editor
             this.btnShowCode = new yt_DesignUI.yt_Button();
             this.treeView = new System.Windows.Forms.TreeView();
             this.pnlButtons = new System.Windows.Forms.Panel();
+            this.btnExport = new System.Windows.Forms.Button();
+            this.btnDelete = new System.Windows.Forms.Button();
+            this.btnImport = new System.Windows.Forms.Button();
             this.labelCount = new System.Windows.Forms.Label();
             this.tbFind = new System.Windows.Forms.TextBox();
             this.btnFind = new yt_DesignUI.yt_Button();
             this.label1 = new System.Windows.Forms.Label();
             this.lbEffects = new System.Windows.Forms.ListBox();
-            this.btnExport = new System.Windows.Forms.Button();
-            this.btnImport = new System.Windows.Forms.Button();
-            this.btnDelete = new System.Windows.Forms.Button();
             this.gbEffects.SuspendLayout();
             this.pnlButtons.SuspendLayout();
             this.SuspendLayout();
@@ -84,7 +84,7 @@ namespace GTA_SA_Effect_Editor
             this.egtbPath.Size = new System.Drawing.Size(472, 40);
             this.egtbPath.TabIndex = 0;
             this.egtbPath.TextInput = "";
-            this.egtbPath.TextPreview = "Путь к файлу эффектов";
+            this.egtbPath.TextPreview = "Path to the effects file";
             this.egtbPath.UseSystemPasswordChar = false;
             this.egtbPath.TextChanged += new System.EventHandler(this.EgtbPath_TextChanged);
             // 
@@ -107,7 +107,7 @@ namespace GTA_SA_Effect_Editor
             this.btnBrowse.RoundingEnable = true;
             this.btnBrowse.Size = new System.Drawing.Size(99, 34);
             this.btnBrowse.TabIndex = 1;
-            this.btnBrowse.Text = "Обзор";
+            this.btnBrowse.Text = "Browse";
             this.btnBrowse.TextHover = null;
             this.btnBrowse.UseDownPressEffectOnClick = false;
             this.btnBrowse.UseRippleEffect = true;
@@ -131,7 +131,7 @@ namespace GTA_SA_Effect_Editor
             this.gbEffects.Size = new System.Drawing.Size(577, 441);
             this.gbEffects.TabIndex = 2;
             this.gbEffects.TabStop = false;
-            this.gbEffects.Text = "Эффекты";
+            this.gbEffects.Text = "Effects";
             // 
             // btnShowCode
             // 
@@ -152,7 +152,7 @@ namespace GTA_SA_Effect_Editor
             this.btnShowCode.RoundingEnable = true;
             this.btnShowCode.Size = new System.Drawing.Size(105, 36);
             this.btnShowCode.TabIndex = 14;
-            this.btnShowCode.Text = "Показать код";
+            this.btnShowCode.Text = "Show code";
             this.btnShowCode.TextHover = null;
             this.btnShowCode.UseDownPressEffectOnClick = false;
             this.btnShowCode.UseRippleEffect = true;
@@ -179,6 +179,45 @@ namespace GTA_SA_Effect_Editor
             this.pnlButtons.TabIndex = 12;
             this.pnlButtons.Visible = false;
             // 
+            // btnExport
+            // 
+            this.btnExport.BackColor = System.Drawing.Color.DarkCyan;
+            this.btnExport.BackgroundImage = global::GTA_SA_Effect_Editor.Properties.Resources.export;
+            this.btnExport.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnExport.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnExport.Location = new System.Drawing.Point(133, 4);
+            this.btnExport.Name = "btnExport";
+            this.btnExport.Size = new System.Drawing.Size(61, 23);
+            this.btnExport.TabIndex = 17;
+            this.btnExport.UseVisualStyleBackColor = false;
+            this.btnExport.Click += new System.EventHandler(this.BtnExport_Click);
+            // 
+            // btnDelete
+            // 
+            this.btnDelete.BackColor = System.Drawing.Color.DarkCyan;
+            this.btnDelete.BackgroundImage = global::GTA_SA_Effect_Editor.Properties.Resources.delete;
+            this.btnDelete.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnDelete.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnDelete.Location = new System.Drawing.Point(3, 4);
+            this.btnDelete.Name = "btnDelete";
+            this.btnDelete.Size = new System.Drawing.Size(61, 23);
+            this.btnDelete.TabIndex = 15;
+            this.btnDelete.UseVisualStyleBackColor = false;
+            this.btnDelete.Click += new System.EventHandler(this.BtnDelete_Click);
+            // 
+            // btnImport
+            // 
+            this.btnImport.BackColor = System.Drawing.Color.DarkCyan;
+            this.btnImport.BackgroundImage = global::GTA_SA_Effect_Editor.Properties.Resources.import;
+            this.btnImport.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnImport.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnImport.Location = new System.Drawing.Point(68, 4);
+            this.btnImport.Name = "btnImport";
+            this.btnImport.Size = new System.Drawing.Size(61, 23);
+            this.btnImport.TabIndex = 16;
+            this.btnImport.UseVisualStyleBackColor = false;
+            this.btnImport.Click += new System.EventHandler(this.BtnImport_Click);
+            // 
             // labelCount
             // 
             this.labelCount.AutoSize = true;
@@ -198,7 +237,7 @@ namespace GTA_SA_Effect_Editor
             this.tbFind.Name = "tbFind";
             this.tbFind.Size = new System.Drawing.Size(121, 22);
             this.tbFind.TabIndex = 3;
-            this.tbFind.Text = "Название текстуры";
+            this.tbFind.Text = "Texture name";
             this.tbFind.Click += new System.EventHandler(this.TbFind_Click);
             // 
             // btnFind
@@ -220,7 +259,7 @@ namespace GTA_SA_Effect_Editor
             this.btnFind.RoundingEnable = false;
             this.btnFind.Size = new System.Drawing.Size(64, 22);
             this.btnFind.TabIndex = 3;
-            this.btnFind.Text = "Поиск";
+            this.btnFind.Text = "Search";
             this.btnFind.TextHover = null;
             this.btnFind.UseDownPressEffectOnClick = false;
             this.btnFind.UseRippleEffect = true;
@@ -232,9 +271,9 @@ namespace GTA_SA_Effect_Editor
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(201, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(73, 16);
+            this.label1.Size = new System.Drawing.Size(39, 16);
             this.label1.TabIndex = 1;
-            this.label1.Text = "Структура";
+            this.label1.Text = "Struct";
             // 
             // lbEffects
             // 
@@ -246,45 +285,6 @@ namespace GTA_SA_Effect_Editor
             this.lbEffects.Size = new System.Drawing.Size(191, 334);
             this.lbEffects.TabIndex = 0;
             this.lbEffects.SelectedIndexChanged += new System.EventHandler(this.LbEffects_SelectedIndexChanged);
-            // 
-            // btnExport
-            // 
-            this.btnExport.BackColor = System.Drawing.Color.DarkCyan;
-            this.btnExport.BackgroundImage = global::GTA_SA_Effect_Editor.Properties.Resources.export;
-            this.btnExport.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnExport.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnExport.Location = new System.Drawing.Point(133, 4);
-            this.btnExport.Name = "btnExport";
-            this.btnExport.Size = new System.Drawing.Size(61, 23);
-            this.btnExport.TabIndex = 17;
-            this.btnExport.UseVisualStyleBackColor = false;
-            this.btnExport.Click += new System.EventHandler(this.BtnExport_Click);
-            // 
-            // btnImport
-            // 
-            this.btnImport.BackColor = System.Drawing.Color.DarkCyan;
-            this.btnImport.BackgroundImage = global::GTA_SA_Effect_Editor.Properties.Resources.import;
-            this.btnImport.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnImport.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnImport.Location = new System.Drawing.Point(68, 4);
-            this.btnImport.Name = "btnImport";
-            this.btnImport.Size = new System.Drawing.Size(61, 23);
-            this.btnImport.TabIndex = 16;
-            this.btnImport.UseVisualStyleBackColor = false;
-            this.btnImport.Click += new System.EventHandler(this.BtnImport_Click);
-            // 
-            // btnDelete
-            // 
-            this.btnDelete.BackColor = System.Drawing.Color.DarkCyan;
-            this.btnDelete.BackgroundImage = global::GTA_SA_Effect_Editor.Properties.Resources.delete;
-            this.btnDelete.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnDelete.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnDelete.Location = new System.Drawing.Point(3, 4);
-            this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(61, 23);
-            this.btnDelete.TabIndex = 15;
-            this.btnDelete.UseVisualStyleBackColor = false;
-            this.btnDelete.Click += new System.EventHandler(this.BtnDelete_Click);
             // 
             // frmMain
             // 
@@ -300,7 +300,7 @@ namespace GTA_SA_Effect_Editor
             this.MinimumSize = new System.Drawing.Size(597, 543);
             this.Name = "frmMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Редактор эффектов GTA SA";
+            this.Text = "GTA SA Effect editor";
             this.gbEffects.ResumeLayout(false);
             this.gbEffects.PerformLayout();
             this.pnlButtons.ResumeLayout(false);
