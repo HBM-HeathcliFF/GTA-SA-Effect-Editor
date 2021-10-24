@@ -1,12 +1,12 @@
-# Редактор эффектов GTA SA
-Редактор эффектов GTA SA - приложение для редактирования файла effects.fxp из игры GTA San Andreas. 
-## Функционал
-На данный момент реализовано:
-- Удаление эффекта из открытого effects.fxp
-- Импорт эффекта из открытого effects.fxp в другой effects.fxp (его нужно будет выбрать после нажатия на кнопку "Импортировать в ...")
-- Экспорт эффекта в виде файла с расширением txt, fxp или fxs.
-- Редактирование текстур (смена названий текстур в txt/fxp/fxs файлах).
+# GTA SA Effect editor
+GTA SA Effect editor - application for editing fxp/fxs files for GTA San Andreas.
+## Functions
+Currently implemented:
+- Remove effect from open effects.fxp
+- Import of an effect from open fxp/fxs file into another fxp/fxs file (you will need to select it after clicking the import button)
+- Export the effect as a file with the extension txt, fxp or fxs
+- Viewing and editing the PRIMs and INFOs of the selected effect.
 
-Для открытия effects.fxp нужно вести полный путь к данному файлу, либо нажать на кнопку "Обзор" и выбрать effects.fxp.
+To open a fxp / fxs / txt file, you need to enter the full path, or click on the "Browse" button and select the requared file.
 
-Реализована выборка по текстурам. Чтобы её запустить, введите название текстуры (без расширения!) в специальное поле и нажмите кнопку "Поиск". Чтобы вернутся к списку всех текстур, нажмите кнопку сброс.
+Sampling by textures has been implemented. To launch it, enter the name (without the extension!) In the special field and click the "Search" button. Press the reset button to return to the list of all effects.
