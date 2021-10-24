@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("HBM")]
-[assembly: AssemblyProduct("Редактор эффектов GTA SA")]
+[assembly: AssemblyProduct("GTA SA Effect editor")]
 [assembly: AssemblyCopyright("Copyright © HBM 2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
