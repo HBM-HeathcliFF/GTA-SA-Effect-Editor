@@ -2,34 +2,26 @@
 
 namespace GTA_SA_Effect_Editor
 {
-    class Effect
+    class Prim
     {
-        private string _name;
         private List<string> _startSettings = new List<string>();
-        private List<Prim> _prims = new List<Prim>();
+        private List<Info> _infos = new List<Info>();
         private List<string> _endSettings = new List<string>();
-        
-        public string Name { get => _name; }
-        public List<string> StartSettings { get => _startSettings; }
-        public List<Prim> Prims { get => _prims; }
-        public List<string> EndSettings { get => _endSettings; }
-        public int ID { get; }
+        private List<string> _textures = new List<string>();
 
-        public Effect()
+        public List<string> StartSettings { get => _startSettings; }
+        public List<Info> Infos { get => _infos; }
+        public List<string> EndSettings { get => _endSettings; }
+        public List<string> Textures { get => _textures; }
+
+        public Prim()
         {
 
         }
 
-        public Effect(string name, List<Prim> prims, 
-                      List<string> startSettings, List<string> endSettings)
+        public Prim(List<string> startSettings, List<string> endSettings, 
+                    List<Info> infos, List<string> textures)
         {
-            _name = name;
-
-            foreach (var prim in prims)
-            {
-                _prims.Add(prim);
-            }
-
             foreach (var setting in startSettings)
             {
                 _startSettings.Add(setting);
@@ -40,8 +32,15 @@ namespace GTA_SA_Effect_Editor
                 _endSettings.Add(setting);
             }
 
-            ID = s_id;
-            s_id++;
+            foreach (var info in infos)
+            {
+                _infos.Add(info);
+            }
+
+            foreach (var texture in textures)
+            {
+                _textures.Add(texture);
+            }
         }
 
         public List<string> GetLines()
@@ -53,12 +52,13 @@ namespace GTA_SA_Effect_Editor
                 lines.Add(line);
             }
 
-            foreach (var prim in Prims)
+            foreach (var info in Infos)
             {
-                foreach (var line in prim.GetLines())
+                foreach (var line in info.Lines)
                 {
                     lines.Add(line);
                 }
+                lines.Add("");
             }
 
             foreach (var line in EndSettings)
@@ -68,7 +68,5 @@ namespace GTA_SA_Effect_Editor
 
             return lines;
         }
-
-        private static int s_id = 0;
     }
 }

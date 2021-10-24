@@ -98,17 +98,25 @@ namespace GTA_SA_Effect_Editor
                     lbEffects.Items.Clear();
                     foundEffects.Clear();
 
+                    bool isFind = false;
                     foreach (var effect in effects)
                     {
-                        foreach (var texture in effect.Textures)
+                        foreach (var prim in effect.Prims)
                         {
-                            if (texture.Contains(tbFind.Text))
+                            foreach (var texture in prim.Textures)
                             {
-                                foundEffects.Add(effect);
-                                lbEffects.Items.Add(effect.Name);
-                                break;
+                                if (texture.Contains(tbFind.Text))
+                                {
+                                    foundEffects.Add(effect);
+                                    lbEffects.Items.Add(effect.Name);
+                                    isFind = true;
+                                    break;
+                                }
                             }
+                            if (isFind)
+                                break;
                         }
+                        isFind = false;
                     }
 
                     labelCount.Text = $"Всего эффектов: {foundEffects.Count}";
@@ -152,17 +160,23 @@ namespace GTA_SA_Effect_Editor
             FileStream fs = new FileStream(effectsPath, FileMode.Create);
             using (StreamWriter sw = new StreamWriter(fs, Encoding.GetEncoding(1251)))
             {
-                sw.WriteLine("FX_PROJECT_DATA:");
-                sw.WriteLine();
+                if (effects.Count > 0)
+                {
+                    sw.WriteLine("FX_PROJECT_DATA:");
+                    sw.WriteLine();
+                }
+                
                 foreach (var efct in effects)
                 {
-                    foreach (var line in efct.Lines)
+                    foreach (var line in efct.GetLines())
                     {
                         sw.WriteLine(line);
                     }
                     sw.WriteLine();
                 }
-                sw.WriteLine("FX_PROJECT_DATA_END:");
+
+                if (effects.Count > 0)
+                    sw.WriteLine("FX_PROJECT_DATA_END:");
             }
 
             Enabled = true;
@@ -234,7 +248,7 @@ namespace GTA_SA_Effect_Editor
                             }
                             else
                             {
-                                foreach (var line in effect.Lines)
+                                foreach (var line in effect.GetLines())
                                 {
                                     sw.WriteLine(line);
                                 }
@@ -255,7 +269,7 @@ namespace GTA_SA_Effect_Editor
                         {
                             if (otherEffectsFile[i].Contains("FX_PROJECT_DATA_END"))
                             {
-                                foreach (var line in effect.Lines)
+                                foreach (var line in effect.GetLines())
                                 {
                                     sw.WriteLine(line);
                                 }
@@ -272,7 +286,7 @@ namespace GTA_SA_Effect_Editor
                         if (!isFound)
                         {
                             sw.WriteLine();
-                            foreach (var line in effect.Lines)
+                            foreach (var line in effect.GetLines())
                             {
                                 sw.WriteLine(line);
                             }
@@ -305,7 +319,7 @@ namespace GTA_SA_Effect_Editor
                 using (StreamWriter sw = new StreamWriter(fs, Encoding.GetEncoding(1251)))
                 {
                     Effect effect = DefineEffect(lbEffects.SelectedIndex);
-                    foreach (var line in effect.Lines)
+                    foreach (var line in effect.GetLines())
                     {
                         sw.WriteLine(line);
                     }
@@ -322,7 +336,8 @@ namespace GTA_SA_Effect_Editor
             if (lbEffects.SelectedIndex != -1)
             {
                 pnlButtons.Visible = true;
-                //
+                
+
             }
         }
         #endregion
@@ -372,28 +387,92 @@ namespace GTA_SA_Effect_Editor
 
             effects.Clear();
             lbEffects.Items.Clear();
+            List<string> ssEffects = new List<string>();
+            List<string> esEffects = new List<string>();
+            List<string> ssPrims = new List<string>();
+            List<string> esPrims = new List<string>();
+            List<Prim> prims = new List<Prim>();
+            List<Info> infos = new List<Info>();
+            List<string> lines = new List<string>();
             List<string> textures = new List<string>();
 
             string name = "";
-            int startLine = 0, count = 1;
+            int startEffect = 0, startPrim = 0, startInfo = -1, count = 1;
             for (int i = 0; i < effectsFile.Count; i++)
             {
                 if (effectsFile[i].Contains("FX_SYSTEM_DATA"))
-                    startLine = i;
+                    startEffect = i;
+
                 if (effectsFile[i].Contains("FILENAME"))
                 {
                     int startIndex = effectsFile[i].LastIndexOf('/') + 1;
                     int endIndex = effectsFile[i].IndexOf('.');
                     name = effectsFile[i].Substring(startIndex, endIndex - startIndex);
                 }
-                if (effectsFile[i].StartsWith("TEXTURE"))
-                    textures.Add(effectsFile[i]);
+
+                if (effectsFile[i].Contains("NUM_PRIMS"))
+                {
+                    for (int j = startEffect; j <= i; j++)
+                    {
+                        ssEffects.Add(effectsFile[j]);
+                    }
+                }
+
+                if (effectsFile[i].Contains("FX_PRIM_EMITTER_DATA"))
+                    startPrim = i;
+
+                if (effectsFile[i].Contains("NUM_INFOS"))
+                {
+                    for (int j = startPrim; j <= i; j++)
+                    {
+                        ssPrims.Add(effectsFile[j]);
+                        if (effectsFile[j].StartsWith("TEXTURE"))
+                            textures.Add(effectsFile[j]);
+                    }
+                }
+
+                if (effectsFile[i].Contains("FX_INFO_"))
+                    startInfo = i;
+
+                if (startInfo != -1)
+                {
+                    if (effectsFile[i + 2].Contains("FX_INFO_") || effectsFile[i + 2].Contains("LODSTART"))
+                    {
+                        for (int j = startInfo; j <= i; j++)
+                        {
+                            lines.Add(effectsFile[j]);
+                        }
+                        infos.Add(new Info(lines));
+
+                        lines.Clear();
+
+                        startInfo = -1;
+                    }
+                }
+
+                if (effectsFile[i].Contains("LODEND"))
+                {
+                    esPrims.Add(effectsFile[i - 1]);
+                    esPrims.Add(effectsFile[i]);
+                    prims.Add(new Prim(ssPrims, esPrims, infos, textures));
+
+                    ssPrims.Clear();
+                    infos.Clear();
+                    esPrims.Clear();
+                    textures.Clear();
+                }
+
                 if (effectsFile[i].Contains("TXDNAME: NOTXDSET"))
                 {
-                    effects.Add(new Effect(name, startLine, i, textures, effectsFile));
+                    esEffects.Add(effectsFile[i - 1]);
+                    esEffects.Add(effectsFile[i]);
+                    effects.Add(new Effect(name, prims, ssEffects, esEffects));
                     lbEffects.Items.Add(name);
+
                     count++;
-                    textures.Clear();
+                    ssEffects.Clear();
+                    prims.Clear();
+                    esEffects.Clear();
                 }
             }
             labelCount.Text = $"Всего эффектов: {effects.Count}";

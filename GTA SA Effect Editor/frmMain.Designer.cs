@@ -44,6 +44,7 @@ namespace GTA_SA_Effect_Editor
             this.btnFind = new yt_DesignUI.yt_Button();
             this.label1 = new System.Windows.Forms.Label();
             this.lbEffects = new System.Windows.Forms.ListBox();
+            this.treeView1 = new System.Windows.Forms.TreeView();
             this.gbEffects.SuspendLayout();
             this.pnlButtons.SuspendLayout();
             this.SuspendLayout();
@@ -114,6 +115,7 @@ namespace GTA_SA_Effect_Editor
             // 
             // gbEffects
             // 
+            this.gbEffects.Controls.Add(this.treeView1);
             this.gbEffects.Controls.Add(this.pnlButtons);
             this.gbEffects.Controls.Add(this.labelCount);
             this.gbEffects.Controls.Add(this.tbFind);
@@ -136,7 +138,7 @@ namespace GTA_SA_Effect_Editor
             this.pnlButtons.Controls.Add(this.btnDelete);
             this.pnlButtons.Location = new System.Drawing.Point(204, 269);
             this.pnlButtons.Name = "pnlButtons";
-            this.pnlButtons.Size = new System.Drawing.Size(368, 41);
+            this.pnlButtons.Size = new System.Drawing.Size(365, 41);
             this.pnlButtons.TabIndex = 12;
             this.pnlButtons.Visible = false;
             // 
@@ -153,7 +155,7 @@ namespace GTA_SA_Effect_Editor
             this.btnImport.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnImport.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnImport.ForeColor = System.Drawing.Color.White;
-            this.btnImport.Location = new System.Drawing.Point(84, 3);
+            this.btnImport.Location = new System.Drawing.Point(81, 3);
             this.btnImport.Name = "btnImport";
             this.btnImport.RippleColor = System.Drawing.Color.Black;
             this.btnImport.RoundingEnable = true;
@@ -179,7 +181,7 @@ namespace GTA_SA_Effect_Editor
             this.btnExport.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnExport.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnExport.ForeColor = System.Drawing.Color.White;
-            this.btnExport.Location = new System.Drawing.Point(245, 3);
+            this.btnExport.Location = new System.Drawing.Point(242, 3);
             this.btnExport.Name = "btnExport";
             this.btnExport.RippleColor = System.Drawing.Color.Black;
             this.btnExport.RoundingEnable = true;
@@ -209,7 +211,7 @@ namespace GTA_SA_Effect_Editor
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.RippleColor = System.Drawing.Color.Black;
             this.btnDelete.RoundingEnable = true;
-            this.btnDelete.Size = new System.Drawing.Size(78, 34);
+            this.btnDelete.Size = new System.Drawing.Size(75, 34);
             this.btnDelete.TabIndex = 2;
             this.btnDelete.Text = "Удалить";
             this.btnDelete.TextHover = null;
@@ -271,9 +273,9 @@ namespace GTA_SA_Effect_Editor
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(201, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(66, 16);
+            this.label1.Size = new System.Drawing.Size(73, 16);
             this.label1.TabIndex = 1;
-            this.label1.Text = "Текстуры";
+            this.label1.Text = "Структура";
             // 
             // lbEffects
             // 
@@ -285,6 +287,13 @@ namespace GTA_SA_Effect_Editor
             this.lbEffects.Size = new System.Drawing.Size(191, 244);
             this.lbEffects.TabIndex = 0;
             this.lbEffects.SelectedIndexChanged += new System.EventHandler(this.LbEffects_SelectedIndexChanged);
+            // 
+            // treeView1
+            // 
+            this.treeView1.Location = new System.Drawing.Point(202, 19);
+            this.treeView1.Name = "treeView1";
+            this.treeView1.Size = new System.Drawing.Size(368, 245);
+            this.treeView1.TabIndex = 13;
             // 
             // frmMain
             // 
@@ -323,6 +332,7 @@ namespace GTA_SA_Effect_Editor
         private System.Windows.Forms.Label labelCount;
         private yt_DesignUI.yt_Button btnExport;
         private System.Windows.Forms.Panel pnlButtons;
+        private System.Windows.Forms.TreeView treeView1;
     }
 }
 
