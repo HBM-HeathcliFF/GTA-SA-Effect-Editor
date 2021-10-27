@@ -27,7 +27,7 @@ namespace GTA_SA_Effect_Editor
         #endregion
 
         #region Variables
-        string effectsPath = "", lastDirectory = "";
+        string lastDirectory = "";
         List<string> effectsFile = new List<string>();
         List<Effect> effects = new List<Effect>();
         List<Effect> foundEffects = new List<Effect>();
@@ -44,24 +44,28 @@ namespace GTA_SA_Effect_Editor
                 tbFind.ForeColor = SystemColors.WindowText;
             }
         }
-
+        private void TbFind_Leave(object sender, EventArgs e)
+        {
+            if (tbFind.Text == "")
+            {
+                tbFind.ForeColor = SystemColors.ControlDark;
+                tbFind.Text = "Texture name";
+            }
+        }
         private void EgtbPath_TextChanged(object sender, EventArgs e)
         {
-            if (effectsPath.EndsWith(".txt") || effectsPath.EndsWith(".fxp") || effectsPath.EndsWith(".fxs"))
+            if (File.Exists(egtbPath.Text))
             {
-                if (File.Exists(effectsPath))
+                if (egtbPath.Text.EndsWith(".txt") || egtbPath.Text.EndsWith(".fxp") || egtbPath.Text.EndsWith(".fxs"))
                 {
-                    UpdatePath();
                     UpdateEffectList();
                 }
-                else
-                {
-                    effectsPath = "";
-                    effects.Clear();
-                    lbEffects.Items.Clear();
-                    labelCount.Text = "";
-                    ResetSearchBlock();
-                }
+            }
+            else
+            {
+                labelCount.Text = "";
+                ClearEffects();
+                ResetSearchBlock();
             }
         }
         #endregion
@@ -80,10 +84,8 @@ namespace GTA_SA_Effect_Editor
             };
             if (ofd.ShowDialog() == DialogResult.OK)
             {
-                lastDirectory = ofd.FileName;
                 egtbPath.Text = ofd.FileName;
-
-                UpdatePath();
+                lastDirectory = ofd.FileName;
                 UpdateEffectList();
             }
         }
@@ -391,11 +393,15 @@ namespace GTA_SA_Effect_Editor
                 using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\GTA SA Effect Editor"))
                 {
                     egtbPath.Text = key.GetValue("path").ToString();
-                    effectsPath = egtbPath.Text;
+                    lastDirectory = egtbPath.Text;
                     UpdateEffectList();
                 }
             }
             catch (Exception) { }
+        }
+        private void FrmMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Registry.CurrentUser.CreateSubKey(@"Software\GTA SA Effect Editor").SetValue("path", egtbPath.Text);
         }
 
         private void ForbidMultipleLaunches()
@@ -418,10 +424,10 @@ namespace GTA_SA_Effect_Editor
         }
         private void UpdateEffectList()
         {
-            effectsFile = ReadEffectsFile(effectsPath);
+            effectsFile = ReadEffectsFile(egtbPath.Text);
 
-            effects.Clear();
-            lbEffects.Items.Clear();
+            ClearEffects();
+
             List<string> ssEffects = new List<string>();
             List<string> esEffects = new List<string>();
             List<string> ssPrims = new List<string>();
@@ -512,10 +518,11 @@ namespace GTA_SA_Effect_Editor
             }
             labelCount.Text = $"Effects count: {effects.Count}";
         }
-        private void UpdatePath()
+        private void ClearEffects()
         {
-            effectsPath = egtbPath.Text;
-            Registry.CurrentUser.CreateSubKey(@"Software\GTA SA Effect Editor").SetValue("path", effectsPath);
+            effects.Clear();
+            lbEffects.Items.Clear();
+            treeView.Nodes.Clear();
         }
         private void ResetSearchBlock()
         {
@@ -537,7 +544,7 @@ namespace GTA_SA_Effect_Editor
         }
         private void WriteEffectsFile()
         {
-            FileStream fs = new FileStream(effectsPath, FileMode.Create);
+            FileStream fs = new FileStream(egtbPath.Text, FileMode.Create);
             using (StreamWriter sw = new StreamWriter(fs, Encoding.GetEncoding(1251)))
             {
                 if (effectsFile[0].Contains("FX_PROJECT_DATA"))

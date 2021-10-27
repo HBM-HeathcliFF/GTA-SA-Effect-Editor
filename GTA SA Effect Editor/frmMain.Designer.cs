@@ -239,6 +239,7 @@ namespace GTA_SA_Effect_Editor
             this.tbFind.TabIndex = 3;
             this.tbFind.Text = "Texture name";
             this.tbFind.Click += new System.EventHandler(this.TbFind_Click);
+            this.tbFind.Leave += new System.EventHandler(this.TbFind_Leave);
             // 
             // btnFind
             // 
@@ -301,6 +302,7 @@ namespace GTA_SA_Effect_Editor
             this.Name = "frmMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "GTA SA Effect editor";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmMain_FormClosing);
             this.gbEffects.ResumeLayout(false);
             this.gbEffects.PerformLayout();
             this.pnlButtons.ResumeLayout(false);
