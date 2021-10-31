@@ -52,45 +52,46 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Animation\Animation.cs" />
-    <Compile Include="Animation\Animator.cs" />
-    <Compile Include="Components\EgoldsFormStyle.cs">
+    <Compile Include="EffectReader.cs" />
+    <Compile Include="FormStyleItems\Animation\Animation.cs" />
+    <Compile Include="FormStyleItems\Animation\Animator.cs" />
+    <Compile Include="FormStyleItems\Components\EgoldsFormStyle.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Components\EgoldsFormStyle.Designer.cs">
+    <Compile Include="FormStyleItems\Components\EgoldsFormStyle.Designer.cs">
       <DependentUpon>EgoldsFormStyle.cs</DependentUpon>
     </Compile>
-    <Compile Include="Components\EgoldsStyle.cs" />
-    <Compile Include="Components\RoundingButtonsComponent.cs">
+    <Compile Include="FormStyleItems\Components\EgoldsStyle.cs" />
+    <Compile Include="FormStyleItems\Components\RoundingButtonsComponent.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Components\RoundingButtonsComponent.Designer.cs">
+    <Compile Include="FormStyleItems\Components\RoundingButtonsComponent.Designer.cs">
       <DependentUpon>RoundingButtonsComponent.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\EgoldsCard.cs">
+    <Compile Include="FormStyleItems\Controls\EgoldsCard.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\EgoldsGoogleTextBox.cs">
+    <Compile Include="FormStyleItems\Controls\EgoldsGoogleTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\EgoldsProgressBar.cs">
+    <Compile Include="FormStyleItems\Controls\EgoldsProgressBar.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\EgoldsRadioButton.cs">
+    <Compile Include="FormStyleItems\Controls\EgoldsRadioButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\EgoldsToggleSwitch.cs">
+    <Compile Include="FormStyleItems\Controls\EgoldsToggleSwitch.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\ShadowedForm.cs">
+    <Compile Include="FormStyleItems\Controls\ShadowedForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Controls\yt_Button.cs">
+    <Compile Include="FormStyleItems\Controls\yt_Button.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Drawer.cs" />
-    <Compile Include="Effect.cs" />
-    <Compile Include="FlatColors.cs" />
+    <Compile Include="FormStyleItems\Drawer.cs" />
+    <Compile Include="FXPComponents\Effect.cs" />
+    <Compile Include="FormStyleItems\FlatColors.cs" />
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -103,10 +104,13 @@
     <Compile Include="frmShowCode.Designer.cs">
       <DependentUpon>frmShowCode.cs</DependentUpon>
     </Compile>
-    <Compile Include="Info.cs" />
-    <Compile Include="Prim.cs" />
+    <Compile Include="FXPComponents\Info.cs" />
+    <Compile Include="FXPComponents\Interp.cs" />
+    <Compile Include="FXPComponents\KeyFloat.cs" />
+    <Compile Include="FXPComponents\Prim.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Templates.cs" />
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
     </EmbeddedResource>
@@ -142,5 +146,6 @@
     <Content Include="Resources\import.png" />
     <Content Include="Resources\export.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

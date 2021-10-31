@@ -27,10 +27,19 @@ namespace GTA_SA_Effect_Editor
         #endregion
 
         #region Variables
+        enum Component
+        {
+            PRIM,
+            INFO,
+            INTERP,
+            KEYFLOAT
+        }
+
         string lastDirectory = "";
         List<string> effectsFile = new List<string>();
         List<Effect> effects = new List<Effect>();
         List<Effect> foundEffects = new List<Effect>();
+        int selectedPrim = -1, selectedInfo = -1, selectedInterp = -1, selectedKeyFloat = -1;
         #endregion
 
         #region Controls
@@ -64,7 +73,10 @@ namespace GTA_SA_Effect_Editor
             else
             {
                 labelCount.Text = "";
+                effects.Clear();
                 ClearEffects();
+                HideLBSelButtons();
+                HideTVSelButtons();
                 ResetSearchBlock();
             }
         }
@@ -90,14 +102,15 @@ namespace GTA_SA_Effect_Editor
             }
         }
 
-        private void BtnFind_Click(object sender, EventArgs e)
+        private void BtnSearch_Click(object sender, EventArgs e)
         {
-            if (btnFind.Text == "Search")
+            if (btnSearch.Text == "Search")
             {
                 if (tbFind.Text != "Texture name" && tbFind.Text != "" && lbEffects.Items.Count > 0)
                 {
-                    pnlButtons.Visible = false;
-                    lbEffects.Items.Clear();
+                    ClearEffects();
+                    HideLBSelButtons();
+                    HideTVSelButtons();
                     foundEffects.Clear();
 
                     bool isFound = false;
@@ -122,15 +135,15 @@ namespace GTA_SA_Effect_Editor
                     }
 
                     labelCount.Text = $"Effects count: {foundEffects.Count}";
-                    btnFind.Text = "Reset";
+                    btnSearch.Text = "Reset";
                 }
             }
             else
             {
-                pnlButtons.Visible = false;
+                ClearEffects();
+                HideLBSelButtons();
+                HideTVSelButtons();
                 ResetSearchBlock();
-                lbEffects.Items.Clear();
-                lbEffects.Items.Clear();
                 foreach (var effect in effects)
                 {
                     lbEffects.Items.Add(effect.Name);
@@ -322,24 +335,52 @@ namespace GTA_SA_Effect_Editor
                 {
                     OpenCodeEditor(effect.Prims[i].GetLines());
                     if (Program.IsEdited)
-                        effect.Prims[i] = RewritePrim(effect.Prims[i]);
+                    {
+                        EffectReader er = new EffectReader();
+                        effect.Prims[i] = er.ReadPrim(Program.Code, 0);
+                    }
                     break;
                 }
                 for (int j = 0; j < treeView.Nodes[i].Nodes.Count; j++)
                 {
                     if (treeView.Nodes[i].Nodes[j] == treeView.SelectedNode)
                     {
-                        OpenCodeEditor(effect.Prims[i].Infos[j].Lines);
+                        OpenCodeEditor(effect.Prims[i].Infos[j].GetLines());
                         isFound = true;
                         if (Program.IsEdited)
                         {
-                            effect.Prims[i].Infos[j].Lines.Clear();
-                            foreach (var line in Program.Code)
-                            {
-                                effect.Prims[i].Infos[j].Lines.Add(line);
-                            }
+                            EffectReader er = new EffectReader();
+                            effect.Prims[i].Infos[j] = er.ReadInfo(Program.Code, 0);
                         }
                         break;
+                    }
+                    for (int k = 0; k < treeView.Nodes[i].Nodes[j].Nodes.Count; k++)
+                    {
+                        if (treeView.Nodes[i].Nodes[j].Nodes[k] == treeView.SelectedNode)
+                        {
+                            OpenCodeEditor(effect.Prims[i].Infos[j].Interps[k].GetLines());
+                            isFound = true;
+                            if (Program.IsEdited)
+                            {
+                                EffectReader er = new EffectReader();
+                                effect.Prims[i].Infos[j].Interps[k] = er.ReadInterp(Program.Code, 0);
+                            }
+                            break;
+                        }
+                        for (int m = 0; m < treeView.Nodes[i].Nodes[j].Nodes[k].Nodes.Count; m++)
+                        {
+                            if (treeView.Nodes[i].Nodes[j].Nodes[k].Nodes[m] == treeView.SelectedNode)
+                            {
+                                OpenCodeEditor(effect.Prims[i].Infos[j].Interps[k].KeyFloats[m].GetLines());
+                                isFound = true;
+                                if (Program.IsEdited)
+                                {
+                                    EffectReader er = new EffectReader();
+                                    effect.Prims[i].Infos[j].Interps[k].KeyFloats[m] = er.ReadKeyFloat(Program.Code, 0);
+                                }
+                                break;
+                            }
+                        }
                     }
                 }
                 if (isFound)
@@ -349,9 +390,40 @@ namespace GTA_SA_Effect_Editor
             if (Program.IsEdited)
                 WriteEffectsFile();
         }
+
+        private void BtnDelTreeItem_Click(object sender, EventArgs e)
+        {
+            switch (btnDelTreeItem.Text)
+            {
+                case "Delete PRIM":
+                    effects[lbEffects.SelectedIndex].Prims.RemoveAt(selectedPrim);
+                    effects[lbEffects.SelectedIndex].NUM_PRIMS = $"NUM_PRIMS: {effects[lbEffects.SelectedIndex].Prims.Count}";
+                    treeView.SelectedNode.Remove();
+                    break;
+                case "Delete INFO":
+                    effects[lbEffects.SelectedIndex].Prims[selectedPrim].Infos.RemoveAt(selectedInfo);
+                    effects[lbEffects.SelectedIndex].Prims[selectedPrim].NUM_INFOS = $"NUM_INFOS: {effects[lbEffects.SelectedIndex].Prims[selectedPrim].Infos.Count}";
+                    treeView.SelectedNode.Remove();
+                    break;
+                case "Delete INTERP":
+                    effects[lbEffects.SelectedIndex].Prims[selectedPrim].Infos[selectedInfo].Interps.RemoveAt(selectedInterp);
+                    treeView.SelectedNode.Remove();
+                    break;
+                case "Delete KEYFLOAT":
+                    effects[lbEffects.SelectedIndex].Prims[selectedPrim].Infos[selectedInfo].Interps[selectedInterp].KeyFloats.RemoveAt(selectedKeyFloat);
+                    effects[lbEffects.SelectedIndex].Prims[selectedPrim].Infos[selectedInfo].Interps[selectedInterp].NUM_KEYS = $"NUM_KEYS: {effects[lbEffects.SelectedIndex].Prims[selectedPrim].Infos[selectedInfo].Interps[selectedInterp].KeyFloats.Count}";
+                    treeView.SelectedNode.Remove();
+                    break;
+            }
+            WriteEffectsFile();
+        }
+
+        private void BtnAdd_Click(object sender, EventArgs e)
+        {
+            //
+        }
         #endregion
 
-        #region ListBoxes
         private void LbEffects_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (lbEffects.SelectedIndex != -1)
@@ -366,17 +438,96 @@ namespace GTA_SA_Effect_Editor
                     treeView.Nodes.Add($"PRIM{i + 1}");
                     for (int j = 0; j < effect.Prims[i].Infos.Count; j++)
                     {
-                        string info = effect.Prims[i].Infos[j].Lines[0];
-                        treeView.Nodes[i].Nodes.Add(info.Substring(0, info.Length - 1));
+                        treeView.Nodes[i].Nodes.Add(effect.Prims[i].Infos[j].Name);
+                        for (int k = 0; k < effect.Prims[i].Infos[j].Interps.Count; k++)
+                        {
+                            treeView.Nodes[i].Nodes[j].Nodes.Add(effect.Prims[i].Infos[j].Interps[k].Name);
+                            for (int m = 0; m < effect.Prims[i].Infos[j].Interps[k].KeyFloats.Count; m++)
+                            {
+                                treeView.Nodes[i].Nodes[j].Nodes[k].Nodes.Add($"KEYFLOAT{m + 1}");
+                            }
+                        }
                     }
                 }
+
+                btnAdd.Text = "Add PRIM";
+                btnAdd.Visible = true;
+                btnDelTreeItem.Visible = false;
             }
         }
-        #endregion
 
         private void TreeView_AfterSelect(object sender, TreeViewEventArgs e)
         {
             btnShowCode.Visible = true;
+            bool isFound = false;
+            for (int i = 0; i < treeView.Nodes.Count; i++)
+            {
+                if (treeView.Nodes[i] == treeView.SelectedNode)
+                {
+                    btnDelTreeItem.Text = "Delete PRIM";
+                    btnDelTreeItem.Visible = true;
+                    btnAdd.Text = "Add INFO";
+                    btnAdd.Visible = true;
+
+                    selectedPrim = i;
+                    selectedInfo = -1;
+
+                    break;
+                }
+                for (int j = 0; j < treeView.Nodes[i].Nodes.Count; j++)
+                {
+                    if (treeView.Nodes[i].Nodes[j] == treeView.SelectedNode)
+                    {
+                        btnDelTreeItem.Text = "Delete INFO";
+                        btnDelTreeItem.Visible = true;
+                        btnAdd.Text = "Add INTERP";
+                        btnAdd.Visible = true;
+
+                        selectedPrim = i;
+                        selectedInfo = j;
+                        selectedInterp = -1;
+
+                        isFound = true;
+                        break;
+                    }
+                    for (int k = 0; k < treeView.Nodes[i].Nodes[j].Nodes.Count; k++)
+                    {
+                        if (treeView.Nodes[i].Nodes[j].Nodes[k] == treeView.SelectedNode)
+                        {
+                            btnDelTreeItem.Text = "Delete INTERP";
+                            btnDelTreeItem.Visible = true;
+                            btnAdd.Text = "Add KEYFLOAT";
+                            btnAdd.Visible = true;
+
+                            selectedPrim = i;
+                            selectedInfo = j;
+                            selectedInterp = k;
+
+                            isFound = true;
+                            break;
+                        }
+                        for (int m = 0; m < treeView.Nodes[i].Nodes[j].Nodes[m].Nodes.Count; m++)
+                        {
+                            if (treeView.Nodes[i].Nodes[j].Nodes[k].Nodes[m] == treeView.SelectedNode)
+                            {
+                                btnDelTreeItem.Text = "Delete KEYFLOAT";
+                                btnDelTreeItem.Visible = true;
+                                btnAdd.Visible = false;
+
+                                selectedPrim = i;
+                                selectedInfo = j;
+                                selectedInterp = k;
+                                selectedKeyFloat = m;
+
+                                isFound = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (isFound)
+                    break;
+            }
         }
 
         #endregion
@@ -387,7 +538,6 @@ namespace GTA_SA_Effect_Editor
             InitializeComponent();
 
             Animator.Start();
-
             try
             {
                 using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\GTA SA Effect Editor"))
@@ -426,109 +576,43 @@ namespace GTA_SA_Effect_Editor
         {
             effectsFile = ReadEffectsFile(egtbPath.Text);
 
+            effects.Clear();
             ClearEffects();
+            HideLBSelButtons();
+            HideTVSelButtons();
 
-            List<string> ssEffects = new List<string>();
-            List<string> esEffects = new List<string>();
-            List<string> ssPrims = new List<string>();
-            List<string> esPrims = new List<string>();
-            List<Prim> prims = new List<Prim>();
-            List<Info> infos = new List<Info>();
-            List<string> lines = new List<string>();
-            List<string> textures = new List<string>();
+            EffectReader er = new EffectReader();
+            er.Read(effectsFile, ref effects);
 
-            string name = "";
-            int startEffect = 0, startPrim = 0, startInfo = -1, count = 1;
-            for (int i = 0; i < effectsFile.Count; i++)
+            foreach (var effect in effects)
             {
-                if (effectsFile[i].Contains("FX_SYSTEM_DATA"))
-                    startEffect = i;
-
-                if (effectsFile[i].Contains("FILENAME"))
-                {
-                    int startIndex = effectsFile[i].LastIndexOf('/') + 1;
-                    int endIndex = effectsFile[i].IndexOf('.');
-                    name = effectsFile[i].Substring(startIndex, endIndex - startIndex);
-                }
-
-                if (effectsFile[i].Contains("NUM_PRIMS"))
-                {
-                    for (int j = startEffect; j <= i; j++)
-                    {
-                        ssEffects.Add(effectsFile[j]);
-                    }
-                }
-
-                if (effectsFile[i].Contains("FX_PRIM_EMITTER_DATA"))
-                    startPrim = i;
-
-                if (effectsFile[i].Contains("NUM_INFOS"))
-                {
-                    for (int j = startPrim; j <= i; j++)
-                    {
-                        ssPrims.Add(effectsFile[j]);
-                        if (effectsFile[j].StartsWith("TEXTURE"))
-                            textures.Add(effectsFile[j]);
-                    }
-                }
-
-                if (effectsFile[i].Contains("FX_INFO_"))
-                    startInfo = i;
-
-                if (startInfo != -1)
-                {
-                    if (effectsFile[i + 2].Contains("FX_INFO_") || effectsFile[i + 2].Contains("LODSTART"))
-                    {
-                        for (int j = startInfo; j <= i; j++)
-                        {
-                            lines.Add(effectsFile[j]);
-                        }
-                        infos.Add(new Info(lines));
-
-                        lines.Clear();
-
-                        startInfo = -1;
-                    }
-                }
-
-                if (effectsFile[i].Contains("LODEND"))
-                {
-                    esPrims.Add(effectsFile[i - 1]);
-                    esPrims.Add(effectsFile[i]);
-                    prims.Add(new Prim(ssPrims, esPrims, infos, textures));
-
-                    ssPrims.Clear();
-                    infos.Clear();
-                    esPrims.Clear();
-                    textures.Clear();
-                }
-
-                if (effectsFile[i].Contains("TXDNAME: NOTXDSET"))
-                {
-                    esEffects.Add(effectsFile[i - 1]);
-                    esEffects.Add(effectsFile[i]);
-                    effects.Add(new Effect(name, prims, ssEffects, esEffects));
-                    lbEffects.Items.Add(name);
-
-                    count++;
-                    ssEffects.Clear();
-                    prims.Clear();
-                    esEffects.Clear();
-                }
+                lbEffects.Items.Add(effect.Name);
             }
+
             labelCount.Text = $"Effects count: {effects.Count}";
         }
         private void ClearEffects()
         {
-            effects.Clear();
             lbEffects.Items.Clear();
             treeView.Nodes.Clear();
+        }
+        private void HideLBSelButtons()
+        {
+            pnlButtons.Visible = false;
+            btnAdd.Visible = false;
+        }
+        private void HideTVSelButtons()
+        {
+            btnShowCode.Visible = false;
+            btnDelTreeItem.Visible = false;
+            if (btnAdd.Text == "Add INFO")
+                btnAdd.Visible = false;
         }
         private void ResetSearchBlock()
         {
             tbFind.Text = "Texture name";
             tbFind.ForeColor = SystemColors.ControlDark;
-            btnFind.Text = "Search";
+            btnSearch.Text = "Search";
         }
         private List<string> ReadEffectsFile(string path)
         {
@@ -583,68 +667,11 @@ namespace GTA_SA_Effect_Editor
         private Effect DefineEffect(int selectedIndex)
         {
             Effect effect = new Effect();
-            if (btnFind.Text == "Search")
+            if (btnSearch.Text == "Search")
                 effect = effects[selectedIndex];
             else
                 effect = foundEffects[selectedIndex];
             return effect;
-        }
-        private Prim RewritePrim(Prim prim)
-        {
-            List<string> ssPrims = new List<string>();
-            List<string> esPrims = new List<string>();
-            List<Info> infos = new List<Info>();
-            List<string> lines = new List<string>();
-            List<string> textures = new List<string>();
-
-            int startInfo = -1;
-
-            for (int i = 0; i < Program.Code.Count; i++)
-            {
-                if (Program.Code[i].Contains("NUM_INFOS"))
-                {
-                    for (int j = 0; j <= i; j++)
-                    {
-                        ssPrims.Add(Program.Code[j]);
-                        if (Program.Code[j].StartsWith("TEXTURE"))
-                            textures.Add(Program.Code[j]);
-                    }
-                }
-
-                if (Program.Code[i].Contains("FX_INFO_"))
-                    startInfo = i;
-
-                if (startInfo != -1)
-                {
-                    if (Program.Code[i + 2].Contains("FX_INFO_") || Program.Code[i + 2].Contains("LODSTART"))
-                    {
-                        for (int j = startInfo; j <= i; j++)
-                        {
-                            lines.Add(Program.Code[j]);
-                        }
-                        infos.Add(new Info(lines));
-
-                        lines.Clear();
-
-                        startInfo = -1;
-                    }
-                }
-
-                if (Program.Code[i].Contains("LODEND"))
-                {
-                    esPrims.Add(Program.Code[i - 1]);
-                    esPrims.Add(Program.Code[i]);
-
-                    prim = new Prim(ssPrims, esPrims, infos, textures);
-
-                    ssPrims.Clear();
-                    infos.Clear();
-                    esPrims.Clear();
-                    textures.Clear();
-                }
-            }
-
-            return prim;
         }
     }
 }

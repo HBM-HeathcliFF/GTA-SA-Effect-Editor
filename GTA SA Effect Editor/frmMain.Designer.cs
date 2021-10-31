@@ -35,6 +35,8 @@ namespace GTA_SA_Effect_Editor
             this.egtbPath = new yt_DesignUI.EgoldsGoogleTextBox();
             this.btnBrowse = new yt_DesignUI.yt_Button();
             this.gbEffects = new System.Windows.Forms.GroupBox();
+            this.btnAdd = new yt_DesignUI.yt_Button();
+            this.btnDelTreeItem = new yt_DesignUI.yt_Button();
             this.btnShowCode = new yt_DesignUI.yt_Button();
             this.treeView = new System.Windows.Forms.TreeView();
             this.pnlButtons = new System.Windows.Forms.Panel();
@@ -43,7 +45,7 @@ namespace GTA_SA_Effect_Editor
             this.btnImport = new System.Windows.Forms.Button();
             this.labelCount = new System.Windows.Forms.Label();
             this.tbFind = new System.Windows.Forms.TextBox();
-            this.btnFind = new yt_DesignUI.yt_Button();
+            this.btnSearch = new yt_DesignUI.yt_Button();
             this.label1 = new System.Windows.Forms.Label();
             this.lbEffects = new System.Windows.Forms.ListBox();
             this.gbEffects.SuspendLayout();
@@ -116,12 +118,14 @@ namespace GTA_SA_Effect_Editor
             // 
             // gbEffects
             // 
+            this.gbEffects.Controls.Add(this.btnAdd);
+            this.gbEffects.Controls.Add(this.btnDelTreeItem);
             this.gbEffects.Controls.Add(this.btnShowCode);
             this.gbEffects.Controls.Add(this.treeView);
             this.gbEffects.Controls.Add(this.pnlButtons);
             this.gbEffects.Controls.Add(this.labelCount);
             this.gbEffects.Controls.Add(this.tbFind);
-            this.gbEffects.Controls.Add(this.btnFind);
+            this.gbEffects.Controls.Add(this.btnSearch);
             this.gbEffects.Controls.Add(this.label1);
             this.gbEffects.Controls.Add(this.lbEffects);
             this.gbEffects.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
@@ -132,6 +136,60 @@ namespace GTA_SA_Effect_Editor
             this.gbEffects.TabIndex = 2;
             this.gbEffects.TabStop = false;
             this.gbEffects.Text = "Effects";
+            // 
+            // btnAdd
+            // 
+            this.btnAdd.BackColor = System.Drawing.Color.DarkCyan;
+            this.btnAdd.BackColorAdditional = System.Drawing.Color.Gray;
+            this.btnAdd.BackColorGradientEnabled = false;
+            this.btnAdd.BackColorGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
+            this.btnAdd.BorderColor = System.Drawing.Color.Teal;
+            this.btnAdd.BorderColorEnabled = false;
+            this.btnAdd.BorderColorOnHover = System.Drawing.Color.Teal;
+            this.btnAdd.BorderColorOnHoverEnabled = false;
+            this.btnAdd.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnAdd.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnAdd.ForeColor = System.Drawing.Color.White;
+            this.btnAdd.Location = new System.Drawing.Point(444, 392);
+            this.btnAdd.Name = "btnAdd";
+            this.btnAdd.RippleColor = System.Drawing.Color.Black;
+            this.btnAdd.RoundingEnable = true;
+            this.btnAdd.Size = new System.Drawing.Size(124, 36);
+            this.btnAdd.TabIndex = 16;
+            this.btnAdd.Text = "Add PRIM";
+            this.btnAdd.TextHover = null;
+            this.btnAdd.UseDownPressEffectOnClick = false;
+            this.btnAdd.UseRippleEffect = true;
+            this.btnAdd.UseZoomEffectOnHover = false;
+            this.btnAdd.Visible = false;
+            this.btnAdd.Click += new System.EventHandler(this.BtnAdd_Click);
+            // 
+            // btnDelTreeItem
+            // 
+            this.btnDelTreeItem.BackColor = System.Drawing.Color.DarkCyan;
+            this.btnDelTreeItem.BackColorAdditional = System.Drawing.Color.Gray;
+            this.btnDelTreeItem.BackColorGradientEnabled = false;
+            this.btnDelTreeItem.BackColorGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
+            this.btnDelTreeItem.BorderColor = System.Drawing.Color.Teal;
+            this.btnDelTreeItem.BorderColorEnabled = false;
+            this.btnDelTreeItem.BorderColorOnHover = System.Drawing.Color.Teal;
+            this.btnDelTreeItem.BorderColorOnHoverEnabled = false;
+            this.btnDelTreeItem.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnDelTreeItem.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnDelTreeItem.ForeColor = System.Drawing.Color.White;
+            this.btnDelTreeItem.Location = new System.Drawing.Point(204, 392);
+            this.btnDelTreeItem.Name = "btnDelTreeItem";
+            this.btnDelTreeItem.RippleColor = System.Drawing.Color.Black;
+            this.btnDelTreeItem.RoundingEnable = true;
+            this.btnDelTreeItem.Size = new System.Drawing.Size(124, 36);
+            this.btnDelTreeItem.TabIndex = 15;
+            this.btnDelTreeItem.Text = "Delete";
+            this.btnDelTreeItem.TextHover = null;
+            this.btnDelTreeItem.UseDownPressEffectOnClick = false;
+            this.btnDelTreeItem.UseRippleEffect = true;
+            this.btnDelTreeItem.UseZoomEffectOnHover = false;
+            this.btnDelTreeItem.Visible = false;
+            this.btnDelTreeItem.Click += new System.EventHandler(this.BtnDelTreeItem_Click);
             // 
             // btnShowCode
             // 
@@ -150,7 +208,7 @@ namespace GTA_SA_Effect_Editor
             this.btnShowCode.Name = "btnShowCode";
             this.btnShowCode.RippleColor = System.Drawing.Color.Black;
             this.btnShowCode.RoundingEnable = true;
-            this.btnShowCode.Size = new System.Drawing.Size(105, 36);
+            this.btnShowCode.Size = new System.Drawing.Size(104, 36);
             this.btnShowCode.TabIndex = 14;
             this.btnShowCode.Text = "Show code";
             this.btnShowCode.TextHover = null;
@@ -162,6 +220,7 @@ namespace GTA_SA_Effect_Editor
             // 
             // treeView
             // 
+            this.treeView.HideSelection = false;
             this.treeView.Location = new System.Drawing.Point(202, 19);
             this.treeView.Name = "treeView";
             this.treeView.Size = new System.Drawing.Size(368, 360);
@@ -173,7 +232,7 @@ namespace GTA_SA_Effect_Editor
             this.pnlButtons.Controls.Add(this.btnExport);
             this.pnlButtons.Controls.Add(this.btnDelete);
             this.pnlButtons.Controls.Add(this.btnImport);
-            this.pnlButtons.Location = new System.Drawing.Point(3, 406);
+            this.pnlButtons.Location = new System.Drawing.Point(3, 405);
             this.pnlButtons.Name = "pnlButtons";
             this.pnlButtons.Size = new System.Drawing.Size(198, 30);
             this.pnlButtons.TabIndex = 12;
@@ -241,31 +300,31 @@ namespace GTA_SA_Effect_Editor
             this.tbFind.Click += new System.EventHandler(this.TbFind_Click);
             this.tbFind.Leave += new System.EventHandler(this.TbFind_Leave);
             // 
-            // btnFind
+            // btnSearch
             // 
-            this.btnFind.BackColor = System.Drawing.Color.DarkCyan;
-            this.btnFind.BackColorAdditional = System.Drawing.Color.Gray;
-            this.btnFind.BackColorGradientEnabled = false;
-            this.btnFind.BackColorGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
-            this.btnFind.BorderColor = System.Drawing.Color.Teal;
-            this.btnFind.BorderColorEnabled = false;
-            this.btnFind.BorderColorOnHover = System.Drawing.Color.Teal;
-            this.btnFind.BorderColorOnHoverEnabled = false;
-            this.btnFind.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnFind.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btnFind.ForeColor = System.Drawing.Color.White;
-            this.btnFind.Location = new System.Drawing.Point(133, 19);
-            this.btnFind.Name = "btnFind";
-            this.btnFind.RippleColor = System.Drawing.Color.Black;
-            this.btnFind.RoundingEnable = false;
-            this.btnFind.Size = new System.Drawing.Size(64, 22);
-            this.btnFind.TabIndex = 3;
-            this.btnFind.Text = "Search";
-            this.btnFind.TextHover = null;
-            this.btnFind.UseDownPressEffectOnClick = false;
-            this.btnFind.UseRippleEffect = true;
-            this.btnFind.UseZoomEffectOnHover = false;
-            this.btnFind.Click += new System.EventHandler(this.BtnFind_Click);
+            this.btnSearch.BackColor = System.Drawing.Color.DarkCyan;
+            this.btnSearch.BackColorAdditional = System.Drawing.Color.Gray;
+            this.btnSearch.BackColorGradientEnabled = false;
+            this.btnSearch.BackColorGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
+            this.btnSearch.BorderColor = System.Drawing.Color.Teal;
+            this.btnSearch.BorderColorEnabled = false;
+            this.btnSearch.BorderColorOnHover = System.Drawing.Color.Teal;
+            this.btnSearch.BorderColorOnHoverEnabled = false;
+            this.btnSearch.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnSearch.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnSearch.ForeColor = System.Drawing.Color.White;
+            this.btnSearch.Location = new System.Drawing.Point(133, 19);
+            this.btnSearch.Name = "btnSearch";
+            this.btnSearch.RippleColor = System.Drawing.Color.Black;
+            this.btnSearch.RoundingEnable = false;
+            this.btnSearch.Size = new System.Drawing.Size(64, 22);
+            this.btnSearch.TabIndex = 3;
+            this.btnSearch.Text = "Search";
+            this.btnSearch.TextHover = null;
+            this.btnSearch.UseDownPressEffectOnClick = false;
+            this.btnSearch.UseRippleEffect = true;
+            this.btnSearch.UseZoomEffectOnHover = false;
+            this.btnSearch.Click += new System.EventHandler(this.BtnSearch_Click);
             // 
             // label1
             // 
@@ -319,7 +378,7 @@ namespace GTA_SA_Effect_Editor
         private System.Windows.Forms.ListBox lbEffects;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox tbFind;
-        private yt_DesignUI.yt_Button btnFind;
+        private yt_DesignUI.yt_Button btnSearch;
         private System.Windows.Forms.Label labelCount;
         private System.Windows.Forms.Panel pnlButtons;
         private System.Windows.Forms.TreeView treeView;
@@ -327,6 +386,8 @@ namespace GTA_SA_Effect_Editor
         private System.Windows.Forms.Button btnExport;
         private System.Windows.Forms.Button btnImport;
         private System.Windows.Forms.Button btnDelete;
+        private yt_DesignUI.yt_Button btnAdd;
+        private yt_DesignUI.yt_Button btnDelTreeItem;
     }
 }
 
