@@ -4,13 +4,18 @@ namespace GTA_SA_Effect_Editor
 {
     class Effect
     {
-        
         public string Name { get; set; }
         public List<string> StartSettings { get; set; } = new List<string>();
         public List<Prim> Prims { get; set; } = new List<Prim>();
         public List<string> EndSettings { get; set; } = new List<string>();
         public string NUM_PRIMS { get; set; }
         public int ID { get; }
+
+        public Effect()
+        {
+            ID = s_id;
+            s_id++;
+        }
 
         public List<string> GetLines()
         {

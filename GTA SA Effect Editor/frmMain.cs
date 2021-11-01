@@ -189,7 +189,6 @@ namespace GTA_SA_Effect_Editor
 
                 List<string> otherEffectsFile = ReadEffectsFile(otherEffectsPath);
 
-                // Поиск эффекта в другом файле
                 int startLine = 0, endLine = 0, selectedIndex = lbEffects.SelectedIndex;
                 Effect effect = DefineEffect(selectedIndex);
 
@@ -216,7 +215,6 @@ namespace GTA_SA_Effect_Editor
                     }
                 }
 
-                // Если он есть, то заменяем его
                 if (isFound)
                 {
                     isFound = false;
@@ -246,7 +244,6 @@ namespace GTA_SA_Effect_Editor
                     }
                 }
 
-                // Если нет, то вставляем эффект в конец файла перед FX_PROJECT_DATA_END:
                 else
                 {
                     FileStream fs = new FileStream(otherEffectsPath, FileMode.Create);
@@ -269,7 +266,6 @@ namespace GTA_SA_Effect_Editor
                                 sw.WriteLine(otherEffectsFile[i]);
                         }
 
-                        // Если нет FX_PROJECT_DATA_END:, то вписываем эффект в конец файла
                         if (!isFound)
                         {
                             sw.WriteLine();
@@ -316,21 +312,19 @@ namespace GTA_SA_Effect_Editor
             Enabled = true;
         }
 
-        private void BtnShowCode_Click(object sender, EventArgs e)
+        private void BtnShowCode_Click(object sender, EventArgs e) //
         {
             bool isFound = false;
             Program.Code.Clear();
             Effect effect = DefineEffect(lbEffects.SelectedIndex);
+            EffectReader er = new EffectReader();
             for (int i = 0; i < treeView.Nodes.Count; i++)
             {
                 if (treeView.Nodes[i] == treeView.SelectedNode)
                 {
                     OpenCodeEditor(effect.Prims[i].GetLines());
                     if (Program.IsEdited)
-                    {
-                        EffectReader er = new EffectReader();
                         effect.Prims[i] = er.ReadPrim(Program.Code, 0);
-                    }
                     break;
                 }
                 for (int j = 0; j < treeView.Nodes[i].Nodes.Count; j++)
@@ -340,10 +334,7 @@ namespace GTA_SA_Effect_Editor
                         OpenCodeEditor(effect.Prims[i].Infos[j].GetLines());
                         isFound = true;
                         if (Program.IsEdited)
-                        {
-                            EffectReader er = new EffectReader();
                             effect.Prims[i].Infos[j] = er.ReadInfo(Program.Code, 0);
-                        }
                         break;
                     }
                     for (int k = 0; k < treeView.Nodes[i].Nodes[j].Nodes.Count; k++)
@@ -353,10 +344,7 @@ namespace GTA_SA_Effect_Editor
                             OpenCodeEditor(effect.Prims[i].Infos[j].Interps[k].GetLines());
                             isFound = true;
                             if (Program.IsEdited)
-                            {
-                                EffectReader er = new EffectReader();
                                 effect.Prims[i].Infos[j].Interps[k] = er.ReadInterp(Program.Code, 0);
-                            }
                             break;
                         }
                         for (int m = 0; m < treeView.Nodes[i].Nodes[j].Nodes[k].Nodes.Count; m++)
@@ -366,10 +354,7 @@ namespace GTA_SA_Effect_Editor
                                 OpenCodeEditor(effect.Prims[i].Infos[j].Interps[k].KeyFloats[m].GetLines());
                                 isFound = true;
                                 if (Program.IsEdited)
-                                {
-                                    EffectReader er = new EffectReader();
                                     effect.Prims[i].Infos[j].Interps[k].KeyFloats[m] = er.ReadKeyFloat(Program.Code, 0);
-                                }
                                 break;
                             }
                         }
@@ -415,7 +400,7 @@ namespace GTA_SA_Effect_Editor
                 case "Add PRIM":
                     effect.Prims.Add(er.ReadPrim(Templates.Prim.ToList(), 0));
                     effect.NUM_PRIMS = $"NUM_PRIMS: {effect.Prims.Count}";
-                    treeView.Nodes.Add($"PRIM{effect.Prims.Count}");
+                    treeView.Nodes.Add($"PRIM");
                     break;
                 case "Add INFO":
                     new frmSelectInfo().ShowDialog();
@@ -519,7 +504,7 @@ namespace GTA_SA_Effect_Editor
                 case "Add KEYFLOAT":
                     effect.Prims[selectedPrim].Infos[selectedInfo].Interps[selectedInterp].KeyFloats.Add(er.ReadKeyFloat(Templates.KeyFloat.ToList(), 0));
                     effect.Prims[selectedPrim].Infos[selectedInfo].Interps[selectedInterp].NUM_KEYS = $"NUM_KEYS: {effect.Prims[selectedPrim].Infos[selectedInfo].Interps[selectedInterp].KeyFloats.Count}";
-                    treeView.Nodes[selectedPrim].Nodes[selectedInfo].Nodes[selectedInterp].Nodes.Add($"KEYFLOAT{effect.Prims[selectedPrim].Infos[selectedInfo].Interps[selectedInterp].KeyFloats.Count}");
+                    treeView.Nodes[selectedPrim].Nodes[selectedInfo].Nodes[selectedInterp].Nodes.Add($"KEYFLOAT");
                     break;
             }
             WriteEffectsFile();
@@ -541,7 +526,7 @@ namespace GTA_SA_Effect_Editor
             }
         }
 
-        private void TreeView_AfterSelect(object sender, TreeViewEventArgs e)
+        private void TreeView_AfterSelect(object sender, TreeViewEventArgs e) //
         {
             btnShowCode.Visible = true;
             bool isFound = false;
@@ -585,6 +570,7 @@ namespace GTA_SA_Effect_Editor
                             selectedPrim = i;
                             selectedInfo = j;
                             selectedInterp = k;
+                            selectedKeyFloat = -1;
 
                             isFound = true;
                             break;
@@ -674,13 +660,13 @@ namespace GTA_SA_Effect_Editor
 
             labelCount.Text = $"Effects count: {effects.Count}";
         }
-        private void UpdateTreeView()
+        private void UpdateTreeView() //
         {
             treeView.Nodes.Clear();
             Effect effect = DefineEffect(lbEffects.SelectedIndex);
             for (int i = 0; i < effect.Prims.Count; i++)
             {
-                treeView.Nodes.Add($"PRIM{i + 1}");
+                treeView.Nodes.Add($"PRIM");
                 for (int j = 0; j < effect.Prims[i].Infos.Count; j++)
                 {
                     treeView.Nodes[i].Nodes.Add(effect.Prims[i].Infos[j].Name);
@@ -689,7 +675,7 @@ namespace GTA_SA_Effect_Editor
                         treeView.Nodes[i].Nodes[j].Nodes.Add(effect.Prims[i].Infos[j].Interps[k].Name);
                         for (int m = 0; m < effect.Prims[i].Infos[j].Interps[k].KeyFloats.Count; m++)
                         {
-                            treeView.Nodes[i].Nodes[j].Nodes[k].Nodes.Add($"KEYFLOAT{m + 1}");
+                            treeView.Nodes[i].Nodes[j].Nodes[k].Nodes.Add($"KEYFLOAT");
                         }
                     }
                 }
@@ -770,12 +756,10 @@ namespace GTA_SA_Effect_Editor
         }
         private Effect DefineEffect(int selectedIndex)
         {
-            Effect effect = new Effect();
             if (btnSearch.Text == "Search")
-                effect = effects[selectedIndex];
+                return effects[selectedIndex];
             else
-                effect = foundEffects[selectedIndex];
-            return effect;
+                return foundEffects[selectedIndex];
         }
     }
 }
