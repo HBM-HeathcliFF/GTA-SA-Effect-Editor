@@ -32,6 +32,8 @@
 
         public static class Infos
         {
+            public static string SelectedInfo { get; set; }
+
             public static string[] SIZE { get; } = new string[]
             {
                 "FX_INFO_SIZE_DATA:",

@@ -408,7 +408,121 @@ namespace GTA_SA_Effect_Editor
 
         private void BtnAdd_Click(object sender, EventArgs e)
         {
-            //
+            Effect effect = DefineEffect(lbEffects.SelectedIndex);
+            EffectReader er = new EffectReader();
+            switch (btnAdd.Text)
+            {
+                case "Add PRIM":
+                    effect.Prims.Add(er.ReadPrim(Templates.Prim.ToList(), 0));
+                    effect.NUM_PRIMS = $"NUM_PRIMS: {effect.Prims.Count}";
+                    treeView.Nodes.Add($"PRIM{effect.Prims.Count}");
+                    break;
+                case "Add INFO":
+                    new frmSelectInfo().ShowDialog();
+                    if (Templates.Infos.SelectedInfo != "")
+                    {
+                        switch (Templates.Infos.SelectedInfo)
+                        {
+                            case "ANIMTEX":
+                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.ANIMTEX.ToList(), 0));
+                                break;
+                            case "ATTRACTPT":
+                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.ATTRACTPT.ToList(), 0));
+                                break;
+                            case "COLOUR":
+                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.COLOUR.ToList(), 0));
+                                break;
+                            case "COLOURBRIGHT":
+                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.COLOURBRIGHT.ToList(), 0));
+                                break;
+                            case "DIR":
+                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.DIR.ToList(), 0));
+                                break;
+                            case "EMANGLE":
+                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.EMANGLE.ToList(), 0));
+                                break;
+                            case "EMDIR":
+                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.EMDIR.ToList(), 0));
+                                break;
+                            case "EMLIFE":
+                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.EMLIFE.ToList(), 0));
+                                break;
+                            case "EMPOS":
+                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.EMPOS.ToList(), 0));
+                                break;
+                            case "EMRATE":
+                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.EMRATE.ToList(), 0));
+                                treeView.Nodes[selectedPrim].Nodes.Add(effect.Prims[selectedPrim].Infos[effect.Prims[selectedPrim].Infos.Count - 1].Name);
+                                break;
+                            case "EMROTATION":
+                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.EMROTATION.ToList(), 0));
+                                break;
+                            case "EMSIZE":
+                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.EMSIZE.ToList(), 0));
+                                break;
+                            case "EMSPEED":
+                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.EMSPEED.ToList(), 0));
+                                break;
+                            case "EMWEATHER":
+                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.EMWEATHER.ToList(), 0));
+                                break;
+                            case "FLAT":
+                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.FLAT.ToList(), 0));
+                                break;
+                            case "FLOAT":
+                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.FLOAT.ToList(), 0));
+                                break;
+                            case "FORCE":
+                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.FORCE.ToList(), 0));
+                                break;
+                            case "FRICTION":
+                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.FRICTION.ToList(), 0));
+                                break;
+                            case "GROUNDCOLLIDE":
+                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.GROUNDCOLLIDE.ToList(), 0));
+                                break;
+                            case "HEATHAZE":
+                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.HEATHAZE.ToList(), 0));
+                                break;
+                            case "JITTER":
+                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.JITTER.ToList(), 0));
+                                break;
+                            case "NOISE":
+                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.NOISE.ToList(), 0));
+                                break;
+                            case "ROTSPEED":
+                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.ROTSPEED.ToList(), 0));
+                                break;
+                            case "SELFLIT":
+                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.SELFLIT.ToList(), 0));
+                                break;
+                            case "SIZE":
+                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.SIZE.ToList(), 0));
+                                break;
+                            case "SPRITERECT":
+                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.SPRITERECT.ToList(), 0));
+                                break;
+                            case "TRAIL":
+                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.TRAIL.ToList(), 0));
+                                break;
+                            case "UNDERWATER":
+                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.UNDERWATER.ToList(), 0));
+                                break;
+                            case "WIND":
+                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.WIND.ToList(), 0));
+                                break;
+                        }
+                        effect.Prims[selectedPrim].NUM_INFOS = $"NUM_INFOS: {effect.Prims[selectedPrim].Infos.Count}";
+                        treeView.Nodes[selectedPrim].Nodes.Add(effect.Prims[selectedPrim].Infos[effect.Prims[selectedPrim].Infos.Count - 1].Name);
+                    }
+                    break;
+                case "Add KEYFLOAT":
+                    effect.Prims[selectedPrim].Infos[selectedInfo].Interps[selectedInterp].KeyFloats.Add(er.ReadKeyFloat(Templates.KeyFloat.ToList(), 0));
+                    effect.Prims[selectedPrim].Infos[selectedInfo].Interps[selectedInterp].NUM_KEYS = $"NUM_KEYS: {effect.Prims[selectedPrim].Infos[selectedInfo].Interps[selectedInterp].KeyFloats.Count}";
+                    treeView.Nodes[selectedPrim].Nodes[selectedInfo].Nodes[selectedInterp].Nodes.Add($"KEYFLOAT{effect.Prims[selectedPrim].Infos[selectedInfo].Interps[selectedInterp].KeyFloats.Count}");
+                    break;
+            }
+            WriteEffectsFile();
         }
         #endregion
 
@@ -418,25 +532,8 @@ namespace GTA_SA_Effect_Editor
             {
                 pnlButtons.Visible = true;
                 btnShowCode.Visible = false;
-                treeView.Nodes.Clear();
 
-                Effect effect = DefineEffect(lbEffects.SelectedIndex);
-                for (int i = 0; i < effect.Prims.Count; i++)
-                {
-                    treeView.Nodes.Add($"PRIM{i + 1}");
-                    for (int j = 0; j < effect.Prims[i].Infos.Count; j++)
-                    {
-                        treeView.Nodes[i].Nodes.Add(effect.Prims[i].Infos[j].Name);
-                        for (int k = 0; k < effect.Prims[i].Infos[j].Interps.Count; k++)
-                        {
-                            treeView.Nodes[i].Nodes[j].Nodes.Add(effect.Prims[i].Infos[j].Interps[k].Name);
-                            for (int m = 0; m < effect.Prims[i].Infos[j].Interps[k].KeyFloats.Count; m++)
-                            {
-                                treeView.Nodes[i].Nodes[j].Nodes[k].Nodes.Add($"KEYFLOAT{m + 1}");
-                            }
-                        }
-                    }
-                }
+                UpdateTreeView();
 
                 btnAdd.Text = "Add PRIM";
                 btnAdd.Visible = true;
@@ -492,7 +589,7 @@ namespace GTA_SA_Effect_Editor
                             isFound = true;
                             break;
                         }
-                        for (int m = 0; m < treeView.Nodes[i].Nodes[j].Nodes[m].Nodes.Count; m++)
+                        for (int m = 0; m < treeView.Nodes[i].Nodes[j].Nodes[k].Nodes.Count; m++)
                         {
                             if (treeView.Nodes[i].Nodes[j].Nodes[k].Nodes[m] == treeView.SelectedNode)
                             {
@@ -576,6 +673,27 @@ namespace GTA_SA_Effect_Editor
             }
 
             labelCount.Text = $"Effects count: {effects.Count}";
+        }
+        private void UpdateTreeView()
+        {
+            treeView.Nodes.Clear();
+            Effect effect = DefineEffect(lbEffects.SelectedIndex);
+            for (int i = 0; i < effect.Prims.Count; i++)
+            {
+                treeView.Nodes.Add($"PRIM{i + 1}");
+                for (int j = 0; j < effect.Prims[i].Infos.Count; j++)
+                {
+                    treeView.Nodes[i].Nodes.Add(effect.Prims[i].Infos[j].Name);
+                    for (int k = 0; k < effect.Prims[i].Infos[j].Interps.Count; k++)
+                    {
+                        treeView.Nodes[i].Nodes[j].Nodes.Add(effect.Prims[i].Infos[j].Interps[k].Name);
+                        for (int m = 0; m < effect.Prims[i].Infos[j].Interps[k].KeyFloats.Count; m++)
+                        {
+                            treeView.Nodes[i].Nodes[j].Nodes[k].Nodes.Add($"KEYFLOAT{m + 1}");
+                        }
+                    }
+                }
+            }
         }
         private void ClearEffects()
         {

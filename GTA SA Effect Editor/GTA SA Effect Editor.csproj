@@ -90,6 +90,12 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="FormStyleItems\Drawer.cs" />
+    <Compile Include="frmSelectInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmSelectInfo.Designer.cs">
+      <DependentUpon>frmSelectInfo.cs</DependentUpon>
+    </Compile>
     <Compile Include="FXPComponents\Effect.cs" />
     <Compile Include="FormStyleItems\FlatColors.cs" />
     <Compile Include="frmMain.cs">
@@ -113,6 +119,9 @@
     <Compile Include="Templates.cs" />
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmSelectInfo.resx">
+      <DependentUpon>frmSelectInfo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmShowCode.resx">
       <DependentUpon>frmShowCode.cs</DependentUpon>
