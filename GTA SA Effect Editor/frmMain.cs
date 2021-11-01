@@ -27,14 +27,6 @@ namespace GTA_SA_Effect_Editor
         #endregion
 
         #region Variables
-        enum Component
-        {
-            PRIM,
-            INFO,
-            INTERP,
-            KEYFLOAT
-        }
-
         string lastDirectory = "";
         List<string> effectsFile = new List<string>();
         List<Effect> effects = new List<Effect>();
@@ -405,10 +397,6 @@ namespace GTA_SA_Effect_Editor
                     effects[lbEffects.SelectedIndex].Prims[selectedPrim].NUM_INFOS = $"NUM_INFOS: {effects[lbEffects.SelectedIndex].Prims[selectedPrim].Infos.Count}";
                     treeView.SelectedNode.Remove();
                     break;
-                case "Delete INTERP":
-                    effects[lbEffects.SelectedIndex].Prims[selectedPrim].Infos[selectedInfo].Interps.RemoveAt(selectedInterp);
-                    treeView.SelectedNode.Remove();
-                    break;
                 case "Delete KEYFLOAT":
                     effects[lbEffects.SelectedIndex].Prims[selectedPrim].Infos[selectedInfo].Interps[selectedInterp].KeyFloats.RemoveAt(selectedKeyFloat);
                     effects[lbEffects.SelectedIndex].Prims[selectedPrim].Infos[selectedInfo].Interps[selectedInterp].NUM_KEYS = $"NUM_KEYS: {effects[lbEffects.SelectedIndex].Prims[selectedPrim].Infos[selectedInfo].Interps[selectedInterp].KeyFloats.Count}";
@@ -480,8 +468,7 @@ namespace GTA_SA_Effect_Editor
                     {
                         btnDelTreeItem.Text = "Delete INFO";
                         btnDelTreeItem.Visible = true;
-                        btnAdd.Text = "Add INTERP";
-                        btnAdd.Visible = true;
+                        btnAdd.Visible = false;
 
                         selectedPrim = i;
                         selectedInfo = j;
@@ -494,8 +481,7 @@ namespace GTA_SA_Effect_Editor
                     {
                         if (treeView.Nodes[i].Nodes[j].Nodes[k] == treeView.SelectedNode)
                         {
-                            btnDelTreeItem.Text = "Delete INTERP";
-                            btnDelTreeItem.Visible = true;
+                            btnDelTreeItem.Visible = false;
                             btnAdd.Text = "Add KEYFLOAT";
                             btnAdd.Visible = true;
 
