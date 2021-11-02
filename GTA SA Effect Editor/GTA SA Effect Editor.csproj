@@ -52,7 +52,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Autocomplete.cs" />
     <Compile Include="EffectReader.cs" />
     <Compile Include="FormStyleItems\Animation\Animation.cs" />
     <Compile Include="FormStyleItems\Animation\Animator.cs" />
