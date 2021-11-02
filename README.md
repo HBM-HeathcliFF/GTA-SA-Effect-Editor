@@ -5,7 +5,7 @@ Currently implemented:
 - Remove effect from open effects.fxp
 - Import of an effect from open fxp/fxs file into another fxp/fxs file (you will need to select it after clicking the import button)
 - Export the effect as a file with the extension txt, fxp or fxs
-- Viewing and editing the PRIMs and INFOs of the selected effect.
+- View, edit, delete and add the PRIMs, INFOs, INTERPs (only view and edit), KEYFLOATs of the selected effect.
 
 To open a fxp / fxs / txt file, you need to enter the full path, or click on the "Browse" button and select the requared file.
 
