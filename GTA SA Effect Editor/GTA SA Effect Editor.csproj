@@ -52,6 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Autocomplete.cs" />
     <Compile Include="EffectReader.cs" />
     <Compile Include="FormStyleItems\Animation\Animation.cs" />
     <Compile Include="FormStyleItems\Animation\Animator.cs" />
@@ -155,6 +156,5 @@
     <Content Include="Resources\import.png" />
     <Content Include="Resources\export.png" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

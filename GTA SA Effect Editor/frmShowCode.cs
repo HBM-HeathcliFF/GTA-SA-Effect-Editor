@@ -11,16 +11,16 @@ namespace GTA_SA_Effect_Editor
             Program.IsEdited = false;
             for (int i = 0; i < Program.Code.Count; i++)
             {
-                rtbCode.Text += Program.Code[i];
+                tbCode.Text += Program.Code[i];
                 if (i != Program.Code.Count - 1)
-                    rtbCode.Text += Environment.NewLine;
+                    tbCode.Text += Environment.NewLine;
             }
         }
 
         private void BtnApply_Click(object sender, System.EventArgs e)
         {
             Program.Code.Clear();
-            foreach (var line in rtbCode.Lines)
+            foreach (var line in tbCode.Lines)
             {
                 Program.Code.Add(line);
             }
