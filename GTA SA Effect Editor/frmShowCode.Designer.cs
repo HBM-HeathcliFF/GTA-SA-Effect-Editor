@@ -32,7 +32,7 @@ namespace GTA_SA_Effect_Editor
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmShowCode));
             this.btnApply = new yt_DesignUI.yt_Button();
             this.btnCancel = new yt_DesignUI.yt_Button();
-            this.tbCode = new System.Windows.Forms.TextBox();
+            this.rtbCode = new System.Windows.Forms.RichTextBox();
             this.SuspendLayout();
             // 
             // btnApply
@@ -89,28 +89,26 @@ namespace GTA_SA_Effect_Editor
             this.btnCancel.UseZoomEffectOnHover = false;
             this.btnCancel.Click += new System.EventHandler(this.BtnCancel_Click);
             // 
-            // tbCode
+            // rtbCode
             // 
-            this.tbCode.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.rtbCode.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbCode.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
-            this.tbCode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(44)))), ((int)(((byte)(44)))));
-            this.tbCode.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbCode.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tbCode.ForeColor = System.Drawing.Color.White;
-            this.tbCode.Location = new System.Drawing.Point(12, 12);
-            this.tbCode.Multiline = true;
-            this.tbCode.Name = "tbCode";
-            this.tbCode.Size = new System.Drawing.Size(392, 234);
-            this.tbCode.TabIndex = 8;
+            this.rtbCode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(44)))), ((int)(((byte)(44)))));
+            this.rtbCode.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.rtbCode.ForeColor = System.Drawing.Color.White;
+            this.rtbCode.Location = new System.Drawing.Point(13, 12);
+            this.rtbCode.Name = "rtbCode";
+            this.rtbCode.Size = new System.Drawing.Size(392, 233);
+            this.rtbCode.TabIndex = 9;
+            this.rtbCode.Text = "";
             // 
             // frmShowCode
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(416, 286);
-            this.Controls.Add(this.tbCode);
+            this.Controls.Add(this.rtbCode);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnApply);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -119,13 +117,12 @@ namespace GTA_SA_Effect_Editor
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Code editor";
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
         private yt_DesignUI.yt_Button btnApply;
         private yt_DesignUI.yt_Button btnCancel;
-        private System.Windows.Forms.TextBox tbCode;
+        private System.Windows.Forms.RichTextBox rtbCode;
     }
 }
