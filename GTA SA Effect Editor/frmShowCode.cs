@@ -1,19 +1,26 @@
 ﻿using System;
 using System.Drawing;
+using System.Threading;
 using yt_DesignUI.Controls;
 
 namespace GTA_SA_Effect_Editor
 {
     public partial class frmShowCode : ShadowedForm
     {
-        public frmShowCode()
+        public static DateTime lastChange { get; set; }
+        bool isAlreadyEdited = true;
+        int selectionStart = 0;
+
+        #region Controls
+
+        private void RtbCode_TextChanged(object sender, EventArgs e)
         {
-            InitializeComponent();
-            Program.IsEdited = false;
-            rtbCode.Lines = Program.Code.ToArray();
-            HighlightSyntax();
+            isAlreadyEdited = false;
+            lastChange = DateTime.Now;
+            ThreadPool.QueueUserWorkItem(ThreadProc);
         }
 
+        #region Buttons
         private void BtnApply_Click(object sender, EventArgs e)
         {
             Program.Code.Clear();
@@ -29,49 +36,67 @@ namespace GTA_SA_Effect_Editor
         {
             Close();
         }
+        #endregion
+
+        #endregion
+
+        public frmShowCode()
+        {
+            InitializeComponent();
+            Program.IsEdited = false;
+            rtbCode.Lines = Program.Code.ToArray();
+            HighlightSyntax();
+            rtbCode.TextChanged += RtbCode_TextChanged;
+        }
 
         private void SetColor(string[] keyWords, Color color)
         {
-            int crutch = 0;
-            bool isFirst = true;
             foreach (string keyWord in keyWords)
             {
-                if (keyWord == "FX_INTERP_DATA")
-                {
-                    for (int i = 0; i < rtbCode.Lines.Length; i++)
-                    {
-                        if (rtbCode.Lines[i].Contains(keyWord))
-                        {
-                            crutch = i;
-                            break;
-                        }
-                    }
-                }
-
                 int index = rtbCode.Text.IndexOf(keyWord);
                 while (index != -1)
                 {
-                    if (isFirst)
-                    {
-                        if (keyWord == "FX_INTERP_DATA")
-                            index -= crutch;
-                        isFirst = false;
-                    }
-                    
                     rtbCode.SelectionStart = index;
                     rtbCode.SelectionLength = keyWord.Length;
                     rtbCode.SelectionColor = color;
-                    index = rtbCode.Text.IndexOf(keyWord, index + 1);
+                    index += keyWord.Length;
+                    index = rtbCode.Text.IndexOf(keyWord, index);
                 }
             }
         }
-        
         private void HighlightSyntax()
         {
+            selectionStart = rtbCode.SelectionStart;
+            rtbCode.BeginUpdate();
+
+            rtbCode.SelectionStart = 0;
+            rtbCode.SelectionLength = rtbCode.TextLength;
+            rtbCode.SelectionColor = Color.White;
+
             SetColor(Autocomplete.NavyBlue, Color.DodgerBlue);
             SetColor(Autocomplete.Yellow, Color.Gold);
             SetColor(Autocomplete.Green, Color.MediumSpringGreen);
             SetColor(Autocomplete.Blue, Color.Turquoise);
+
+            rtbCode.EndUpdate();
+            rtbCode.SelectionStart = selectionStart;
+            rtbCode.SelectionLength = 0;
+        }
+        private void ThreadProc(Object stateInfo)
+        {
+            Thread.Sleep(750);
+
+            if ((DateTime.Now - lastChange).TotalMilliseconds >= 750)
+            {
+                Action action = () =>
+                {
+                    HighlightSyntax();
+                    isAlreadyEdited = true;
+                };
+
+                if (!isAlreadyEdited)
+                    Invoke(action);
+            }
         }
     }
 }

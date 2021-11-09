@@ -32,7 +32,7 @@ namespace GTA_SA_Effect_Editor
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmShowCode));
             this.btnApply = new yt_DesignUI.yt_Button();
             this.btnCancel = new yt_DesignUI.yt_Button();
-            this.rtbCode = new System.Windows.Forms.RichTextBox();
+            this.rtbCode = new MyRichTextBox();
             this.SuspendLayout();
             // 
             // btnApply
@@ -123,6 +123,6 @@ namespace GTA_SA_Effect_Editor
         #endregion
         private yt_DesignUI.yt_Button btnApply;
         private yt_DesignUI.yt_Button btnCancel;
-        private System.Windows.Forms.RichTextBox rtbCode;
+        private MyRichTextBox rtbCode;
     }
 }

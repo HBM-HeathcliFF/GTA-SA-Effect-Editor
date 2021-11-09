@@ -115,6 +115,9 @@
     <Compile Include="FXPComponents\Interp.cs" />
     <Compile Include="FXPComponents\KeyFloat.cs" />
     <Compile Include="FXPComponents\Prim.cs" />
+    <Compile Include="FormStyleItems\MyRichTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Templates.cs" />
