@@ -11,10 +11,7 @@ namespace GTA_SA_Effect_Editor
             InitializeComponent();
             Program.IsEdited = false;
             rtbCode.Lines = Program.Code.ToArray();
-            HighlightSyntax(Autocomplete.NavyBlue, Color.DodgerBlue);
-            HighlightSyntax(Autocomplete.Yellow, Color.Gold);
-            HighlightSyntax(Autocomplete.Green, Color.MediumSpringGreen);
-            HighlightSyntax(Autocomplete.Blue, Color.Turquoise);
+            HighlightSyntax();
         }
 
         private void BtnApply_Click(object sender, EventArgs e)
@@ -33,37 +30,48 @@ namespace GTA_SA_Effect_Editor
             Close();
         }
 
-        private void HighlightSyntax(string[] keyWords, Color color)
+        private void SetColor(string[] keyWords, Color color)
         {
             int crutch = 0;
-            bool isFirstInterp = true;
+            bool isFirst = true;
             foreach (string keyWord in keyWords)
             {
-                for (int i = 0; i < rtbCode.Lines.Length; i++)
+                if (keyWord == "FX_INTERP_DATA")
                 {
-                    if (rtbCode.Lines[i].Contains(keyWord))
+                    for (int i = 0; i < rtbCode.Lines.Length; i++)
                     {
-                        crutch = i;
-                        break;
+                        if (rtbCode.Lines[i].Contains(keyWord))
+                        {
+                            crutch = i;
+                            break;
+                        }
                     }
                 }
 
                 int index = rtbCode.Text.IndexOf(keyWord);
                 while (index != -1)
                 {
-                    if (isFirstInterp)
+                    if (isFirst)
                     {
                         if (keyWord == "FX_INTERP_DATA")
                             index -= crutch;
-                        isFirstInterp = false;
+                        isFirst = false;
                     }
-
+                    
                     rtbCode.SelectionStart = index;
                     rtbCode.SelectionLength = keyWord.Length;
                     rtbCode.SelectionColor = color;
                     index = rtbCode.Text.IndexOf(keyWord, index + 1);
                 }
             }
+        }
+        
+        private void HighlightSyntax()
+        {
+            SetColor(Autocomplete.NavyBlue, Color.DodgerBlue);
+            SetColor(Autocomplete.Yellow, Color.Gold);
+            SetColor(Autocomplete.Green, Color.MediumSpringGreen);
+            SetColor(Autocomplete.Blue, Color.Turquoise);
         }
     }
 }
