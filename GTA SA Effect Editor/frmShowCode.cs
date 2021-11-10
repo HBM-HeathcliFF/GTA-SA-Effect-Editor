@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Threading;
+using System.Windows.Forms;
 using yt_DesignUI.Controls;
 
 namespace GTA_SA_Effect_Editor
@@ -81,21 +82,19 @@ namespace GTA_SA_Effect_Editor
             rtbCode.EndUpdate();
             rtbCode.SelectionStart = selectionStart;
             rtbCode.SelectionLength = 0;
+            rtbCode.SelectionColor = Color.White;
         }
         private void ThreadProc(Object stateInfo)
         {
             Thread.Sleep(750);
 
-            if ((DateTime.Now - lastChange).TotalMilliseconds >= 750)
+            if ((DateTime.Now - lastChange).TotalMilliseconds >= 750 && !isAlreadyEdited)
             {
-                Action action = () =>
+                Invoke((MethodInvoker)(() =>
                 {
                     HighlightSyntax();
                     isAlreadyEdited = true;
-                };
-
-                if (!isAlreadyEdited)
-                    Invoke(action);
+                }));
             }
         }
     }
