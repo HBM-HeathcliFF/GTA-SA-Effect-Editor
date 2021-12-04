@@ -19,7 +19,7 @@ namespace GTA_SA_Effect_Editor
         {
             int i = currentPositon, numberSettings = 0;
             Effect effect = new Effect();
-            for (; !effectsFile[i - 1].Contains("TXDNAME: NOTXDSET"); i++)
+            for (; !effectsFile[i].Contains("TXDNAME: NOTXDSET"); i++)
             {
                 if (effectsFile[i].Contains("FILENAME"))
                 {
@@ -46,6 +46,7 @@ namespace GTA_SA_Effect_Editor
                 if (numberSettings == 1)
                     effect.EndSettings.Add(effectsFile[i]);
             }
+            effect.EndSettings.Add(effectsFile[i]);
 
             return effect;
         }

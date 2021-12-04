@@ -48,6 +48,7 @@ namespace GTA_SA_Effect_Editor
             this.btnSearch = new yt_DesignUI.yt_Button();
             this.label1 = new System.Windows.Forms.Label();
             this.lbEffects = new System.Windows.Forms.ListBox();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.gbEffects.SuspendLayout();
             this.pnlButtons.SuspendLayout();
             this.SuspendLayout();
@@ -388,6 +389,7 @@ namespace GTA_SA_Effect_Editor
         private System.Windows.Forms.Button btnDelete;
         private yt_DesignUI.yt_Button btnAdd;
         private yt_DesignUI.yt_Button btnDelTreeItem;
+        private System.Windows.Forms.ToolTip toolTip;
     }
 }
 

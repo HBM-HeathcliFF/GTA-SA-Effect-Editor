@@ -606,6 +606,15 @@ namespace GTA_SA_Effect_Editor
             ForbidMultipleLaunches();
             InitializeComponent();
 
+            toolTip.AutoPopDelay = 5000;
+            toolTip.InitialDelay = 1000;
+            toolTip.ReshowDelay = 500;
+            toolTip.ShowAlways = true;
+
+            toolTip.SetToolTip(btnDelete, "Delete effect");
+            toolTip.SetToolTip(btnImport, "Import effect in another effect(s) file");
+            toolTip.SetToolTip(btnExport, "Create a new file with the selected effect");
+
             Animator.Start();
             try
             {
