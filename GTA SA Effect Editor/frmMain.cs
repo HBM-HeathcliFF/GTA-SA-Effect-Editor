@@ -1,6 +1,8 @@
-﻿using Microsoft.Win32;
+﻿using GTA_SA_Effect_Editor.Interfaces;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -27,11 +29,8 @@ namespace GTA_SA_Effect_Editor
         #endregion
 
         #region Variables
-        string lastDirectory = "";
-        List<string> effectsFile = new List<string>();
-        List<Effect> effects = new List<Effect>();
-        List<Effect> foundEffects = new List<Effect>();
-        int selectedPrim = -1, selectedInfo = -1, selectedInterp = -1, selectedKeyFloat = -1;
+        BindingList<Effect> effects = new BindingList<Effect>();
+        int selectedPrim, selectedInfo, selectedInterp, selectedKeyFloat;
         #endregion
 
         #region Controls
@@ -59,17 +58,17 @@ namespace GTA_SA_Effect_Editor
             {
                 if (egtbPath.Text.EndsWith(".txt") || egtbPath.Text.EndsWith(".fxp") || egtbPath.Text.EndsWith(".fxs"))
                 {
-                    UpdateEffectList();
+                    ResetEffectView();
+                    ReadEffects();
+                    FillListOfEffects();
                 }
             }
             else
             {
                 labelCount.Text = "";
-                effects.Clear();
-                ClearEffects();
-                HideLBSelButtons();
-                HideTVSelButtons();
+                ResetEffectView();
                 ResetSearchBlock();
+                effects.Clear();
             }
         }
         #endregion
@@ -77,73 +76,43 @@ namespace GTA_SA_Effect_Editor
         #region Buttons
         private void BtnBrowse_Click(object sender, EventArgs e)
         {
-            if (lastDirectory == "")
-                lastDirectory = @"C:\";
             OpenFileDialog ofd = new OpenFileDialog
             {
                 Multiselect = false,
                 Title = "Укажите путь к файлу эффектов",
-                InitialDirectory = lastDirectory,
-                Filter = "Текстовый файл (*.txt, *.fxp, *.fxs)|*.TXT;*.FXP;*.FXS"
+                InitialDirectory = GetLastDirectory(),
+                Filter = "Текстовый файл (*.txt, *.fxp, *.fxs)|*.TXT;*.FXP;*.FXS;)"
             };
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 egtbPath.Text = ofd.FileName;
-                lastDirectory = ofd.FileName;
-                UpdateEffectList();
+                Registry.CurrentUser.CreateSubKey(@"Software\GTA SA Effect Editor").SetValue("path", ofd.FileName);
+                ResetEffectView();
+                ReadEffects();
+                FillListOfEffects();
             }
         }
-
         private void BtnSearch_Click(object sender, EventArgs e)
         {
             if (btnSearch.Text == "Search")
             {
                 if (tbFind.Text != "Texture name" && tbFind.Text != "" && lbEffects.Items.Count > 0)
                 {
-                    ClearEffects();
-                    HideLBSelButtons();
-                    HideTVSelButtons();
-                    foundEffects.Clear();
+                    ResetEffectView();
 
-                    bool isFound = false;
-                    foreach (var effect in effects)
-                    {
-                        foreach (var prim in effect.Prims)
-                        {
-                            foreach (var texture in prim.Textures)
-                            {
-                                if (texture.Contains(tbFind.Text))
-                                {
-                                    foundEffects.Add(effect);
-                                    lbEffects.Items.Add(effect.Name);
-                                    isFound = true;
-                                    break;
-                                }
-                            }
-                            if (isFound)
-                                break;
-                        }
-                        isFound = false;
-                    }
+                    FindEffects();
 
-                    labelCount.Text = $"Effects count: {foundEffects.Count}";
+                    labelCount.Text = $"Effects count: {lbEffects.Items.Count}";
                     btnSearch.Text = "Reset";
                 }
             }
             else
             {
-                ClearEffects();
-                HideLBSelButtons();
-                HideTVSelButtons();
+                ResetEffectView();
                 ResetSearchBlock();
-                foreach (var effect in effects)
-                {
-                    lbEffects.Items.Add(effect.Name);
-                }
-                labelCount.Text = $"Effects count: {effects.Count}";
+                FillListOfEffects();
             }
         }
-
         private void BtnDelete_Click(object sender, EventArgs e)
         {
             Enabled = false;
@@ -151,157 +120,54 @@ namespace GTA_SA_Effect_Editor
             pnlButtons.Visible = false;
 
             int index = lbEffects.SelectedIndex;
-            lbEffects.Items.RemoveAt(index);
-            Effect effect = DefineEffect(index);
-            DeleteEffect(effect.ID);
-            if (index == lbEffects.Items.Count)
-            {
-                if (index != 0)
-                    lbEffects.SelectedIndex = index - 1;
-            }
-            else
-                lbEffects.SelectedIndex = index;
 
-            labelCount.Text = $"Effects count: {effects.Count}";
+            effects.RemoveAt(index);
+            LbEffects_SelectedIndexChanged(null, null);
+
+            labelCount.Text = $"Effects count: {lbEffects.Items.Count}";
 
             WriteEffectsFile();
 
             Enabled = true;
         }
-
         private void BtnImport_Click(object sender, EventArgs e)
         {
             Enabled = false;
 
-            if (lastDirectory == "")
-                lastDirectory = @"C:\";
             OpenFileDialog ofd = new OpenFileDialog
             {
                 Multiselect = false,
                 Title = "Укажите путь к файлу эффектов",
-                InitialDirectory = lastDirectory,
-                Filter = "Текстовый файл (*.txt, *.fxp, *.fxs)|*.TXT;*.FXP;*.FXS"
+                InitialDirectory = GetLastDirectory(),
+                Filter = "Текстовый файл (*.txt, *.fxp, *.fxs)|*.TXT;*.FXP;*.FXS;"
             };
             if (ofd.ShowDialog() == DialogResult.OK)
             {
-                lastDirectory = ofd.FileName;
                 string otherEffectsPath = ofd.FileName;
-
                 List<string> otherEffectsFile = ReadEffectsFile(otherEffectsPath);
-
-                int startLine = 0, endLine = 0, selectedIndex = lbEffects.SelectedIndex;
-                Effect effect = DefineEffect(selectedIndex);
-
-                bool isFound = false;
-                for (int i = otherEffectsFile.Count - 1; i >= 0; i--)
-                {
-                    if (otherEffectsFile[i].Contains("TXDNAME: NOTXDSET"))
-                        endLine = i;
-                    if (otherEffectsFile[i].Contains("FILENAME"))
-                    {
-                        int startIndex = otherEffectsFile[i].LastIndexOf('/') + 1;
-                        int endIndex = otherEffectsFile[i].IndexOf('.');
-                        string name = otherEffectsFile[i].Substring(startIndex, endIndex - startIndex);
-                        if (name == effect.Name)
-                            isFound = true;
-                    }
-                    if (otherEffectsFile[i].Contains("FX_SYSTEM_DATA"))
-                    {
-                        if (isFound)
-                        {
-                            startLine = i;
-                            break;
-                        }
-                    }
-                }
-
-                if (isFound)
-                {
-                    isFound = false;
-                    FileStream fs = new FileStream(otherEffectsPath, FileMode.Create);
-                    using (StreamWriter sw = new StreamWriter(fs, Encoding.GetEncoding(1251)))
-                    {
-                        if (startLine == 0)
-                            isFound = true;
-                        for (int i = 0; i < otherEffectsFile.Count; i++)
-                        {
-                            if (!isFound)
-                            {
-                                sw.WriteLine(otherEffectsFile[i]);
-                                if (i == startLine - 1)
-                                    isFound = true;
-                            }
-                            else
-                            {
-                                foreach (var line in effect.GetLines())
-                                {
-                                    sw.WriteLine(line);
-                                }
-                                i = endLine;
-                                isFound = false;
-                            }
-                        }
-                    }
-                }
-
-                else
-                {
-                    FileStream fs = new FileStream(otherEffectsPath, FileMode.Create);
-                    using (StreamWriter sw = new StreamWriter(fs, Encoding.GetEncoding(1251)))
-                    {
-                        for (int i = 0; i < otherEffectsFile.Count; i++)
-                        {
-                            if (otherEffectsFile[i].Contains("FX_PROJECT_DATA_END"))
-                            {
-                                foreach (var line in effect.GetLines())
-                                {
-                                    sw.WriteLine(line);
-                                }
-                                sw.WriteLine();
-                                sw.WriteLine("FX_PROJECT_DATA_END:");
-                                isFound = true;
-                                break;
-                            }
-                            else
-                                sw.WriteLine(otherEffectsFile[i]);
-                        }
-
-                        if (!isFound)
-                        {
-                            sw.WriteLine();
-                            foreach (var line in effect.GetLines())
-                            {
-                                sw.WriteLine(line);
-                            }
-                        }
-                    }
-                }
+                ImportEffect(otherEffectsPath, otherEffectsFile);
             }
 
             Enabled = true;
         }
-
         private void BtnExport_Click(object sender, EventArgs e)
         {
             Enabled = false;
 
-            if (lastDirectory == "")
-                lastDirectory = @"C:\";
             SaveFileDialog sfd = new SaveFileDialog
             {
                 Title = "Экспорт эффекта",
-                InitialDirectory = lastDirectory,
+                InitialDirectory = GetLastDirectory(),
                 Filter = "Эффект (*.fxs)|*.fxs|Контейнер эффектов (*.fxp)|*.fxp|Текстовый файл (*.txt)|*.txt",
                 AddExtension = true,
                 FileName = "Новый эффект"
             };
             if (sfd.ShowDialog() == DialogResult.OK)
             {
-                lastDirectory = sfd.FileName;
                 FileStream fs = new FileStream(sfd.FileName, FileMode.Create);
                 using (StreamWriter sw = new StreamWriter(fs, Encoding.GetEncoding(1251)))
                 {
-                    Effect effect = DefineEffect(lbEffects.SelectedIndex);
+                    Effect effect = effects[lbEffects.SelectedIndex];
                     foreach (var line in effect.GetLines())
                     {
                         sw.WriteLine(line);
@@ -311,200 +177,71 @@ namespace GTA_SA_Effect_Editor
 
             Enabled = true;
         }
-
-        private void BtnShowCode_Click(object sender, EventArgs e) //
+        private void BtnNewEffect_Click(object sender, EventArgs e)
         {
-            bool isFound = false;
-            Program.Code.Clear();
-            Effect effect = DefineEffect(lbEffects.SelectedIndex);
-            EffectReader er = new EffectReader();
-            for (int i = 0; i < treeView.Nodes.Count; i++)
+            new frmCreateNewEffect().ShowDialog();
+            
+            if (Program.EffectName != "")
             {
-                if (treeView.Nodes[i] == treeView.SelectedNode)
-                {
-                    OpenCodeEditor(effect.Prims[i].GetLines());
-                    if (Program.IsEdited)
-                        effect.Prims[i] = er.ReadPrim(Program.Code, 0);
-                    break;
-                }
-                for (int j = 0; j < treeView.Nodes[i].Nodes.Count; j++)
-                {
-                    if (treeView.Nodes[i].Nodes[j] == treeView.SelectedNode)
-                    {
-                        OpenCodeEditor(effect.Prims[i].Infos[j].GetLines());
-                        isFound = true;
-                        if (Program.IsEdited)
-                            effect.Prims[i].Infos[j] = er.ReadInfo(Program.Code, 0);
-                        break;
-                    }
-                    for (int k = 0; k < treeView.Nodes[i].Nodes[j].Nodes.Count; k++)
-                    {
-                        if (treeView.Nodes[i].Nodes[j].Nodes[k] == treeView.SelectedNode)
-                        {
-                            OpenCodeEditor(effect.Prims[i].Infos[j].Interps[k].GetLines());
-                            isFound = true;
-                            if (Program.IsEdited)
-                                effect.Prims[i].Infos[j].Interps[k] = er.ReadInterp(Program.Code, 0);
-                            break;
-                        }
-                        for (int m = 0; m < treeView.Nodes[i].Nodes[j].Nodes[k].Nodes.Count; m++)
-                        {
-                            if (treeView.Nodes[i].Nodes[j].Nodes[k].Nodes[m] == treeView.SelectedNode)
-                            {
-                                OpenCodeEditor(effect.Prims[i].Infos[j].Interps[k].KeyFloats[m].GetLines());
-                                isFound = true;
-                                if (Program.IsEdited)
-                                    effect.Prims[i].Infos[j].Interps[k].KeyFloats[m] = er.ReadKeyFloat(Program.Code, 0);
-                                break;
-                            }
-                        }
-                    }
-                }
-                if (isFound)
-                    break;
-            }
-
-            if (Program.IsEdited)
+                EffectParser ep = new EffectParser();
+                Effect effect = ep.ParseEffect(Templates.Effect.ToList(), 0) as Effect;
+                effect.Name = Program.EffectName;
+                effects.Add(effect);
                 WriteEffectsFile();
+            }
         }
-
+        private void BtnShowEffectCode_Click(object sender, EventArgs e)
+        {
+            Program.Code.Clear();
+            PrintCode(effects[lbEffects.SelectedIndex]);
+        }
+        private void BtnShowCode_Click(object sender, EventArgs e)
+        {
+            Program.Code.Clear();
+            var node = GetSelectedNode();
+            PrintCode(node);
+        }
         private void BtnDelTreeItem_Click(object sender, EventArgs e)
         {
+            IFxsComponent selectedNode = GetSelectedNode();
+
             switch (btnDelTreeItem.Text)
             {
                 case "Delete PRIM":
-                    effects[lbEffects.SelectedIndex].Prims.RemoveAt(selectedPrim);
-                    effects[lbEffects.SelectedIndex].NUM_PRIMS = $"NUM_PRIMS: {effects[lbEffects.SelectedIndex].Prims.Count}";
-                    treeView.SelectedNode.Remove();
+                    RemoveNode(ref selectedNode, effects[lbEffects.SelectedIndex]);
                     break;
                 case "Delete INFO":
-                    effects[lbEffects.SelectedIndex].Prims[selectedPrim].Infos.RemoveAt(selectedInfo);
-                    effects[lbEffects.SelectedIndex].Prims[selectedPrim].NUM_INFOS = $"NUM_INFOS: {effects[lbEffects.SelectedIndex].Prims[selectedPrim].Infos.Count}";
-                    treeView.SelectedNode.Remove();
+                    RemoveNode(ref selectedNode, effects[lbEffects.SelectedIndex].Nodes.ToList()[selectedPrim]);
                     break;
                 case "Delete KEYFLOAT":
-                    effects[lbEffects.SelectedIndex].Prims[selectedPrim].Infos[selectedInfo].Interps[selectedInterp].KeyFloats.RemoveAt(selectedKeyFloat);
-                    effects[lbEffects.SelectedIndex].Prims[selectedPrim].Infos[selectedInfo].Interps[selectedInterp].NUM_KEYS = $"NUM_KEYS: {effects[lbEffects.SelectedIndex].Prims[selectedPrim].Infos[selectedInfo].Interps[selectedInterp].KeyFloats.Count}";
-                    treeView.SelectedNode.Remove();
+                    RemoveNode(ref selectedNode, effects[lbEffects.SelectedIndex].Nodes.ToList()[selectedPrim].Nodes.ToList()[selectedInfo].Nodes.ToList()[selectedInterp]);
                     break;
             }
             WriteEffectsFile();
         }
-
         private void BtnAdd_Click(object sender, EventArgs e)
         {
-            Effect effect = DefineEffect(lbEffects.SelectedIndex);
-            EffectReader er = new EffectReader();
+            EffectParser ep = new EffectParser();
             switch (btnAdd.Text)
             {
                 case "Add PRIM":
-                    effect.Prims.Add(er.ReadPrim(Templates.Prim.ToList(), 0));
-                    effect.NUM_PRIMS = $"NUM_PRIMS: {effect.Prims.Count}";
-                    treeView.Nodes.Add($"PRIM");
+                    var prim = ep.ParsePrim(Templates.Prim.ToList(), 0);
+                    effects[lbEffects.SelectedIndex].Nodes.Add(prim);
+                    treeView.Nodes.Add("PRIM");
                     break;
                 case "Add INFO":
                     new frmSelectInfo().ShowDialog();
                     if (Templates.Infos.SelectedInfo != "")
                     {
-                        switch (Templates.Infos.SelectedInfo)
-                        {
-                            case "ANIMTEX":
-                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.ANIMTEX.ToList(), 0));
-                                break;
-                            case "ATTRACTPT":
-                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.ATTRACTPT.ToList(), 0));
-                                break;
-                            case "COLOUR":
-                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.COLOUR.ToList(), 0));
-                                break;
-                            case "COLOURBRIGHT":
-                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.COLOURBRIGHT.ToList(), 0));
-                                break;
-                            case "DIR":
-                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.DIR.ToList(), 0));
-                                break;
-                            case "EMANGLE":
-                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.EMANGLE.ToList(), 0));
-                                break;
-                            case "EMDIR":
-                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.EMDIR.ToList(), 0));
-                                break;
-                            case "EMLIFE":
-                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.EMLIFE.ToList(), 0));
-                                break;
-                            case "EMPOS":
-                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.EMPOS.ToList(), 0));
-                                break;
-                            case "EMRATE":
-                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.EMRATE.ToList(), 0));
-                                treeView.Nodes[selectedPrim].Nodes.Add(effect.Prims[selectedPrim].Infos[effect.Prims[selectedPrim].Infos.Count - 1].Name);
-                                break;
-                            case "EMROTATION":
-                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.EMROTATION.ToList(), 0));
-                                break;
-                            case "EMSIZE":
-                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.EMSIZE.ToList(), 0));
-                                break;
-                            case "EMSPEED":
-                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.EMSPEED.ToList(), 0));
-                                break;
-                            case "EMWEATHER":
-                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.EMWEATHER.ToList(), 0));
-                                break;
-                            case "FLAT":
-                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.FLAT.ToList(), 0));
-                                break;
-                            case "FLOAT":
-                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.FLOAT.ToList(), 0));
-                                break;
-                            case "FORCE":
-                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.FORCE.ToList(), 0));
-                                break;
-                            case "FRICTION":
-                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.FRICTION.ToList(), 0));
-                                break;
-                            case "GROUNDCOLLIDE":
-                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.GROUNDCOLLIDE.ToList(), 0));
-                                break;
-                            case "HEATHAZE":
-                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.HEATHAZE.ToList(), 0));
-                                break;
-                            case "JITTER":
-                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.JITTER.ToList(), 0));
-                                break;
-                            case "NOISE":
-                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.NOISE.ToList(), 0));
-                                break;
-                            case "ROTSPEED":
-                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.ROTSPEED.ToList(), 0));
-                                break;
-                            case "SELFLIT":
-                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.SELFLIT.ToList(), 0));
-                                break;
-                            case "SIZE":
-                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.SIZE.ToList(), 0));
-                                break;
-                            case "SPRITERECT":
-                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.SPRITERECT.ToList(), 0));
-                                break;
-                            case "TRAIL":
-                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.TRAIL.ToList(), 0));
-                                break;
-                            case "UNDERWATER":
-                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.UNDERWATER.ToList(), 0));
-                                break;
-                            case "WIND":
-                                effect.Prims[selectedPrim].Infos.Add(er.ReadInfo(Templates.Infos.WIND.ToList(), 0));
-                                break;
-                        }
-                        effect.Prims[selectedPrim].NUM_INFOS = $"NUM_INFOS: {effect.Prims[selectedPrim].Infos.Count}";
-                        treeView.Nodes[selectedPrim].Nodes.Add(effect.Prims[selectedPrim].Infos[effect.Prims[selectedPrim].Infos.Count - 1].Name);
+                        var info = ep.ParseInfo(Templates.Infos.SelectedInfo.CreateAccordingToTemplate().ToList(), 0);
+                        effects[lbEffects.SelectedIndex].Nodes.ToList()[selectedPrim].Nodes.Add(info);
+                        treeView.Nodes[selectedPrim].Nodes.Add(info.Name);
                     }
                     break;
                 case "Add KEYFLOAT":
-                    effect.Prims[selectedPrim].Infos[selectedInfo].Interps[selectedInterp].KeyFloats.Add(er.ReadKeyFloat(Templates.KeyFloat.ToList(), 0));
-                    effect.Prims[selectedPrim].Infos[selectedInfo].Interps[selectedInterp].NUM_KEYS = $"NUM_KEYS: {effect.Prims[selectedPrim].Infos[selectedInfo].Interps[selectedInterp].KeyFloats.Count}";
-                    treeView.Nodes[selectedPrim].Nodes[selectedInfo].Nodes[selectedInterp].Nodes.Add($"KEYFLOAT");
+                    var keyfloat = ep.ParseKeyFloat(Templates.KeyFloat.ToList(), 0);
+                    effects[lbEffects.SelectedIndex].Nodes.ToList()[selectedPrim].Nodes.ToList()[selectedInfo].Nodes.ToList()[selectedInterp].Nodes.Add(keyfloat);
+                    treeView.Nodes[selectedPrim].Nodes[selectedInfo].Nodes[selectedInterp].Nodes.Add("KEYFLOAT");
                     break;
             }
             WriteEffectsFile();
@@ -525,76 +262,33 @@ namespace GTA_SA_Effect_Editor
                 btnDelTreeItem.Visible = false;
             }
         }
-
-        private void TreeView_AfterSelect(object sender, TreeViewEventArgs e) //
+        private void TreeView_AfterSelect(object sender, TreeViewEventArgs e)
         {
             btnShowCode.Visible = true;
-            bool isFound = false;
-            for (int i = 0; i < treeView.Nodes.Count; i++)
+
+            IFxsComponent selectedNode = GetSelectedNode();
+            switch (selectedNode.Type)
             {
-                if (treeView.Nodes[i] == treeView.SelectedNode)
-                {
+                case CodeBlockType.PRIM:
                     btnDelTreeItem.Text = "Delete PRIM";
                     btnDelTreeItem.Visible = true;
                     btnAdd.Text = "Add INFO";
                     btnAdd.Visible = true;
-
-                    selectedPrim = i;
-                    selectedInfo = -1;
-
                     break;
-                }
-                for (int j = 0; j < treeView.Nodes[i].Nodes.Count; j++)
-                {
-                    if (treeView.Nodes[i].Nodes[j] == treeView.SelectedNode)
-                    {
-                        btnDelTreeItem.Text = "Delete INFO";
-                        btnDelTreeItem.Visible = true;
-                        btnAdd.Visible = false;
-
-                        selectedPrim = i;
-                        selectedInfo = j;
-                        selectedInterp = -1;
-
-                        isFound = true;
-                        break;
-                    }
-                    for (int k = 0; k < treeView.Nodes[i].Nodes[j].Nodes.Count; k++)
-                    {
-                        if (treeView.Nodes[i].Nodes[j].Nodes[k] == treeView.SelectedNode)
-                        {
-                            btnDelTreeItem.Visible = false;
-                            btnAdd.Text = "Add KEYFLOAT";
-                            btnAdd.Visible = true;
-
-                            selectedPrim = i;
-                            selectedInfo = j;
-                            selectedInterp = k;
-                            selectedKeyFloat = -1;
-
-                            isFound = true;
-                            break;
-                        }
-                        for (int m = 0; m < treeView.Nodes[i].Nodes[j].Nodes[k].Nodes.Count; m++)
-                        {
-                            if (treeView.Nodes[i].Nodes[j].Nodes[k].Nodes[m] == treeView.SelectedNode)
-                            {
-                                btnDelTreeItem.Text = "Delete KEYFLOAT";
-                                btnDelTreeItem.Visible = true;
-                                btnAdd.Visible = false;
-
-                                selectedPrim = i;
-                                selectedInfo = j;
-                                selectedInterp = k;
-                                selectedKeyFloat = m;
-
-                                isFound = true;
-                                break;
-                            }
-                        }
-                    }
-                }
-                if (isFound)
+                case CodeBlockType.INFO:
+                    btnDelTreeItem.Text = "Delete INFO";
+                    btnDelTreeItem.Visible = true;
+                    btnAdd.Visible = false;
+                    break;
+                case CodeBlockType.INTERP:
+                    btnDelTreeItem.Visible = false;
+                    btnAdd.Text = "Add KEYFLOAT";
+                    btnAdd.Visible = true;
+                    break;
+                case CodeBlockType.KEYFLOAT:
+                    btnDelTreeItem.Text = "Delete KEYFLOAT";
+                    btnDelTreeItem.Visible = true;
+                    btnAdd.Visible = false;
                     break;
             }
         }
@@ -614,15 +308,20 @@ namespace GTA_SA_Effect_Editor
             toolTip.SetToolTip(btnDelete, "Delete effect");
             toolTip.SetToolTip(btnImport, "Import effect in another effect(s) file");
             toolTip.SetToolTip(btnExport, "Create a new file with the selected effect");
+            toolTip.SetToolTip(btnNewEffect, "Create a new effect");
+            toolTip.SetToolTip(btnShowEffectCode, "Edit the code of the selected effect");
 
             Animator.Start();
             try
             {
                 using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\GTA SA Effect Editor"))
                 {
-                    egtbPath.Text = key.GetValue("path").ToString();
-                    lastDirectory = egtbPath.Text;
-                    UpdateEffectList();
+                    string path = key.GetValue("path").ToString();
+                    if (File.Exists(path))
+                        egtbPath.Text = path;
+                    ResetEffectView();
+                    ReadEffects();
+                    FillListOfEffects();
                 }
             }
             catch (Exception) { }
@@ -631,7 +330,6 @@ namespace GTA_SA_Effect_Editor
         {
             Registry.CurrentUser.CreateSubKey(@"Software\GTA SA Effect Editor").SetValue("path", egtbPath.Text);
         }
-
         private void ForbidMultipleLaunches()
         {
             Process this_process = Process.GetCurrentProcess();
@@ -650,68 +348,20 @@ namespace GTA_SA_Effect_Editor
                 Environment.Exit(0);
             }
         }
-        private void UpdateEffectList()
+        private string GetLastDirectory()
         {
-            effectsFile = ReadEffectsFile(egtbPath.Text);
+            if (egtbPath.Text != "")
+                return egtbPath.Text;
+            else
+                return @"C:\";
+        }
 
-            effects.Clear();
-            ClearEffects();
-            HideLBSelButtons();
-            HideTVSelButtons();
+        private void ReadEffects()
+        {
+            if (effects != null)
+                effects.Clear();
 
-            EffectReader er = new EffectReader();
-            er.Read(effectsFile, ref effects);
-
-            foreach (var effect in effects)
-            {
-                lbEffects.Items.Add(effect.Name);
-            }
-
-            labelCount.Text = $"Effects count: {effects.Count}";
-        }
-        private void UpdateTreeView() //
-        {
-            treeView.Nodes.Clear();
-            Effect effect = DefineEffect(lbEffects.SelectedIndex);
-            for (int i = 0; i < effect.Prims.Count; i++)
-            {
-                treeView.Nodes.Add($"PRIM");
-                for (int j = 0; j < effect.Prims[i].Infos.Count; j++)
-                {
-                    treeView.Nodes[i].Nodes.Add(effect.Prims[i].Infos[j].Name);
-                    for (int k = 0; k < effect.Prims[i].Infos[j].Interps.Count; k++)
-                    {
-                        treeView.Nodes[i].Nodes[j].Nodes.Add(effect.Prims[i].Infos[j].Interps[k].Name);
-                        for (int m = 0; m < effect.Prims[i].Infos[j].Interps[k].KeyFloats.Count; m++)
-                        {
-                            treeView.Nodes[i].Nodes[j].Nodes[k].Nodes.Add($"KEYFLOAT");
-                        }
-                    }
-                }
-            }
-        }
-        private void ClearEffects()
-        {
-            lbEffects.Items.Clear();
-            treeView.Nodes.Clear();
-        }
-        private void HideLBSelButtons()
-        {
-            pnlButtons.Visible = false;
-            btnAdd.Visible = false;
-        }
-        private void HideTVSelButtons()
-        {
-            btnShowCode.Visible = false;
-            btnDelTreeItem.Visible = false;
-            if (btnAdd.Text == "Add INFO")
-                btnAdd.Visible = false;
-        }
-        private void ResetSearchBlock()
-        {
-            tbFind.Text = "Texture name";
-            tbFind.ForeColor = SystemColors.ControlDark;
-            btnSearch.Text = "Search";
+            new EffectParser().Parse(ReadEffectsFile(egtbPath.Text), ref effects);
         }
         private List<string> ReadEffectsFile(string path)
         {
@@ -725,30 +375,271 @@ namespace GTA_SA_Effect_Editor
             }
             return effects_fxp;
         }
+        private void FillListOfEffects()
+        {
+            lbEffects.DataSource = effects;
+            lbEffects.DisplayMember = "Name";
+
+            pnlButtons.Visible = true;
+            labelCount.Text = $"Effects count: {lbEffects.Items.Count}";
+
+            LbEffects_SelectedIndexChanged(null, null);
+        }
+        private void UpdateTreeView()
+        {
+            treeView.Nodes.Clear();
+            AddNodes((lbEffects.SelectedItem as Effect).Nodes, treeView.Nodes);
+        }
+        private void UpdateBranch(IFxsComponent node)
+        {
+            switch (node.Type)
+            {
+                case CodeBlockType.EFFECT:
+                    treeView.Nodes.Clear();
+                    AddNodes(node.Nodes, treeView.Nodes);
+                    break;
+                case CodeBlockType.PRIM:
+                    treeView.Nodes[selectedPrim].Nodes.Clear();
+                    AddNodes(node.Nodes, treeView.Nodes[selectedPrim].Nodes);
+                    break;
+                case CodeBlockType.INFO:
+                    treeView.Nodes[selectedPrim].Nodes[selectedInfo].Nodes.Clear();
+                    AddNodes(node.Nodes, treeView.Nodes[selectedPrim].Nodes[selectedInfo].Nodes);
+                    break;
+                case CodeBlockType.INTERP:
+                    treeView.Nodes[selectedPrim].Nodes[selectedInfo].Nodes[selectedInterp].Nodes.Clear();
+                    AddNodes(node.Nodes, treeView.Nodes[selectedPrim].Nodes[selectedInfo].Nodes[selectedInterp].Nodes);
+                    break;
+            }
+        }
+        private void RemoveBranch(IFxsComponent node)
+        {
+            switch (node.Type)
+            {
+                case CodeBlockType.PRIM:
+                    treeView.Nodes[selectedPrim].Remove();
+                    effects[lbEffects.SelectedIndex].Nodes.Remove(node);
+                    break;
+                case CodeBlockType.INFO:
+                    treeView.Nodes[selectedPrim].Nodes[selectedInfo].Remove();
+                    effects[lbEffects.SelectedIndex].Nodes.ToList()[selectedPrim].Nodes.Remove(node);
+                    break;
+                case CodeBlockType.INTERP:
+                    treeView.Nodes[selectedPrim].Nodes[selectedInfo].Nodes[selectedInterp].Remove();
+                    effects[lbEffects.SelectedIndex].Nodes.ToList()[selectedPrim].Nodes.ToList()[selectedInfo].Nodes.Remove(node);
+                    break;
+                case CodeBlockType.KEYFLOAT:
+                    treeView.Nodes[selectedPrim].Nodes[selectedInfo].Nodes[selectedInterp].Nodes[selectedKeyFloat].Remove();
+                    effects[lbEffects.SelectedIndex].Nodes.ToList()[selectedPrim].Nodes.ToList()[selectedInfo].Nodes.ToList()[selectedInterp].Nodes.Remove(node);
+                    break;
+            }
+        }
+        private void AddNodes(IEnumerable<IFxsComponent> fxsComponents, TreeNodeCollection nodes)
+        {
+            foreach (var cb in fxsComponents)
+            {
+                var node = nodes.Add(cb.Name);
+                if (cb.Nodes != null)
+                    AddNodes(cb.Nodes, node.Nodes);
+            }
+        }
+        private void FindEffects()
+        {
+            BindingList<Effect> foundEffects = new BindingList<Effect>();
+            bool isFound = false;
+            foreach (Effect effect in effects)
+            {
+                foreach (Prim prim in effect.Nodes)
+                {
+                    foreach (string texture in prim.Textures)
+                    {
+                        if (texture.IndexOf(tbFind.Text, StringComparison.OrdinalIgnoreCase) != -1)
+                        {
+                            foundEffects.Add(effect);
+                            isFound = true;
+                            break;
+                        }
+                    }
+                    if (isFound)
+                        break;
+                }
+                isFound = false;
+            }
+            lbEffects.DataSource = foundEffects;
+        }
         private void WriteEffectsFile()
         {
             FileStream fs = new FileStream(egtbPath.Text, FileMode.Create);
             using (StreamWriter sw = new StreamWriter(fs, Encoding.GetEncoding(1251)))
             {
-                if (effectsFile[0].Contains("FX_PROJECT_DATA"))
-                {
-                    sw.WriteLine("FX_PROJECT_DATA:");
-                    sw.WriteLine();
-                }
+                sw.WriteLine("FX_PROJECT_DATA:");
+                sw.WriteLine();
 
-                foreach (var efct in effects)
+                foreach (var effect in effects)
                 {
-                    foreach (var line in efct.GetLines())
+                    foreach (var line in effect.GetLines())
                     {
                         sw.WriteLine(line);
                     }
                     sw.WriteLine();
                 }
 
-                if (effectsFile[0].Contains("FX_PROJECT_DATA"))
-                    sw.WriteLine("FX_PROJECT_DATA_END:");
+                sw.WriteLine("FX_PROJECT_DATA_END:");
             }
         }
+        private IFxsComponent GetSelectedNode()
+        {
+            for (int i = 0; i < treeView.Nodes.Count; i++)
+            {
+                if (treeView.Nodes[i] == treeView.SelectedNode)
+                {
+                    selectedPrim = i;
+                    return effects[lbEffects.SelectedIndex].Nodes.ToList()[i];
+                }
+                for (int j = 0; j < treeView.Nodes[i].Nodes.Count; j++)
+                {
+                    if (treeView.Nodes[i].Nodes[j] == treeView.SelectedNode)
+                    {
+                        selectedPrim = i;
+                        selectedInfo = j;
+                        return effects[lbEffects.SelectedIndex].Nodes.ToList()[i].Nodes.ToList()[j];
+                    }
+                    for (int k = 0; k < treeView.Nodes[i].Nodes[j].Nodes.Count; k++)
+                    {
+                        if (treeView.Nodes[i].Nodes[j].Nodes[k] == treeView.SelectedNode)
+                        {
+                            selectedPrim = i;
+                            selectedInfo = j;
+                            selectedInterp = k;
+                            return effects[lbEffects.SelectedIndex].Nodes.ToList()[i].Nodes.ToList()[j].Nodes.ToList()[k];
+                        }
+                        for (int m = 0; m < treeView.Nodes[i].Nodes[j].Nodes[k].Nodes.Count; m++)
+                        {
+                            if (treeView.Nodes[i].Nodes[j].Nodes[k].Nodes[m] == treeView.SelectedNode)
+                            {
+                                selectedPrim = i;
+                                selectedInfo = j;
+                                selectedInterp = k;
+                                selectedKeyFloat = m;
+                                return effects[lbEffects.SelectedIndex].Nodes.ToList()[i].Nodes.ToList()[j].Nodes.ToList()[k].Nodes.ToList()[m];
+                            }
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+        private void RemoveNode(ref IFxsComponent node, IFxsComponent from)
+        {
+            from.Nodes.Remove(node);
+            node.Dispose();
+            node = null;
+
+            treeView.SelectedNode.Remove();
+        }
+
+        private void ImportEffect(string path, List<string> lines)
+        {
+            int startLine = 0, endLine = 0;
+            Effect effect = effects[lbEffects.SelectedIndex];
+
+            bool isEffectEqist = FindEqistEffect(lines, effect, ref startLine, ref endLine);
+
+            using (FileStream fs = new FileStream(path, FileMode.Create))
+            using (StreamWriter sw = new StreamWriter(fs, Encoding.GetEncoding(1251)))
+            {
+                bool isNeedToInsertTheEffect = true;
+                if (isEffectEqist)
+                {
+                    if (startLine != 0)
+                    {
+                        isNeedToInsertTheEffect = false;
+                    }
+                    for (int i = 0; i < lines.Count; i++)
+                    {
+                        if (isNeedToInsertTheEffect)
+                        {
+                            foreach (var line in effect.GetLines())
+                            {
+                                sw.WriteLine(line);
+                            }
+                            i = endLine;
+                            isNeedToInsertTheEffect = false;
+                        }
+                        else
+                        {
+                            sw.WriteLine(lines[i]);
+                            if (i == startLine - 1)
+                            {
+                                isNeedToInsertTheEffect = true;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < lines.Count; i++)
+                    {
+                        if (lines[i].Contains("FX_PROJECT_DATA_END"))
+                        {
+                            foreach (var line in effect.GetLines())
+                            {
+                                sw.WriteLine(line);
+                            }
+                            sw.WriteLine();
+                            sw.WriteLine("FX_PROJECT_DATA_END:");
+                            isNeedToInsertTheEffect = false;
+                            break;
+                        }
+                        else
+                        {
+                            sw.WriteLine(lines[i]);
+                        }
+                    }
+
+                    if (isNeedToInsertTheEffect)
+                    {
+                        sw.WriteLine();
+                        foreach (var line in effect.GetLines())
+                        {
+                            sw.WriteLine(line);
+                        }
+                    }
+                }
+            }
+        }
+        private bool FindEqistEffect(List<string> lines, Effect effect, ref int startLine, ref int endLine)
+        {
+            bool isEffectEqist = false;
+            for (int i = lines.Count - 1; i >= 0; i--)
+            {
+                if (lines[i].Contains("TXDNAME: NOTXDSET"))
+                {
+                    endLine = i;
+                }
+                if (lines[i].Contains("FILENAME"))
+                {
+                    int startIndex = lines[i].LastIndexOf('/') + 1;
+                    int endIndex = lines[i].IndexOf('.');
+                    string name = lines[i].Substring(startIndex, endIndex - startIndex);
+                    if (name == effect.Name)
+                    {
+                        isEffectEqist = true;
+                    }
+                }
+                if (lines[i].Contains("FX_SYSTEM_DATA"))
+                {
+                    if (isEffectEqist)
+                    {
+                        startLine = i;
+                        break;
+                    }
+                }
+            }
+            return isEffectEqist;
+        }
+
         private void OpenCodeEditor(List<string> lines)
         {
             foreach (var line in lines)
@@ -758,17 +649,44 @@ namespace GTA_SA_Effect_Editor
 
             new frmShowCode().ShowDialog();
         }
-        private void DeleteEffect(int id)
+        private void PrintCode(IFxsComponent fxsComponent)
         {
-            foundEffects.Remove(effects.First(x => x.ID == id));
-            effects.Remove(effects.First(x => x.ID == id));
+            OpenCodeEditor(fxsComponent.GetLines());
+            if (Program.IsEdited)
+            {
+                EffectParser ep = new EffectParser();
+
+                if (Program.Code.Count > 0)
+                {
+                    fxsComponent.Copy(ep.Parse(Program.Code, 0, fxsComponent.Type));
+                    UpdateBranch(fxsComponent);
+                }
+                else
+                {
+                    RemoveBranch(fxsComponent);
+                }
+
+                WriteEffectsFile();
+            }
         }
-        private Effect DefineEffect(int selectedIndex)
+
+        private void ResetEffectView()
         {
-            if (btnSearch.Text == "Search")
-                return effects[selectedIndex];
-            else
-                return foundEffects[selectedIndex];
+            treeView.Nodes.Clear();
+
+            btnAdd.Visible = false;
+            btnShowCode.Visible = false;
+            btnDelTreeItem.Visible = false;
+            pnlButtons.Visible = false;
+            labelCount.Text = "";
+
+            this.Update();
+        }
+        private void ResetSearchBlock()
+        {
+            tbFind.Text = "Texture name";
+            tbFind.ForeColor = SystemColors.ControlDark;
+            btnSearch.Text = "Search";
         }
     }
 }

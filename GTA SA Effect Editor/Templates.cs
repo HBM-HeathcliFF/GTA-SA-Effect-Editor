@@ -1,7 +1,27 @@
-﻿namespace GTA_SA_Effect_Editor
+﻿using System.Collections.Generic;
+
+namespace GTA_SA_Effect_Editor
 {
     public static class Templates
     {
+        public static string[] Effect { get; } = new string[]
+        {
+            "FX_SYSTEM_DATA:",
+            "109",
+            "",
+            @"FILENAME: X:\SA\FxTools\Data\effects\gta_pc\systems/code/name.fxs",
+            "NAME: name",
+            "LENGTH: 0.000",
+            "LOOPINTERVALMIN: 0.000",
+            "LENGTH: 0.000",
+            "PLAYMODE: 0",
+            "CULLDIST: 1000000.000",
+            "BOUNDINGSPHERE: 0.000 0.000 0.000 0.000",
+            "NUM_PRIMS: 0",
+            "OMITTEXTURES: 0",
+            "TXDNAME: NOTXDSET"
+        };
+
         public static string[] Prim { get; } = new string[]
         {
             "FX_PRIM_EMITTER_DATA:",
@@ -474,6 +494,47 @@
                 "LOOPED: 0",
                 "NUM_KEYS: 0"
             };
+        }
+
+        private static Dictionary<string, string[]> s_dictionaryInfo = new Dictionary<string, string[]>()
+        {
+            ["ANIMTEX"] = Infos.ANIMTEX,
+            ["ATTRACTPT"] = Infos.ATTRACTPT,
+            ["COLOUR"] = Infos.COLOUR,
+            ["COLOURBRIGHT"] = Infos.COLOURBRIGHT,
+            ["DIR"] = Infos.DIR,
+            ["EMANGLE"] = Infos.EMANGLE,
+            ["EMDIR"] = Infos.EMDIR,
+            ["EMLIFE"] = Infos.EMLIFE,
+            ["EMPOS"] = Infos.EMPOS,
+            ["EMRATE"] = Infos.EMRATE,
+            ["EMROTATION"] = Infos.EMROTATION,
+            ["EMSIZE"] = Infos.EMSIZE,
+            ["EMSPEED"] = Infos.EMSPEED,
+            ["EMWEATHER"] = Infos.EMWEATHER,
+            ["FLAT"] = Infos.FLAT,
+            ["FLOAT"] = Infos.FLOAT,
+            ["FORCE"] = Infos.FORCE,
+            ["FRICTION"] = Infos.FRICTION,
+            ["GROUNDCOLLIDE"] = Infos.GROUNDCOLLIDE,
+            ["HEATHAZE"] = Infos.HEATHAZE,
+            ["JITTER"] = Infos.JITTER,
+            ["NOISE"] = Infos.NOISE,
+            ["ROTSPEED"] = Infos.ROTSPEED,
+            ["SELFLIT"] = Infos.SELFLIT,
+            ["SIZE"] = Infos.SIZE,
+            ["SPRITERECT"] = Infos.SPRITERECT,
+            ["TRAIL"] = Infos.TRAIL,
+            ["UNDERWATER"] = Infos.UNDERWATER,
+            ["WIND"] = Infos.WIND
+        };
+
+        public static string[] CreateAccordingToTemplate(this string key)
+        {
+            if (s_dictionaryInfo.ContainsKey(key))
+                return s_dictionaryInfo[key];
+            else
+                return null;
         }
     }
 }

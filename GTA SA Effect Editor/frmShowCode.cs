@@ -67,6 +67,7 @@ namespace GTA_SA_Effect_Editor
         }
         private void HighlightSyntax()
         {
+            rtbCode.Enabled = false;
             selectionStart = rtbCode.SelectionStart;
             rtbCode.BeginUpdate();
 
@@ -83,12 +84,13 @@ namespace GTA_SA_Effect_Editor
             rtbCode.SelectionStart = selectionStart;
             rtbCode.SelectionLength = 0;
             rtbCode.SelectionColor = Color.White;
+            rtbCode.Enabled = true;
         }
         private void ThreadProc(Object stateInfo)
         {
             Thread.Sleep(750);
 
-            if ((DateTime.Now - lastChange).TotalMilliseconds >= 750 && !isAlreadyEdited)
+            if ((DateTime.Now - lastChange).TotalMilliseconds >= 1200 && !isAlreadyEdited)
             {
                 Invoke((MethodInvoker)(() =>
                 {

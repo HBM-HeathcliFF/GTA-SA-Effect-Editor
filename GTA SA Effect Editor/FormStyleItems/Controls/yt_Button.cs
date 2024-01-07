@@ -362,7 +362,6 @@ namespace yt_DesignUI
             CurtainButtonAnim.Value = CurtainButtonAnim.TargetValue;
 
             ClickLocation = e.Location;
-            //ButtonRippleAction();
             ButtonMultiRippleAction();
             
             if (UseDownPressEffectOnClick) Location = new Point(Location.X, Location.Y + 2);
@@ -384,8 +383,6 @@ namespace yt_DesignUI
         protected override void OnTextChanged(EventArgs e)
         {
             base.OnTextChanged(e);
-
-            //Invalidate();
         }
     }
 }

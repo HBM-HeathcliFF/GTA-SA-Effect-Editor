@@ -40,15 +40,17 @@ namespace GTA_SA_Effect_Editor
             this.btnShowCode = new yt_DesignUI.yt_Button();
             this.treeView = new System.Windows.Forms.TreeView();
             this.pnlButtons = new System.Windows.Forms.Panel();
-            this.btnExport = new System.Windows.Forms.Button();
-            this.btnDelete = new System.Windows.Forms.Button();
-            this.btnImport = new System.Windows.Forms.Button();
             this.labelCount = new System.Windows.Forms.Label();
             this.tbFind = new System.Windows.Forms.TextBox();
             this.btnSearch = new yt_DesignUI.yt_Button();
             this.label1 = new System.Windows.Forms.Label();
             this.lbEffects = new System.Windows.Forms.ListBox();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.btnShowEffectCode = new System.Windows.Forms.Button();
+            this.btnNewEffect = new System.Windows.Forms.Button();
+            this.btnExport = new System.Windows.Forms.Button();
+            this.btnDelete = new System.Windows.Forms.Button();
+            this.btnImport = new System.Windows.Forms.Button();
             this.gbEffects.SuspendLayout();
             this.pnlButtons.SuspendLayout();
             this.SuspendLayout();
@@ -102,7 +104,7 @@ namespace GTA_SA_Effect_Editor
             this.btnBrowse.BorderColorOnHover = System.Drawing.Color.Teal;
             this.btnBrowse.BorderColorOnHoverEnabled = false;
             this.btnBrowse.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnBrowse.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnBrowse.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnBrowse.ForeColor = System.Drawing.Color.White;
             this.btnBrowse.Location = new System.Drawing.Point(488, 14);
             this.btnBrowse.Name = "btnBrowse";
@@ -129,7 +131,7 @@ namespace GTA_SA_Effect_Editor
             this.gbEffects.Controls.Add(this.btnSearch);
             this.gbEffects.Controls.Add(this.label1);
             this.gbEffects.Controls.Add(this.lbEffects);
-            this.gbEffects.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.gbEffects.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.gbEffects.ForeColor = System.Drawing.SystemColors.MenuHighlight;
             this.gbEffects.Location = new System.Drawing.Point(10, 54);
             this.gbEffects.Name = "gbEffects";
@@ -149,7 +151,7 @@ namespace GTA_SA_Effect_Editor
             this.btnAdd.BorderColorOnHover = System.Drawing.Color.Teal;
             this.btnAdd.BorderColorOnHoverEnabled = false;
             this.btnAdd.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnAdd.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnAdd.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnAdd.ForeColor = System.Drawing.Color.White;
             this.btnAdd.Location = new System.Drawing.Point(444, 392);
             this.btnAdd.Name = "btnAdd";
@@ -176,7 +178,7 @@ namespace GTA_SA_Effect_Editor
             this.btnDelTreeItem.BorderColorOnHover = System.Drawing.Color.Teal;
             this.btnDelTreeItem.BorderColorOnHoverEnabled = false;
             this.btnDelTreeItem.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnDelTreeItem.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnDelTreeItem.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnDelTreeItem.ForeColor = System.Drawing.Color.White;
             this.btnDelTreeItem.Location = new System.Drawing.Point(204, 392);
             this.btnDelTreeItem.Name = "btnDelTreeItem";
@@ -203,7 +205,7 @@ namespace GTA_SA_Effect_Editor
             this.btnShowCode.BorderColorOnHover = System.Drawing.Color.Teal;
             this.btnShowCode.BorderColorOnHoverEnabled = false;
             this.btnShowCode.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnShowCode.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnShowCode.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnShowCode.ForeColor = System.Drawing.Color.White;
             this.btnShowCode.Location = new System.Drawing.Point(334, 392);
             this.btnShowCode.Name = "btnShowCode";
@@ -230,6 +232,8 @@ namespace GTA_SA_Effect_Editor
             // 
             // pnlButtons
             // 
+            this.pnlButtons.Controls.Add(this.btnShowEffectCode);
+            this.pnlButtons.Controls.Add(this.btnNewEffect);
             this.pnlButtons.Controls.Add(this.btnExport);
             this.pnlButtons.Controls.Add(this.btnDelete);
             this.pnlButtons.Controls.Add(this.btnImport);
@@ -239,59 +243,20 @@ namespace GTA_SA_Effect_Editor
             this.pnlButtons.TabIndex = 12;
             this.pnlButtons.Visible = false;
             // 
-            // btnExport
-            // 
-            this.btnExport.BackColor = System.Drawing.Color.DarkCyan;
-            this.btnExport.BackgroundImage = global::GTA_SA_Effect_Editor.Properties.Resources.export;
-            this.btnExport.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnExport.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnExport.Location = new System.Drawing.Point(133, 4);
-            this.btnExport.Name = "btnExport";
-            this.btnExport.Size = new System.Drawing.Size(61, 23);
-            this.btnExport.TabIndex = 17;
-            this.btnExport.UseVisualStyleBackColor = false;
-            this.btnExport.Click += new System.EventHandler(this.BtnExport_Click);
-            // 
-            // btnDelete
-            // 
-            this.btnDelete.BackColor = System.Drawing.Color.DarkCyan;
-            this.btnDelete.BackgroundImage = global::GTA_SA_Effect_Editor.Properties.Resources.delete;
-            this.btnDelete.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnDelete.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnDelete.Location = new System.Drawing.Point(3, 4);
-            this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(61, 23);
-            this.btnDelete.TabIndex = 15;
-            this.btnDelete.UseVisualStyleBackColor = false;
-            this.btnDelete.Click += new System.EventHandler(this.BtnDelete_Click);
-            // 
-            // btnImport
-            // 
-            this.btnImport.BackColor = System.Drawing.Color.DarkCyan;
-            this.btnImport.BackgroundImage = global::GTA_SA_Effect_Editor.Properties.Resources.import;
-            this.btnImport.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnImport.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnImport.Location = new System.Drawing.Point(68, 4);
-            this.btnImport.Name = "btnImport";
-            this.btnImport.Size = new System.Drawing.Size(61, 23);
-            this.btnImport.TabIndex = 16;
-            this.btnImport.UseVisualStyleBackColor = false;
-            this.btnImport.Click += new System.EventHandler(this.BtnImport_Click);
-            // 
             // labelCount
             // 
             this.labelCount.AutoSize = true;
-            this.labelCount.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.labelCount.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.labelCount.ForeColor = System.Drawing.SystemColors.WindowText;
             this.labelCount.Location = new System.Drawing.Point(4, 385);
             this.labelCount.Name = "labelCount";
-            this.labelCount.Size = new System.Drawing.Size(0, 16);
+            this.labelCount.Size = new System.Drawing.Size(0, 15);
             this.labelCount.TabIndex = 6;
             // 
             // tbFind
             // 
             this.tbFind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbFind.Font = new System.Drawing.Font("Arial Narrow", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tbFind.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tbFind.ForeColor = System.Drawing.SystemColors.ControlDark;
             this.tbFind.Location = new System.Drawing.Point(6, 19);
             this.tbFind.Name = "tbFind";
@@ -312,7 +277,7 @@ namespace GTA_SA_Effect_Editor
             this.btnSearch.BorderColorOnHover = System.Drawing.Color.Teal;
             this.btnSearch.BorderColorOnHoverEnabled = false;
             this.btnSearch.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnSearch.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnSearch.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnSearch.ForeColor = System.Drawing.Color.White;
             this.btnSearch.Location = new System.Drawing.Point(133, 19);
             this.btnSearch.Name = "btnSearch";
@@ -332,7 +297,7 @@ namespace GTA_SA_Effect_Editor
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(201, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(39, 16);
+            this.label1.Size = new System.Drawing.Size(44, 15);
             this.label1.TabIndex = 1;
             this.label1.Text = "Struct";
             // 
@@ -347,11 +312,76 @@ namespace GTA_SA_Effect_Editor
             this.lbEffects.TabIndex = 0;
             this.lbEffects.SelectedIndexChanged += new System.EventHandler(this.LbEffects_SelectedIndexChanged);
             // 
+            // btnShowEffectCode
+            // 
+            this.btnShowEffectCode.BackColor = System.Drawing.Color.DarkCyan;
+            this.btnShowEffectCode.BackgroundImage = global::GTA_SA_Effect_Editor.Properties.Resources.editCode;
+            this.btnShowEffectCode.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnShowEffectCode.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnShowEffectCode.Location = new System.Drawing.Point(162, 4);
+            this.btnShowEffectCode.Name = "btnShowEffectCode";
+            this.btnShowEffectCode.Size = new System.Drawing.Size(32, 23);
+            this.btnShowEffectCode.TabIndex = 19;
+            this.btnShowEffectCode.UseVisualStyleBackColor = false;
+            this.btnShowEffectCode.Click += new System.EventHandler(this.BtnShowEffectCode_Click);
+            // 
+            // btnNewEffect
+            // 
+            this.btnNewEffect.BackColor = System.Drawing.Color.DarkCyan;
+            this.btnNewEffect.BackgroundImage = global::GTA_SA_Effect_Editor.Properties.Resources.newEffect;
+            this.btnNewEffect.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnNewEffect.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnNewEffect.Location = new System.Drawing.Point(122, 4);
+            this.btnNewEffect.Name = "btnNewEffect";
+            this.btnNewEffect.Size = new System.Drawing.Size(33, 23);
+            this.btnNewEffect.TabIndex = 18;
+            this.btnNewEffect.UseVisualStyleBackColor = false;
+            this.btnNewEffect.Click += new System.EventHandler(this.BtnNewEffect_Click);
+            // 
+            // btnExport
+            // 
+            this.btnExport.BackColor = System.Drawing.Color.DarkCyan;
+            this.btnExport.BackgroundImage = global::GTA_SA_Effect_Editor.Properties.Resources.export;
+            this.btnExport.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnExport.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnExport.Location = new System.Drawing.Point(83, 4);
+            this.btnExport.Name = "btnExport";
+            this.btnExport.Size = new System.Drawing.Size(33, 23);
+            this.btnExport.TabIndex = 17;
+            this.btnExport.UseVisualStyleBackColor = false;
+            this.btnExport.Click += new System.EventHandler(this.BtnExport_Click);
+            // 
+            // btnDelete
+            // 
+            this.btnDelete.BackColor = System.Drawing.Color.DarkCyan;
+            this.btnDelete.BackgroundImage = global::GTA_SA_Effect_Editor.Properties.Resources.delete;
+            this.btnDelete.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnDelete.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnDelete.Location = new System.Drawing.Point(4, 4);
+            this.btnDelete.Name = "btnDelete";
+            this.btnDelete.Size = new System.Drawing.Size(33, 23);
+            this.btnDelete.TabIndex = 15;
+            this.btnDelete.UseVisualStyleBackColor = false;
+            this.btnDelete.Click += new System.EventHandler(this.BtnDelete_Click);
+            // 
+            // btnImport
+            // 
+            this.btnImport.BackColor = System.Drawing.Color.DarkCyan;
+            this.btnImport.BackgroundImage = global::GTA_SA_Effect_Editor.Properties.Resources.import;
+            this.btnImport.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnImport.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnImport.Location = new System.Drawing.Point(44, 4);
+            this.btnImport.Name = "btnImport";
+            this.btnImport.Size = new System.Drawing.Size(33, 23);
+            this.btnImport.TabIndex = 16;
+            this.btnImport.UseVisualStyleBackColor = false;
+            this.btnImport.Click += new System.EventHandler(this.BtnImport_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(581, 505);
+            this.ClientSize = new System.Drawing.Size(581, 504);
             this.Controls.Add(this.gbEffects);
             this.Controls.Add(this.btnBrowse);
             this.Controls.Add(this.egtbPath);
@@ -390,6 +420,8 @@ namespace GTA_SA_Effect_Editor
         private yt_DesignUI.yt_Button btnAdd;
         private yt_DesignUI.yt_Button btnDelTreeItem;
         private System.Windows.Forms.ToolTip toolTip;
+        private System.Windows.Forms.Button btnShowEffectCode;
+        private System.Windows.Forms.Button btnNewEffect;
     }
 }
 

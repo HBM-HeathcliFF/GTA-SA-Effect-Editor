@@ -16,5 +16,6 @@ namespace GTA_SA_Effect_Editor
 
         public static List<string> Code { get; set; } = new List<string>();
         public static bool IsEdited { get; set; } = false;
+        public static string EffectName { get; set; } = "";
     }
 }

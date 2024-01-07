@@ -53,7 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Autocomplete.cs" />
-    <Compile Include="EffectReader.cs" />
+    <Compile Include="EffectParser.cs" />
     <Compile Include="FormStyleItems\Animation\Animation.cs" />
     <Compile Include="FormStyleItems\Animation\Animator.cs" />
     <Compile Include="FormStyleItems\Components\EgoldsFormStyle.cs">
@@ -91,6 +91,18 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="FormStyleItems\Drawer.cs" />
+    <Compile Include="frmCreateNewEffect.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmCreateNewEffect.Designer.cs">
+      <DependentUpon>frmCreateNewEffect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmShowCode.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmShowCode.Designer.cs">
+      <DependentUpon>frmShowCode.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmSelectInfo.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -105,12 +117,6 @@
     <Compile Include="frmMain.Designer.cs">
       <DependentUpon>frmMain.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmShowCode.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmShowCode.Designer.cs">
-      <DependentUpon>frmShowCode.cs</DependentUpon>
-    </Compile>
     <Compile Include="FXPComponents\Info.cs" />
     <Compile Include="FXPComponents\Interp.cs" />
     <Compile Include="FXPComponents\KeyFloat.cs" />
@@ -118,17 +124,21 @@
     <Compile Include="FormStyleItems\MyRichTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="FXPComponents\Interfaces\IFxsComponent.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Templates.cs" />
+    <EmbeddedResource Include="frmCreateNewEffect.resx">
+      <DependentUpon>frmCreateNewEffect.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmSelectInfo.resx">
-      <DependentUpon>frmSelectInfo.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="frmShowCode.resx">
       <DependentUpon>frmShowCode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmSelectInfo.resx">
+      <DependentUpon>frmSelectInfo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -156,8 +166,10 @@
   <ItemGroup>
     <Content Include="logo.ico" />
     <Content Include="Resources\delete.png" />
+    <Content Include="Resources\editCode.png" />
     <Content Include="Resources\import.png" />
     <Content Include="Resources\export.png" />
+    <Content Include="Resources\newEffect.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

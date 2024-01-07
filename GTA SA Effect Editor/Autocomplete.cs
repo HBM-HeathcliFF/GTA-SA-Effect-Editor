@@ -4,6 +4,7 @@
     {
         public static string[] NavyBlue { get; set; } = new string[]
         {
+            "FX_SYSTEM_DATA",
             "FX_PRIM_EMITTER_DATA",
             "FX_PRIM_BASE_DATA",
             "FX_INFO_ATTRACTPT_DATA",
@@ -41,12 +42,21 @@
 
         public static string[] Yellow { get; set; } = new string[]
         {
+            "NUM_PRIMS",
             "NUM_KEYS",
             "NUM_INFOS"
+
         };
 
         public static string[] Blue { get; set; } = new string[]
         {
+            "LENGTH",
+            "LOOPINTERVALMIN",
+            "LENGTH",
+            "PLAYMODE",
+            "CULLDIST",
+            "BOUNDINGSPHERE",
+            "FILENAME",
             "TIME",
             "VAL",
             "NAME",
@@ -61,7 +71,10 @@
             "LODSTART",
             "LODEND",
             "TIMEMODEPRT",
-            "LOOPED"
+            "LOOPED",
+            "OMITTEXTURES",
+            "TXDNAME",
+            "NOTXDSET"
         };
 
         public static string[] Green { get; set; } = new string[]
