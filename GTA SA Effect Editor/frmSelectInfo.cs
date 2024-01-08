@@ -12,7 +12,7 @@ namespace GTA_SA_Effect_Editor
 
         private void BtnCancel_Click(object sender, EventArgs e)
         {
-            Templates.Infos.SelectedInfo = "";
+            FxsTemplates.Infos.SelectedInfo = "";
             Close();
         }
 
@@ -20,7 +20,7 @@ namespace GTA_SA_Effect_Editor
         {
             if (lbInfos.SelectedIndex != -1)
             {
-                Templates.Infos.SelectedInfo = lbInfos.SelectedItem.ToString();
+                FxsTemplates.Infos.SelectedInfo = lbInfos.SelectedItem.ToString();
                 Close();
             }
         }

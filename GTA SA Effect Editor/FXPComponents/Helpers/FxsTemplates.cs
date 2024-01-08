@@ -2,7 +2,7 @@
 
 namespace GTA_SA_Effect_Editor
 {
-    public static class Templates
+    public static class FxsTemplates
     {
         public static string[] Effect { get; } = new string[]
         {
