@@ -421,6 +421,47 @@ namespace GTA_SA_Effect_Editor
             treeView.Nodes.Clear();
             AddNodes((lbEffects.SelectedItem as Effect).Nodes, treeView.Nodes);
         }
+        private void Remove(IFxsComponent node)
+        {
+            switch (node.Type)
+            {
+                case CodeBlockType.PRIM:
+                    RemoveBranch(
+                        node,
+                        effects[lbEffects.SelectedIndex].Nodes,
+                        treeView.Nodes[selectedPrim]);
+                    break;
+                case CodeBlockType.INFO:
+                    RemoveBranch(
+                        node,
+                        effects[lbEffects.SelectedIndex].Nodes.ToList()[selectedPrim].Nodes,
+                        treeView.Nodes[selectedPrim].Nodes[selectedInfo]);
+                    break;
+                case CodeBlockType.INTERP:
+                    RemoveBranch(
+                        node,
+                        effects[lbEffects.SelectedIndex].Nodes.ToList()[selectedPrim].Nodes.ToList()[selectedInfo].Nodes,
+                        treeView.Nodes[selectedPrim].Nodes[selectedInfo].Nodes[selectedInterp]);
+                    break;
+                case CodeBlockType.KEYFLOAT:
+                    RemoveBranch(
+                        node,
+                        effects[lbEffects.SelectedIndex].Nodes.ToList()[selectedPrim].Nodes.ToList()[selectedInfo].Nodes.ToList()[selectedInterp].Nodes,
+                        treeView.Nodes[selectedPrim].Nodes[selectedInfo].Nodes[selectedInterp].Nodes[selectedKeyFloat]);
+                    break;
+            }
+        }
+        private void RemoveBranch(IFxsComponent node, ICollection<IFxsComponent> from1, TreeNode from2)
+        {
+            if (from1.Remove(node))
+            {
+                from2.Remove();
+            }
+            else
+            {
+                MessageBox.Show("Failed to remove this item", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
         private void UpdateBranch(IFxsComponent node)
         {
             switch (node.Type)
@@ -440,28 +481,6 @@ namespace GTA_SA_Effect_Editor
                 case CodeBlockType.INTERP:
                     treeView.Nodes[selectedPrim].Nodes[selectedInfo].Nodes[selectedInterp].Nodes.Clear();
                     AddNodes(node.Nodes, treeView.Nodes[selectedPrim].Nodes[selectedInfo].Nodes[selectedInterp].Nodes);
-                    break;
-            }
-        }
-        private void RemoveBranch(IFxsComponent node)
-        {
-            switch (node.Type)
-            {
-                case CodeBlockType.PRIM:
-                    treeView.Nodes[selectedPrim].Remove();
-                    effects[lbEffects.SelectedIndex].Nodes.Remove(node);
-                    break;
-                case CodeBlockType.INFO:
-                    treeView.Nodes[selectedPrim].Nodes[selectedInfo].Remove();
-                    effects[lbEffects.SelectedIndex].Nodes.ToList()[selectedPrim].Nodes.Remove(node);
-                    break;
-                case CodeBlockType.INTERP:
-                    treeView.Nodes[selectedPrim].Nodes[selectedInfo].Nodes[selectedInterp].Remove();
-                    effects[lbEffects.SelectedIndex].Nodes.ToList()[selectedPrim].Nodes.ToList()[selectedInfo].Nodes.Remove(node);
-                    break;
-                case CodeBlockType.KEYFLOAT:
-                    treeView.Nodes[selectedPrim].Nodes[selectedInfo].Nodes[selectedInterp].Nodes[selectedKeyFloat].Remove();
-                    effects[lbEffects.SelectedIndex].Nodes.ToList()[selectedPrim].Nodes.ToList()[selectedInfo].Nodes.ToList()[selectedInterp].Nodes.Remove(node);
                     break;
             }
         }
@@ -584,13 +603,13 @@ namespace GTA_SA_Effect_Editor
             int startLine = 0, endLine = 0;
             Effect effect = effects[lbEffects.SelectedIndex];
 
-            bool isEffectEqist = FindEqistEffect(lines, effect, ref startLine, ref endLine);
+            bool isEffectExist = FindExistEffect(lines, effect, ref startLine, ref endLine);
 
             using (FileStream fs = new FileStream(path, FileMode.Create))
             using (StreamWriter sw = new StreamWriter(fs, Encoding.GetEncoding(1251)))
             {
                 bool isNeedToInsertTheEffect = true;
-                if (isEffectEqist)
+                if (isEffectExist)
                 {
                     if (startLine != 0)
                     {
@@ -649,9 +668,9 @@ namespace GTA_SA_Effect_Editor
                 }
             }
         }
-        private bool FindEqistEffect(List<string> lines, Effect effect, ref int startLine, ref int endLine)
+        private bool FindExistEffect(List<string> lines, Effect effect, ref int startLine, ref int endLine)
         {
-            bool isEffectEqist = false;
+            bool isEffectExist = false;
             for (int i = lines.Count - 1; i >= 0; i--)
             {
                 if (lines[i].Contains("TXDNAME: NOTXDSET"))
@@ -665,19 +684,19 @@ namespace GTA_SA_Effect_Editor
                     string name = lines[i].Substring(startIndex, endIndex - startIndex);
                     if (name == effect.Name)
                     {
-                        isEffectEqist = true;
+                        isEffectExist = true;
                     }
                 }
                 if (lines[i].Contains("FX_SYSTEM_DATA"))
                 {
-                    if (isEffectEqist)
+                    if (isEffectExist)
                     {
                         startLine = i;
                         break;
                     }
                 }
             }
-            return isEffectEqist;
+            return isEffectExist;
         }
 
         private void OpenCodeEditor(List<string> lines)
@@ -703,7 +722,7 @@ namespace GTA_SA_Effect_Editor
                 }
                 else
                 {
-                    RemoveBranch(fxsComponent);
+                    Remove(fxsComponent);
                 }
 
                 WriteEffectsFile();

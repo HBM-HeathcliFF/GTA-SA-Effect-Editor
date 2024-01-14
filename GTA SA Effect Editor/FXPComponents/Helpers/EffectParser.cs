@@ -67,9 +67,13 @@ namespace GTA_SA_Effect_Editor
                     i = FindLine("OMITTEXTURES", i, effectsFile);
                 }
                 if (numberSettings == 0)
+                {
                     effect.StartSettings.Add(effectsFile[i]);
+                }
                 if (numberSettings == 1)
+                {
                     effect.EndSettings.Add(effectsFile[i]);
+                }
             }
             effect.EndSettings.Add(effectsFile[i]);
 
@@ -95,9 +99,13 @@ namespace GTA_SA_Effect_Editor
                 }
 
                 if (numberSettings == 0)
+                {
                     prim.StartSettings.Add(effectsFile[i]);
+                }
                 if (effectsFile[i].StartsWith("TEXTURE"))
+                {
                     prim.Textures.Add(effectsFile[i]);
+                }
 
                 if (numberSettings == 1)
                 {
@@ -117,7 +125,9 @@ namespace GTA_SA_Effect_Editor
             info.Name = effectsFile[i].Split(':')[0];
             i = FindLine("TIMEMODEPRT", "FX_INTERP_DATA", i, effectsFile);
             if (i != -1)
+            {
                 info.TIMEMODEPRT = effectsFile[i];
+            }
 
             currentPositon++;
 
@@ -145,7 +155,9 @@ namespace GTA_SA_Effect_Editor
                 }
             }
             else
+            {
                 interp.Name = effectsFile[currentPositon].Split(':')[0];
+            }
 
             currentPositon = FindLine("LOOPED", currentPositon, effectsFile);
             interp.LOOPED = effectsFile[currentPositon];
@@ -177,7 +189,9 @@ namespace GTA_SA_Effect_Editor
             for (int i = currentPosition; i < lines.Count; i++)
             {
                 if (lines[i].Contains(targetLine))
+                {
                     return i;
+                }
             }
             return -1;
         }
@@ -186,9 +200,13 @@ namespace GTA_SA_Effect_Editor
             for (int i = currentPosition; i < lines.Count; i++)
             {
                 if (lines[i].Contains(targetLine))
+                {
                     return i;
+                }
                 if (lines[i].Contains(secondLine))
+                {
                     return -1;
+                }
             }
             return -1;
         }

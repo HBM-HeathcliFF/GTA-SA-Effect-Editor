@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using yt_DesignUI.Controls;
@@ -57,9 +58,21 @@ namespace GTA_SA_Effect_Editor
                 int index = rtbCode.Text.IndexOf(keyWord);
                 while (index != -1)
                 {
-                    rtbCode.SelectionStart = index;
-                    rtbCode.SelectionLength = keyWord.Length;
-                    rtbCode.SelectionColor = color;
+                    string line = keyWord;
+                    if (index > 0)
+                    {
+                        line = rtbCode.Text[index - 1] + line;
+                    }
+                    if (index + keyWord.Length < rtbCode.TextLength)
+                    {
+                        line += rtbCode.Text[index + keyWord.Length];
+                    }
+                    if (new Regex($@"^([^\S]|\s){Regex.Escape(keyWord)}\s|\:").IsMatch(line))
+                    {
+                        rtbCode.SelectionStart = index;
+                        rtbCode.SelectionLength = keyWord.Length;
+                        rtbCode.SelectionColor = color;
+                    }
                     index += keyWord.Length;
                     index = rtbCode.Text.IndexOf(keyWord, index);
                 }
@@ -88,7 +101,7 @@ namespace GTA_SA_Effect_Editor
         }
         private void ThreadProc(Object stateInfo)
         {
-            Thread.Sleep(750);
+            Thread.Sleep(1200);
 
             if ((DateTime.Now - lastChange).TotalMilliseconds >= 1200 && !isAlreadyEdited)
             {
