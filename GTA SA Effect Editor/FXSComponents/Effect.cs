@@ -5,33 +5,46 @@ using System.Linq;
 
 namespace GTA_SA_Effect_Editor
 {
-    class Prim : IFxsComponent, IDisposable
+    public class Effect : IFxsComponent, IDisposable
     {
-        public string Name { get; } = "PRIM";
+        private static int s_id = 0;
+
+        public int ID { get; set; }
+        public string Path { get; set; }
+        public string Name { get; set; }
         public List<string> StartSettings { get; set; } = new List<string>();
-        public CodeBlockType Type { get; } = CodeBlockType.PRIM;
+        public FxsComponentType Type { get; } = FxsComponentType.EFFECT;
         public ICollection<IFxsComponent> Nodes { get; set; } = new List<IFxsComponent>();
         public List<string> EndSettings { get; set; } = new List<string>();
-        public List<string> Textures { get; set; } = new List<string>();
+
+        public Effect()
+        {
+            ID = s_id;
+            s_id++;
+        }
 
         public List<string> GetLines()
         {
             List<string> lines = new List<string>();
+
+            lines.Add("FX_SYSTEM_DATA:");
+            lines.Add("109");
+            lines.Add("");
+            lines.Add($@"FILENAME:{Path}{Name}.fxs");
 
             foreach (var line in StartSettings)
             {
                 lines.Add(line);
             }
 
-            lines.Add($"NUM_INFOS: {Nodes.Count}");
+            lines.Add($"NUM_PRIMS: {Nodes.Count}");
 
-            foreach (var info in Nodes)
+            foreach (var prim in Nodes)
             {
-                foreach (var line in info.GetLines())
+                foreach (var line in prim.GetLines())
                 {
                     lines.Add(line);
                 }
-                lines.Add("");
             }
 
             foreach (var line in EndSettings)
@@ -46,17 +59,14 @@ namespace GTA_SA_Effect_Editor
         {
             Dispose();
 
-            foreach (var setting in (source as Prim).StartSettings)
+            Name = source.Name;
+            foreach (var setting in (source as Effect).StartSettings)
             {
                 StartSettings.Add(setting);
             }
-            foreach (var setting in (source as Prim).EndSettings)
+            foreach (var setting in (source as Effect).EndSettings)
             {
                 EndSettings.Add(setting);
-            }
-            foreach (var texture in (source as Prim).Textures)
-            {
-                Textures.Add(texture);
             }
             foreach (var node in source.Nodes)
             {
@@ -75,7 +85,6 @@ namespace GTA_SA_Effect_Editor
             Nodes.Clear();
             StartSettings.Clear();
             EndSettings.Clear();
-            Textures.Clear();
         }
     }
 }

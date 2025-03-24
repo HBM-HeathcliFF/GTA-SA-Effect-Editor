@@ -13,13 +13,13 @@ namespace GTA_SA_Effect_Editor
         private void BtnCreate_Click(object sender, EventArgs e)
         {
             Program.EffectName = tbName.Text;
-            this.Close();
+            Close();
         }
 
         private void BtnCancel_Click(object sender, EventArgs e)
         {
             Program.EffectName = "";
-            this.Close();
+            Close();
         }
     }
 }

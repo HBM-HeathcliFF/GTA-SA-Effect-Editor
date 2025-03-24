@@ -53,7 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FormStyleItems\Autocomplete.cs" />
-    <Compile Include="FXPComponents\Helpers\EffectParser.cs" />
+    <Compile Include="FXSComponents\Helpers\EffectParser.cs" />
     <Compile Include="FormStyleItems\Animation\Animation.cs" />
     <Compile Include="FormStyleItems\Animation\Animator.cs" />
     <Compile Include="FormStyleItems\Components\EgoldsFormStyle.cs">
@@ -109,7 +109,7 @@
     <Compile Include="frmSelectInfo.Designer.cs">
       <DependentUpon>frmSelectInfo.cs</DependentUpon>
     </Compile>
-    <Compile Include="FXPComponents\Effect.cs" />
+    <Compile Include="FXSComponents\Effect.cs" />
     <Compile Include="FormStyleItems\FlatColors.cs" />
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>
@@ -117,17 +117,17 @@
     <Compile Include="frmMain.Designer.cs">
       <DependentUpon>frmMain.cs</DependentUpon>
     </Compile>
-    <Compile Include="FXPComponents\Info.cs" />
-    <Compile Include="FXPComponents\Interp.cs" />
-    <Compile Include="FXPComponents\KeyFloat.cs" />
-    <Compile Include="FXPComponents\Prim.cs" />
+    <Compile Include="FXSComponents\Info.cs" />
+    <Compile Include="FXSComponents\Interp.cs" />
+    <Compile Include="FXSComponents\KeyFloat.cs" />
+    <Compile Include="FXSComponents\Prim.cs" />
     <Compile Include="FormStyleItems\Controls\MyRichTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="FXPComponents\Interfaces\IFxsComponent.cs" />
+    <Compile Include="FXSComponents\Interfaces\IFxsComponent.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="FXPComponents\Helpers\FxsTemplates.cs" />
+    <Compile Include="FXSComponents\Helpers\FxsTemplates.cs" />
     <EmbeddedResource Include="frmCreateNewEffect.resx">
       <DependentUpon>frmCreateNewEffect.cs</DependentUpon>
     </EmbeddedResource>

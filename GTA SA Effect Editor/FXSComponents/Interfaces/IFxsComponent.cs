@@ -2,7 +2,7 @@
 
 namespace GTA_SA_Effect_Editor.Interfaces
 {
-    public enum CodeBlockType
+    public enum FxsComponentType
     {
         EFFECT,
         PRIM,
@@ -14,7 +14,7 @@ namespace GTA_SA_Effect_Editor.Interfaces
     public interface IFxsComponent
     {
         string Name { get; }
-        CodeBlockType Type { get; }
+        FxsComponentType Type { get; }
         ICollection<IFxsComponent> Nodes { get; }
 
         List<string> GetLines();

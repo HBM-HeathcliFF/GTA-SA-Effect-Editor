@@ -5,10 +5,10 @@ using System.Linq;
 
 namespace GTA_SA_Effect_Editor
 {
-    class Info : IFxsComponent, IDisposable
+    public class Info : IFxsComponent, IDisposable
     {
         public string Name { get; set; }
-        public CodeBlockType Type { get; } = CodeBlockType.INFO;
+        public FxsComponentType Type { get; } = FxsComponentType.INFO;
         public ICollection<IFxsComponent> Nodes { get; set; } = new List<IFxsComponent>();
         public string TIMEMODEPRT { get; set; } = "";
 

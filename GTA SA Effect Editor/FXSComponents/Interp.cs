@@ -6,11 +6,11 @@ using System.Xml.Linq;
 
 namespace GTA_SA_Effect_Editor
 {
-    class Interp : IFxsComponent, IDisposable
+    public class Interp : IFxsComponent, IDisposable
     {
         public string Name { get; set; }
         public string LOOPED { get; set; }
-        public CodeBlockType Type { get; } = CodeBlockType.INTERP;
+        public FxsComponentType Type { get; } = FxsComponentType.INTERP;
         public ICollection<IFxsComponent> Nodes { get; set; } = new List<IFxsComponent>();
 
         public List<string> GetLines()

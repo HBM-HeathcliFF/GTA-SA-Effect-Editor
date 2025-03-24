@@ -9,15 +9,15 @@ namespace GTA_SA_Effect_Editor
 {
     public partial class frmShowCode : ShadowedForm
     {
-        public static DateTime lastChange { get; set; }
-        bool isAlreadyEdited = true;
-        int selectionStart = 0;
+        public DateTime lastChange { get; set; }
+        private bool _isAlreadyEdited = true;
+        private int _selectionStart = 0;
 
         #region Controls
 
         private void RtbCode_TextChanged(object sender, EventArgs e)
         {
-            isAlreadyEdited = false;
+            _isAlreadyEdited = false;
             lastChange = DateTime.Now;
             ThreadPool.QueueUserWorkItem(ThreadProc);
         }
@@ -81,7 +81,7 @@ namespace GTA_SA_Effect_Editor
         private void HighlightSyntax()
         {
             rtbCode.Enabled = false;
-            selectionStart = rtbCode.SelectionStart;
+            _selectionStart = rtbCode.SelectionStart;
             rtbCode.BeginUpdate();
 
             rtbCode.SelectionStart = 0;
@@ -94,7 +94,7 @@ namespace GTA_SA_Effect_Editor
             SetColor(Autocomplete.Blue, Color.Turquoise);
 
             rtbCode.EndUpdate();
-            rtbCode.SelectionStart = selectionStart;
+            rtbCode.SelectionStart = _selectionStart;
             rtbCode.SelectionLength = 0;
             rtbCode.SelectionColor = Color.White;
             rtbCode.Enabled = true;
@@ -103,12 +103,12 @@ namespace GTA_SA_Effect_Editor
         {
             Thread.Sleep(1200);
 
-            if ((DateTime.Now - lastChange).TotalMilliseconds >= 1200 && !isAlreadyEdited)
+            if ((DateTime.Now - lastChange).TotalMilliseconds >= 1200 && !_isAlreadyEdited)
             {
                 Invoke((MethodInvoker)(() =>
                 {
                     HighlightSyntax();
-                    isAlreadyEdited = true;
+                    _isAlreadyEdited = true;
                 }));
             }
         }
