@@ -3,9 +3,9 @@ using System.Windows.Forms;
 
 namespace GTA_SA_Effect_Editor
 {
-    public partial class frmSelectInfo : Form
+    public partial class FormSelectInfo : Form
     {
-        public frmSelectInfo()
+        public FormSelectInfo()
         {
             InitializeComponent();
         }

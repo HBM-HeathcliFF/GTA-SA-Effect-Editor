@@ -4,9 +4,9 @@ using System.ComponentModel;
 
 namespace GTA_SA_Effect_Editor
 {
-    public static class EffectParser
+    public class EffectParser
     {
-        public static BindingList<Effect> Parse(List<string> effectsFile)
+        public BindingList<Effect> Parse(List<string> effectsFile)
         {
             BindingList<Effect> effects = new BindingList<Effect>();
             if (effectsFile != null)
@@ -22,7 +22,7 @@ namespace GTA_SA_Effect_Editor
             return effects;
         }
 
-        public static IFxsComponent Parse(List<string> effectsFile, int currentPositon, FxsComponentType type)
+        public IFxsComponent Parse(List<string> effectsFile, int currentPositon, FxsComponentType type)
         {
             switch (type)
             {
@@ -41,7 +41,7 @@ namespace GTA_SA_Effect_Editor
             }
         }
 
-        public static IFxsComponent ParseEffect(List<string> effectsFile, int currentPositon)
+        public IFxsComponent ParseEffect(List<string> effectsFile, int currentPositon)
         {
             int i = currentPositon, numberSettings = 0;
             Effect effect = new Effect();
@@ -84,7 +84,7 @@ namespace GTA_SA_Effect_Editor
 
             return effect;
         }
-        public static IFxsComponent ParsePrim(List<string> effectsFile, int currentPositon)
+        public IFxsComponent ParsePrim(List<string> effectsFile, int currentPositon)
         {
             int numberSettings = 0;
             Prim prim = new Prim();
@@ -109,7 +109,7 @@ namespace GTA_SA_Effect_Editor
                 }
                 if (effectsFile[i].StartsWith("TEXTURE"))
                 {
-                    prim.Textures.Add(effectsFile[i]);
+                    prim.Textures.Add(effectsFile[i].Split(':')[1].Trim());
                 }
 
                 if (numberSettings == 1)
@@ -122,12 +122,13 @@ namespace GTA_SA_Effect_Editor
 
             return prim;
         }
-        public static IFxsComponent ParseInfo(List<string> effectsFile, int currentPositon)
+        public IFxsComponent ParseInfo(List<string> effectsFile, int currentPositon)
         {
             int i = currentPositon;
-            Info info = new Info();
-
-            info.Name = effectsFile[i].Split(':')[0];
+            Info info = new Info
+            {
+                Name = effectsFile[i].Split(':')[0]
+            };
             i = FindLine("TIMEMODEPRT", "FX_INTERP_DATA", i, effectsFile);
             if (i != -1)
             {
@@ -145,7 +146,7 @@ namespace GTA_SA_Effect_Editor
 
             return info;
         }
-        public static IFxsComponent ParseInterp(List<string> effectsFile, int currentPositon)
+        public IFxsComponent ParseInterp(List<string> effectsFile, int currentPositon)
         {
             Interp interp = new Interp();
             if (currentPositon > 0)
@@ -178,7 +179,7 @@ namespace GTA_SA_Effect_Editor
 
             return interp;
         }
-        public static IFxsComponent ParseKeyFloat(List<string> effectsFile, int currentPositon)
+        public IFxsComponent ParseKeyFloat(List<string> effectsFile, int currentPositon)
         {
             KeyFloat keyFloat = new KeyFloat();
             currentPositon = FindLine("TIME", currentPositon, effectsFile);
@@ -189,7 +190,7 @@ namespace GTA_SA_Effect_Editor
             return keyFloat;
         }
 
-        private static int FindLine(string targetLine, int currentPosition, List<string> lines)
+        private int FindLine(string targetLine, int currentPosition, List<string> lines)
         {
             for (int i = currentPosition; i < lines.Count; i++)
             {
@@ -200,7 +201,7 @@ namespace GTA_SA_Effect_Editor
             }
             return -1;
         }
-        private static int FindLine(string targetLine, string secondLine, int currentPosition, List<string> lines)
+        private int FindLine(string targetLine, string secondLine, int currentPosition, List<string> lines)
         {
             for (int i = currentPosition; i < lines.Count; i++)
             {

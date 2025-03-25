@@ -7,7 +7,7 @@ using yt_DesignUI.Controls;
 
 namespace GTA_SA_Effect_Editor
 {
-    public partial class frmShowCode : ShadowedForm
+    public partial class FormShowCode : ShadowedForm
     {
         public DateTime lastChange { get; set; }
         private bool _isAlreadyEdited = true;
@@ -42,7 +42,7 @@ namespace GTA_SA_Effect_Editor
 
         #endregion
 
-        public frmShowCode()
+        public FormShowCode()
         {
             InitializeComponent();
             Program.IsEdited = false;

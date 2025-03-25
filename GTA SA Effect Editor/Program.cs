@@ -11,7 +11,7 @@ namespace GTA_SA_Effect_Editor
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmMain());
+            Application.Run(new FormMain());
         }
 
         public static List<string> Code { get; set; } = new List<string>();

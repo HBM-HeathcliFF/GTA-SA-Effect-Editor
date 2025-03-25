@@ -1,7 +1,7 @@
 ﻿
 namespace GTA_SA_Effect_Editor
 {
-    partial class frmShowCode
+    partial class FormShowCode
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@ namespace GTA_SA_Effect_Editor
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmShowCode));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormShowCode));
             this.btnApply = new yt_DesignUI.yt_Button();
             this.btnCancel = new yt_DesignUI.yt_Button();
             this.rtbCode = new MyRichTextBox();
@@ -91,8 +91,8 @@ namespace GTA_SA_Effect_Editor
             // 
             // rtbCode
             // 
-            this.rtbCode.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.rtbCode.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.rtbCode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(44)))), ((int)(((byte)(44)))));
             this.rtbCode.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));

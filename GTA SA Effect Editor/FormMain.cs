@@ -8,14 +8,13 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows.Forms;
 using yt_DesignUI;
 using yt_DesignUI.Controls;
 
 namespace GTA_SA_Effect_Editor
 {
-    public partial class frmMain : ShadowedForm
+    public partial class FormMain : ShadowedForm
     {
         #region WinAPI
         [DllImport("user32.dll")]
@@ -131,7 +130,8 @@ namespace GTA_SA_Effect_Editor
 
             labelCount.Text = $"Effects count: {lbEffects.Items.Count}";
 
-            WriteEffectsFile(egtbPath.Text, _effects);
+            EffectFileWriter effectFileWriter = new EffectFileWriter();
+            effectFileWriter.WriteFxp(egtbPath.Text, _effects);
 
             Enabled = true;
         }
@@ -167,36 +167,24 @@ namespace GTA_SA_Effect_Editor
             };
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
-                try
-                {
-                    using (FileStream fileStream = new FileStream(saveFileDialog.FileName, FileMode.Create))
-                    using (StreamWriter streamWriter = new StreamWriter(fileStream, Encoding.GetEncoding(1251)))
-                    {
-                        Effect effect = _effects[lbEffects.SelectedIndex];
-                        foreach (var line in effect.GetLines())
-                        {
-                            streamWriter.WriteLine(line);
-                        }
-                    }
-                }
-                catch (Exception)
-                {
-                    MessageBox.Show("Failed to export effect", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                EffectFileWriter effectFileWriter = new EffectFileWriter();
+                effectFileWriter.WriteFxs(saveFileDialog.FileName, _effects[lbEffects.SelectedIndex]);
             }
 
             Enabled = true;
-        }//
+        }
         private void BtnNewEffect_Click(object sender, EventArgs e)
         {
-            new frmCreateNewEffect().ShowDialog();
+            new FormCreateNewEffect().ShowDialog();
             
             if (Program.EffectName != "")
             {
-                Effect effect = EffectParser.ParseEffect(FxsTemplates.Effect.ToList(), 0) as Effect;
+                Effect effect = FxsTemplates.Effect;
                 effect.Name = Program.EffectName;
                 _effects.Add(effect);
-                WriteEffectsFile(egtbPath.Text, _effects);
+
+                EffectFileWriter effectFileWriter = new EffectFileWriter();
+                effectFileWriter.WriteFxp(egtbPath.Text, _effects);
             }
         }
         private void BtnShowEffectCode_Click(object sender, EventArgs e)
@@ -226,33 +214,35 @@ namespace GTA_SA_Effect_Editor
                     RemoveNode(ref selectedNode, _effects[lbEffects.SelectedIndex].Nodes.ToList()[_selectedPrim].Nodes.ToList()[_selectedInfo].Nodes.ToList()[_selectedInterp]);
                     break;
             }
-            WriteEffectsFile(egtbPath.Text, _effects);
+            EffectFileWriter effectFileWriter = new EffectFileWriter();
+            effectFileWriter.WriteFxp(egtbPath.Text, _effects);
         }//
         private void BtnAdd_Click(object sender, EventArgs e)
         {
             switch (btnAdd.Text)
             {
                 case "Add PRIM":
-                    var prim = EffectParser.ParsePrim(FxsTemplates.Prim.ToList(), 0);
+                    var prim = FxsTemplates.Prim;
                     _effects[lbEffects.SelectedIndex].Nodes.Add(prim);
                     treeView.Nodes.Add("PRIM");
                     break;
                 case "Add INFO":
-                    new frmSelectInfo().ShowDialog();
+                    new FormSelectInfo().ShowDialog();
                     if (FxsTemplates.Infos.SelectedInfo != "")
                     {
-                        var info = EffectParser.ParseInfo(FxsTemplates.Infos.SelectedInfo.CreateAccordingToTemplate().ToList(), 0);
+                        var info = FxsTemplates.Infos.SelectedInfo.CreateAccordingToTemplate();
                         _effects[lbEffects.SelectedIndex].Nodes.ToList()[_selectedPrim].Nodes.Add(info);
                         treeView.Nodes[_selectedPrim].Nodes.Add(info.Name);
                     }
                     break;
                 case "Add KEYFLOAT":
-                    var keyfloat = EffectParser.ParseKeyFloat(FxsTemplates.KeyFloat.ToList(), 0);
+                    var keyfloat = FxsTemplates.KeyFloat;
                     _effects[lbEffects.SelectedIndex].Nodes.ToList()[_selectedPrim].Nodes.ToList()[_selectedInfo].Nodes.ToList()[_selectedInterp].Nodes.Add(keyfloat);
                     treeView.Nodes[_selectedPrim].Nodes[_selectedInfo].Nodes[_selectedInterp].Nodes.Add("KEYFLOAT");
                     break;
             }
-            WriteEffectsFile(egtbPath.Text, _effects);
+            EffectFileWriter effectFileWriter = new EffectFileWriter();
+            effectFileWriter.WriteFxp(egtbPath.Text, _effects);
         }//
         #endregion
 
@@ -303,7 +293,7 @@ namespace GTA_SA_Effect_Editor
 
         #endregion
 
-        public frmMain()
+        public FormMain()
         {
             ForbidMultipleLaunches();
             InitializeComponent();
@@ -376,13 +366,9 @@ namespace GTA_SA_Effect_Editor
         {
             _effects?.Clear();
 
-            List<string> lines = ReadEffectsFile(path);
-
-            if (lines != null)
-            {
-                _effects = EffectParser.Parse(lines);
-            }
-        }//
+            EffectFileReader effectFileReader = new EffectFileReader(new EffectParser());
+            _effects = effectFileReader.Read(path);
+        }
         private List<string> ReadEffectsFile(string path)
         {
             try
@@ -394,7 +380,7 @@ namespace GTA_SA_Effect_Editor
                 MessageBox.Show("File opening error", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return null;
             }
-        }//
+        }
         private void FillListOfEffects()
         {
             lbEffects.DataSource = _effects;
@@ -508,33 +494,6 @@ namespace GTA_SA_Effect_Editor
             }
             lbEffects.DataSource = foundEffects;
         }
-        private void WriteEffectsFile(string path, BindingList<Effect> effectsList)
-        {
-            try
-            {
-                FileStream fileStream = new FileStream(path, FileMode.Create);
-                using (StreamWriter streamWriter = new StreamWriter(fileStream, Encoding.GetEncoding(1251)))
-                {
-                    streamWriter.WriteLine("FX_PROJECT_DATA:");
-                    streamWriter.WriteLine();
-
-                    foreach (var effect in effectsList)
-                    {
-                        foreach (var line in effect.GetLines())
-                        {
-                            streamWriter.WriteLine(line);
-                        }
-                        streamWriter.WriteLine();
-                    }
-
-                    streamWriter.WriteLine("FX_PROJECT_DATA_END:");
-                }
-            }
-            catch (Exception)
-            {
-                MessageBox.Show("Failed to overwrite effects file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
         private IFxsComponent GetSelectedNode()
         {
             for (int i = 0; i < treeView.Nodes.Count; i++)
@@ -589,12 +548,14 @@ namespace GTA_SA_Effect_Editor
 
         private void ImportEffect(string path, Effect effect)
         {
-            BindingList<Effect> destinationEffects = EffectParser.Parse(ReadEffectsFile(path));
+            EffectFileReader effectFileReader = new EffectFileReader(new EffectParser());
+            BindingList<Effect> effects = effectFileReader.Read(path);
 
-            destinationEffects.Remove(destinationEffects.FirstOrDefault(e => e.Name == effect.Name));
-            destinationEffects.Add(effect);
+            effects.Remove(effects.FirstOrDefault(e => e.Name == effect.Name));
+            effects.Add(effect);
 
-            WriteEffectsFile(path, destinationEffects);
+            EffectFileWriter effectFileWriter = new EffectFileWriter();
+            effectFileWriter.WriteFxp(path, effects);
         }
 
         private void OpenCodeEditor(List<string> lines)
@@ -604,7 +565,7 @@ namespace GTA_SA_Effect_Editor
                 Program.Code.Add(line);
             }
 
-            new frmShowCode().ShowDialog();
+            new FormShowCode().ShowDialog();
         }
         private void PrintCode(IFxsComponent fxsComponent)
         {
@@ -613,7 +574,8 @@ namespace GTA_SA_Effect_Editor
             {
                 if (Program.Code.Count > 0)
                 {
-                    fxsComponent.Copy(EffectParser.Parse(Program.Code, 0, fxsComponent.Type));
+                    EffectParser effectParser = new EffectParser();
+                    fxsComponent.Copy(effectParser.Parse(Program.Code, 0, fxsComponent.Type));
                     UpdateBranch(fxsComponent);
                 }
                 else
@@ -621,7 +583,8 @@ namespace GTA_SA_Effect_Editor
                     Remove(fxsComponent);
                 }
 
-                WriteEffectsFile(egtbPath.Text, _effects);
+                EffectFileWriter effectFileWriter = new EffectFileWriter();
+                effectFileWriter.WriteFxp(egtbPath.Text, _effects);
             }
         }//
 

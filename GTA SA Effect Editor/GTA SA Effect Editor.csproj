@@ -52,8 +52,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EffectFileHandlers\EffectFileReader.cs" />
+    <Compile Include="EffectFileHandlers\EffectFileWriter.cs" />
     <Compile Include="FormStyleItems\Autocomplete.cs" />
-    <Compile Include="FXSComponents\Helpers\EffectParser.cs" />
+    <Compile Include="EffectFileHandlers\EffectParser.cs" />
     <Compile Include="FormStyleItems\Animation\Animation.cs" />
     <Compile Include="FormStyleItems\Animation\Animator.cs" />
     <Compile Include="FormStyleItems\Components\EgoldsFormStyle.cs">
@@ -91,31 +93,31 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="FormStyleItems\Drawer.cs" />
-    <Compile Include="frmCreateNewEffect.cs">
+    <Compile Include="FormCreateNewEffect.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmCreateNewEffect.Designer.cs">
-      <DependentUpon>frmCreateNewEffect.cs</DependentUpon>
+    <Compile Include="FormCreateNewEffect.Designer.cs">
+      <DependentUpon>FormCreateNewEffect.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmShowCode.cs">
+    <Compile Include="FormShowCode.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmShowCode.Designer.cs">
-      <DependentUpon>frmShowCode.cs</DependentUpon>
+      <DependentUpon>FormShowCode.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmSelectInfo.cs">
+    <Compile Include="FormSelectInfo.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmSelectInfo.Designer.cs">
-      <DependentUpon>frmSelectInfo.cs</DependentUpon>
+    <Compile Include="FormSelectInfo.Designer.cs">
+      <DependentUpon>FormSelectInfo.cs</DependentUpon>
     </Compile>
     <Compile Include="FXSComponents\Effect.cs" />
     <Compile Include="FormStyleItems\FlatColors.cs" />
-    <Compile Include="frmMain.cs">
+    <Compile Include="FormMain.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmMain.Designer.cs">
-      <DependentUpon>frmMain.cs</DependentUpon>
+    <Compile Include="FormMain.Designer.cs">
+      <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
     <Compile Include="FXSComponents\Info.cs" />
     <Compile Include="FXSComponents\Interp.cs" />
@@ -127,18 +129,18 @@
     <Compile Include="FXSComponents\Interfaces\IFxsComponent.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="FXSComponents\Helpers\FxsTemplates.cs" />
-    <EmbeddedResource Include="frmCreateNewEffect.resx">
-      <DependentUpon>frmCreateNewEffect.cs</DependentUpon>
+    <Compile Include="FXSComponents\FxsTemplates.cs" />
+    <EmbeddedResource Include="FormCreateNewEffect.resx">
+      <DependentUpon>FormCreateNewEffect.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmMain.resx">
-      <DependentUpon>frmMain.cs</DependentUpon>
+    <EmbeddedResource Include="FormMain.resx">
+      <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmShowCode.resx">
-      <DependentUpon>frmShowCode.cs</DependentUpon>
+      <DependentUpon>FormShowCode.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmSelectInfo.resx">
-      <DependentUpon>frmSelectInfo.cs</DependentUpon>
+    <EmbeddedResource Include="FormSelectInfo.resx">
+      <DependentUpon>FormSelectInfo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

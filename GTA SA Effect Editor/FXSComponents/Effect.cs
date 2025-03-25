@@ -7,21 +7,12 @@ namespace GTA_SA_Effect_Editor
 {
     public class Effect : IFxsComponent, IDisposable
     {
-        private static int s_id = 0;
-
-        public int ID { get; set; }
         public string Path { get; set; }
         public string Name { get; set; }
         public List<string> StartSettings { get; set; } = new List<string>();
         public FxsComponentType Type { get; } = FxsComponentType.EFFECT;
         public ICollection<IFxsComponent> Nodes { get; set; } = new List<IFxsComponent>();
         public List<string> EndSettings { get; set; } = new List<string>();
-
-        public Effect()
-        {
-            ID = s_id;
-            s_id++;
-        }
 
         public List<string> GetLines()
         {

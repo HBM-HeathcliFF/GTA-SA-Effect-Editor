@@ -1,7 +1,7 @@
 ﻿
 namespace GTA_SA_Effect_Editor
 {
-    partial class frmMain
+    partial class FormMain
     {
         /// <summary>
         /// Required designer variable.
@@ -30,7 +30,7 @@ namespace GTA_SA_Effect_Editor
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.egoldsFormStyle1 = new yt_DesignUI.Components.EgoldsFormStyle(this.components);
             this.egtbPath = new yt_DesignUI.EgoldsGoogleTextBox();
             this.btnBrowse = new yt_DesignUI.yt_Button();

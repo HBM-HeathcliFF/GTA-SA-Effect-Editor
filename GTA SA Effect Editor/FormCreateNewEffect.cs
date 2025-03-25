@@ -3,9 +3,9 @@ using yt_DesignUI.Controls;
 
 namespace GTA_SA_Effect_Editor
 {
-    public partial class frmCreateNewEffect : ShadowedForm
+    public partial class FormCreateNewEffect : ShadowedForm
     {
-        public frmCreateNewEffect()
+        public FormCreateNewEffect()
         {
             InitializeComponent();
         }

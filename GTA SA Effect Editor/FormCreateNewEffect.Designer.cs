@@ -1,6 +1,6 @@
 ﻿namespace GTA_SA_Effect_Editor
 {
-    partial class frmCreateNewEffect
+    partial class FormCreateNewEffect
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmCreateNewEffect));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormCreateNewEffect));
             this.tbName = new yt_DesignUI.EgoldsGoogleTextBox();
             this.egoldsFormStyle1 = new yt_DesignUI.Components.EgoldsFormStyle(this.components);
             this.btnCreate = new yt_DesignUI.yt_Button();

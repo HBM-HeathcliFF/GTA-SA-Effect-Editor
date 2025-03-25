@@ -1,7 +1,7 @@
 ﻿
 namespace GTA_SA_Effect_Editor
 {
-    partial class frmSelectInfo
+    partial class FormSelectInfo
     {
         /// <summary>
         /// Required designer variable.
@@ -30,7 +30,7 @@ namespace GTA_SA_Effect_Editor
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmSelectInfo));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormSelectInfo));
             this.lbInfos = new System.Windows.Forms.ListBox();
             this.btnCancel = new yt_DesignUI.yt_Button();
             this.btnSelect = new yt_DesignUI.yt_Button();
