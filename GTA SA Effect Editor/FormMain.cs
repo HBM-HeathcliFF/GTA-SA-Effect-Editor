@@ -369,18 +369,6 @@ namespace GTA_SA_Effect_Editor
             EffectFileReader effectFileReader = new EffectFileReader(new EffectParser());
             _effects = effectFileReader.Read(path);
         }
-        private List<string> ReadEffectsFile(string path)
-        {
-            try
-            {
-                return File.ReadAllLines(path).ToList();
-            }
-            catch (Exception)
-            {
-                MessageBox.Show("File opening error", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return null;
-            }
-        }
         private void FillListOfEffects()
         {
             lbEffects.DataSource = _effects;
